@@ -2,6 +2,8 @@ package org.myweb.first.member.controller;
 
 import java.io.File;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.myweb.first.common.Paging;
@@ -85,7 +87,6 @@ public class MemberController {
 			session.invalidate();
 			return "common/main";
 		} else {
-			/* model.addAttribute("message", "로그인 세션이 존재하지 않습니다."); */
 			return "common/main";
 		}
 	}
@@ -97,13 +98,18 @@ public class MemberController {
 		return (result == 0) ? "ok" : "dup";
 	}
 
-	// 비밀번호 찾기 페이지로 이동
+	@RequestMapping(value = "emailchk.do", method = RequestMethod.POST)
+	@ResponseBody
+	public String dupCheckEmailMethod(@RequestParam("email") String email) {
+		int result = memberService.selectCheckEmail(email);
+		return (result == 0) ? "ok" : "dup";
+	}
+
 	@RequestMapping("findPassword.do")
 	public String moveFindPasswordPage() {
 		return "member/findPassword";
 	}
 
-	// 비밀번호 찾기 처리
 	@RequestMapping(value = "findPassword.do", method = RequestMethod.POST)
 	public String findPasswordMethod(@RequestParam("empId") String empId, 
 								   @RequestParam("email") String email,
@@ -113,19 +119,11 @@ public class MemberController {
 		Member member = memberService.findMemberByEmployeeNoAndEmail(empId, email);
 
 		if (member != null) {
-			// 임시 비밀번호 생성
 			String tempPassword = generateTempPassword();
-			
-			// 비밀번호 암호화
 			String encryptedPassword = bcryptPasswordEncoder.encode(tempPassword);
-			
-			// 임시 비밀번호로 업데이트
 			member.setEmpPwd(encryptedPassword);
 			memberService.updateMemberPassword(member);
-			
-			// 이메일로 임시 비밀번호 전송
 			memberService.sendTempPasswordEmail(email, tempPassword);
-			
 			model.addAttribute("message", "임시 비밀번호가 이메일로 전송되었습니다.");
 			return "member/loginPage";
 		} else {
@@ -144,20 +142,117 @@ public class MemberController {
 		return sb.toString();
 	}
 
-	// 사원 목록 조회 페이지로 이동
 	@RequestMapping("memberListView.do")
 	public String moveToMemberListView(Model model) {
-		ArrayList<Member> list = memberService.selectList(null);  // 페이징 처리는 나중에 추가
+		ArrayList<Member> list = memberService.selectList(null);
 		model.addAttribute("memberList", list);
 		return "member/memberListView";
 	}
 
 	@RequestMapping("mypage.do")
 	public String mypage(@RequestParam("empId") String empId, Model model) {
-		// empId를 사용하여 사용자 정보를 조회
 		Member member = memberService.selectMember(empId);
 		model.addAttribute("member", member);
 		return "member/mypage";
 	}
 
+	@RequestMapping(value = "enrollUser.do", method = RequestMethod.POST)
+	public ModelAndView enrollUser(
+		@RequestParam("empId") String empId,
+		@RequestParam("empName") String empName,
+		@RequestParam("department") String department,
+		@RequestParam("job") String job,
+		@RequestParam("email") String email,
+		@RequestParam("phone") String phone,
+		@RequestParam("empNo") String empNo,
+		@RequestParam("hireDate") String hireDateStr,
+		@RequestParam("address") String address,
+		@RequestParam("empPwd") String empPwd) {
+		
+		logger.info("enrollUser.do 시작 - empId: {}, empName: {}", empId, empName);
+		ModelAndView mv = new ModelAndView();
+		
+		try {
+			// 사원번호 중복 체크
+			int idCount = memberService.selectCheckId(empId);
+			if (idCount > 0) {
+				mv.addObject("message", "이미 사용 중인 사원번호입니다. 다른 사원번호를 사용해주세요.");
+				mv.setViewName("common/error");
+				return mv;
+			}
+
+			// 이메일 중복 체크
+			int emailCount = memberService.selectCheckEmail(email);
+			if (emailCount > 0) {
+				mv.addObject("message", "이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요.");
+				mv.setViewName("common/error");
+				return mv;
+			}
+
+			// 전화번호 중복 체크
+			int phoneCount = memberService.selectCheckPhone(phone);
+			if (phoneCount > 0) {
+				mv.addObject("message", "이미 사용 중인 전화번호입니다. 다른 전화번호를 사용해주세요.");
+				mv.setViewName("common/error");
+				return mv;
+			}
+
+			// 주민등록번호 중복 체크
+			int empNoCount = memberService.selectCheckEmpNo(empNo);
+			if (empNoCount > 0) {
+				mv.addObject("message", "이미 사용 중인 주민등록번호입니다. 다른 주민등록번호를 사용해주세요.");
+				mv.setViewName("common/error");
+				return mv;
+			}
+
+			Member member = new Member();
+			member.setEmpId(empId);
+			member.setEmpName(empName);
+			member.setDepartment(department);
+			member.setJob(job);
+			member.setEmail(email);
+			member.setPhone(phone);
+			member.setEmpNo(empNo);
+			member.setAddress(address);
+			member.setEmpPwd(empPwd);
+			
+			logger.info("입력된 회원 정보: {}", member);
+			
+			if (hireDateStr != null && !hireDateStr.isEmpty()) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date utilDate = sdf.parse(hireDateStr);
+				member.setHireDate(new Date(utilDate.getTime()));
+			}
+
+			// 비밀번호 암호화
+			String encryptedPwd = bcryptPasswordEncoder.encode(member.getEmpPwd());
+			member.setEmpPwd(encryptedPwd);
+
+			// 기본값 설정
+			member.setAdminYN("N");
+			member.setIsActive("Y");
+
+			logger.info("DB에 저장할 회원 정보: {}", member);
+			int result = memberService.insertMember(member);
+			logger.info("회원 등록 결과: {}", result);
+
+			if (result > 0) {
+				mv.addObject("message", "사용자 등록이 성공적으로 완료되었습니다.");
+				mv.setViewName("member/enrollSuccess");
+			} else {
+				mv.addObject("message", "사용자 등록에 실패했습니다.");
+				mv.setViewName("common/error");
+			}
+		} catch (ParseException e) {
+			logger.error("날짜 파싱 오류: {}", e.getMessage());
+			mv.addObject("message", "날짜 형식이 잘못되었습니다.");
+			mv.setViewName("common/error");
+		} catch (Exception e) {
+			logger.error("사용자 등록 중 오류 발생: {}", e.getMessage(), e);
+			mv.addObject("message", "사용자 등록 처리 중 오류가 발생했습니다: " + e.getMessage());
+			mv.setViewName("common/error");
+		}
+
+		return mv;
+	}
 }

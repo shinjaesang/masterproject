@@ -11,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //spring framework 에서는 서비스 interface 를 상속받는 후손클래스를 작성하도록 정해 놓았음
 //후손 Impl 클래스를 서비스 클래스로 등록 처리함
 @Service("memberService")  // servlet-context.xml 에 서비스 모델 클래스로 자동 등록되는 어노테이션임
 public class MemberServiceImpl implements MemberService {
+	private static final Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
+
 	//dao 와 연결 처리 (의존성 주입함 : DI)
 	@Autowired
 	private MemberDao memberDao;
@@ -29,28 +34,39 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public int selectCheckId(String userId) {
-		return memberDao.selectCheckId(userId);
+	public int selectCheckId(String empId) {
+		return memberDao.selectCheckId(empId);
 	}
 
 	@Override
+	@Transactional
 	public int insertMember(Member member) {
-		return memberDao.insertMember(member);
+		logger.info("MemberServiceImpl.insertMember 시작 - member: {}", member);
+		try {
+			int result = memberDao.insertMember(member);
+			logger.info("MemberServiceImpl.insertMember 결과 - result: {}", result);
+			return result;
+		} catch (Exception e) {
+			logger.error("MemberServiceImpl.insertMember 오류 발생: {}", e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
-	public Member selectMember(String userId) {
-		return memberDao.selectMember(userId);
+	public Member selectMember(String empId) {
+		return memberDao.selectMember(empId);
 	}
 
 	@Override
+	@Transactional
 	public int updateMember(Member member) {
 		return memberDao.updateMember(member);
 	}
 
 	@Override
-	public int deleteMember(String userId) {
-		return memberDao.deleteMember(userId);
+	@Transactional
+	public int deleteMember(String empId) {
+		return memberDao.deleteMember(empId);
 	}
 
 	// 관리자용 ------------------------------------------------------
@@ -126,6 +142,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	@Transactional
 	public int updateMemberPassword(Member member) {
 		return memberDao.updateMemberPassword(member);
 	}
@@ -141,8 +158,24 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updateLastLoginDate(String empId) {
-		memberDao.updateLastLoginDate(empId);
+	@Transactional
+	public int updateLastLoginDate(String empId) {
+		return memberDao.updateLastLoginDate(empId);
+	}
+
+	@Override
+	public int selectCheckEmail(String email) {
+		return memberDao.selectCheckEmail(email);
+	}
+
+	@Override
+	public int selectCheckPhone(String phone) {
+		return memberDao.selectCheckPhone(phone);
+	}
+
+	@Override
+	public int selectCheckEmpNo(String empNo) {
+		return memberDao.selectCheckEmpNo(empNo);
 	}
 
 }

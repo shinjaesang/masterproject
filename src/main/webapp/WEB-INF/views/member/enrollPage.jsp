@@ -69,6 +69,33 @@
         background-color: #0056b3;
     }
 </style>
+<script>
+function checkEmail() {
+    var email = document.getElementById("email").value;
+    if (email == "") {
+        alert("이메일을 입력하세요.");
+        return false;
+    }
+    
+    $.ajax({
+        url: "emailchk.do",
+        type: "post",
+        data: { email: email },
+        success: function(result) {
+            if (result == "ok") {
+                alert("사용 가능한 이메일입니다.");
+            } else {
+                alert("이미 사용 중인 이메일입니다.");
+                document.getElementById("email").value = "";
+                document.getElementById("email").focus();
+            }
+        },
+        error: function() {
+            alert("이메일 중복 검사 중 오류가 발생했습니다.");
+        }
+    });
+}
+</script>
 </head>
 <body>
 
@@ -79,46 +106,63 @@
         <table>
             <tr>
                 <th>이름</th>
-                <td><input type="text" name="userName" placeholder="이름 입력"></td>
+                <td><input type="text" name="empName" placeholder="이름 입력"></td>
                 <th>사원번호</th>
-                <td><input type="text" name="employeeNo" placeholder="사원번호 입력"></td>
+                <td><input type="text" name="empId" placeholder="사원번호 입력"></td>
             </tr>
             <tr>
                 <th>부서</th>
                 <td>
                     <select name="department">
                         <option value="">부서 선택 ▼</option>
+                        <option value="인사팀">인사팀</option>
+                        <option value="총무팀">총무팀</option>
+                        <option value="재무팀">재무팀</option>
+                        <option value="영업팀">영업팀</option>
+                        <option value="마케팅팀">마케팅팀</option>
+                        <option value="개발팀">개발팀</option>
+                        <option value="디자인팀">디자인팀</option>
+                        <option value="품질관리팀">품질관리팀</option>
                     </select>
                 </td>
                 <th>직급</th>
                 <td>
-                    <select name="position">
+                    <select name="job">
                         <option value="">직급 선택 ▼</option>
+                        <option value="사원">사원</option>
+                        <option value="대리">대리</option>
+                        <option value="과장">과장</option>
+                        <option value="차장">차장</option>
+                        <option value="부장">부장</option>
+                        <option value="이사">이사</option>
+                        <option value="상무">상무</option>
+                        <option value="전무">전무</option>
+                        <option value="부사장">부사장</option>
+                        <option value="사장">사장</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>이메일</th>
-                <td><input type="text" name="email" placeholder="이메일 입력"></td>
+                <td><input type="text" name="email" id="email" placeholder="이메일 입력" onblur="checkEmail()"></td>
                 <th>전화번호</th>
                 <td><input type="text" name="phone" placeholder="전화번호 입력"></td>
             </tr>
             <tr>
-                <th>생년월일</th>
-                <td><input type="date" name="birthDate"></td>
+                <th>주민등록번호</th>
+                <td><input type="text" name="empNo" placeholder="주민등록번호 입력"></td>
                 <th>입사일</th>
                 <td><input type="date" name="hireDate"></td>
             </tr>
             <tr>
                 <th>주소</th>
-                <td colspan="3" class="address-group">
-                    <input type="text" name="address1" placeholder="기본 주소 입력">
-                    <input type="text" name="address2" placeholder="상세 주소 입력">
+                <td colspan="3">
+                    <input type="text" name="address" placeholder="주소 입력" style="width: 100%;">
                 </td>
             </tr>
             <tr>
                 <th>비밀번호</th>
-                <td><input type="password" name="password" placeholder="비밀번호 입력"></td>
+                <td><input type="password" name="empPwd" placeholder="비밀번호 입력"></td>
                 <th>비밀번호 확인</th>
                 <td><input type="password" name="confirmPassword" placeholder="비밀번호 입력"></td>
             </tr>

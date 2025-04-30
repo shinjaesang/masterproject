@@ -39,5 +39,10 @@ public interface MemberService {
 	void sendTempPasswordEmail(String email, String tempPassword);
 	
 	//로그인 관련 메소드 ------------------
-	void updateLastLoginDate(String empId);
+	int updateLastLoginDate(String empId);
+	
+	// New methods for checking duplicate email, phone, and empNo
+	int selectCheckEmail(String email);
+	int selectCheckPhone(String phone);
+	int selectCheckEmpNo(String empNo);
 }
