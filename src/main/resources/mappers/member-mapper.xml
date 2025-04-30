@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">   
+   
+   <resultMap id="resultList" type="Member">
+      <result property="empId" column="EMPID" />
+      <result property="empName" column="EMPNAME" />
+      <result property="department" column="DEPARTMENT" />
+      <result property="job" column="JOB" />
+      <result property="email" column="EMAIL" />
+      <result property="phone" column="PHONE" />
+      <result property="empNo" column="EMPNO" />
+      <result property="hireDate" column="HIRE_DATE" />
+      <result property="address" column="ADDRESS" />
+      <result property="empPwd" column="EMPPWD" />
+      <result property="adminYN" column="ADMIN_YN" />
+      <result property="lastLoginDate" column="LAST_LOGIN_DATE" />
+      <result property="isActive" column="IS_ACTIVE" />
+   </resultMap>
+   
+   <!-- 로그인용 쿼리 -->
+   <select id="selectLogin" parameterType="Member" resultMap="resultList">
+      select * from TB_USER 
+      where EMPID = #{ empId } and EMPPWD = #{ empPwd }
+      and IS_ACTIVE = 'Y'
+   </select>
+   
+   <!-- 사원번호로 회원 정보 조회 쿼리 -->
+   <select id="selectMember" parameterType="string" resultMap="resultList">
+      select * from TB_USER 
+      where EMPID = #{ empId } and IS_ACTIVE = 'Y'
+   </select>
+   
+   <!-- 회원 가입시 사원번호 중복검사용 쿼리 -->
+   <select id="selectCheckId" parameterType="string" resultType="_int">
+      select count(EMPID)
+      from TB_USER
+      where EMPID = #{ empId }
+   </select>
+   
+   <!-- 회원 가입용 쿼리 -->
+   <insert id="insertMember" parameterType="Member">
+      insert into TB_USER (
+         EMPID, EMPNAME, DEPARTMENT, JOB, EMAIL, PHONE, EMPNO,
+         HIRE_DATE, ADDRESS, EMPPWD, ADMIN_YN, LAST_LOGIN_DATE, IS_ACTIVE
+      ) values (
+         #{empId}, #{empName}, #{department}, #{job}, #{email}, #{phone}, #{empNo},
+         #{hireDate}, #{address}, #{empPwd}, #{adminYN}, null, 'Y'
+      )
+   </insert>
+
+   <!-- 회원 정보 수정용 쿼리 -->
+   <update id="updateMember" parameterType="Member">
+      update TB_USER
+      set DEPARTMENT = #{department},
+         JOB = #{job},
+         EMAIL = #{email},
+         PHONE = #{phone},
+         ADDRESS = #{address},
+         EMPPWD = #{empPwd}
+      where EMPID = #{empId}
+   </update>
+   
+   <!-- 회원 정보 삭제용 쿼리 -->
+   <delete id="deleteMember" parameterType="string">
+      delete from TB_USER
+      where EMPID = #{empId}
+   </delete>
+   
+   <!-- 관리자용 ***********************************  -->
+   
+   <!-- 회원 전체 목록 카운트 조회용 : 관리자가 아닌 회원만 조회함 -->
+   <select id="selectListCount" resultType="_int">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+   </select>
+   
+   <!-- 한 페이지에 출력할 목록 조회용 : 관리자가 아닌 회원만 조회함 -->
+   <select id="selectList" parameterType="Paging" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <!-- 로그인 제한, 허용 처리용 쿼리 -->
+   <update id="updateLoginOk" parameterType="Member">
+      update TB_USER
+      set IS_ACTIVE = #{ isActive }
+      where EMPID = #{ empId }
+   </update>
+   
+   <!-- 검색 관련 쿼리 -->
+   <!-- 페이징 계산 처리를 위한 검색 결과 카운트 조회용 쿼리 -->
+   <select id="selectSearchUserIdCount" resultType="_int" parameterType="string">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+      and EMPID like '%' || #{ keyword } || '%'
+   </select>
+   
+   <select id="selectSearchGenderCount" resultType="_int" parameterType="string">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+      and DEPARTMENT = #{ keyword }
+   </select>
+   
+   <select id="selectSearchAgeCount" resultType="_int" parameterType="_int">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+      <if test="empNo != 60">
+         and EMPNO between #{ empNo } and #{ empNo } + 9
+      </if>
+      <if test="empNo == 60">
+         <![CDATA[
+            and EMPNO >= #{ empNo }
+         ]]>
+      </if>
+   </select>
+   
+   <select id="selectSearchEnrollDateCount" resultType="_int" parameterType="Search">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+      and HIRE_DATE between #{ begin } and #{ end }
+   </select>
+   
+   <select id="selectSearchLoginOKCount" resultType="_int" parameterType="string">
+      select count(*) from TB_USER
+      where ADMIN_YN = 'N'
+      and IS_ACTIVE = #{ keyword }
+   </select>
+   
+   <!-- 원하는 페이지의 검색 결과 조회용 쿼리 -->
+   <select id="selectSearchUserId" parameterType="Search" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              and EMPID like '%' || #{ keyword } || '%'
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <select id="selectSearchGender" parameterType="Search" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              and DEPARTMENT = #{ keyword }
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <!--  
+       쿼리문에 비교연산자(>, <, <=, >=)를 그냥 사용하면
+       태그 앨리먼트 꺽쇠괄호와 혼돈하는 문제가 발생할 수 있음
+       이 문제를 방지하기 위해서 xml 코드 중 xml parser 에 의해 해석하지 말고,
+       문장 그대로 해석하라는 뜻으로
+       <![CDATA[ 쿼리문장 ]]>
+   -->   
+   <select id="selectSearchAge" parameterType="Search" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              <if test="empNo != 60">
+               and EMPNO between #{ empNo } and #{ empNo } + 9
+            </if>
+            <if test="empNo == 60">
+               <![CDATA[
+                  and EMPNO >= #{ empNo }
+               ]]>
+            </if>
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <select id="selectSearchEnrollDate" parameterType="Search" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              and HIRE_DATE between #{ begin } and #{ end }
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <select id="selectSearchLoginOK" parameterType="Search" resultMap="resultList">
+      select *
+      from (select rownum rnum, EMPID, EMPPWD, EMPNAME, 
+                  DEPARTMENT, EMPNO, EMAIL, HIRE_DATE, LAST_LOGIN_DATE, 
+                  IS_ACTIVE
+          from (select * from TB_USER
+              where ADMIN_YN = 'N'
+              and IS_ACTIVE = #{ keyword }
+              order by HIRE_DATE desc))
+      where rnum between #{ startRow } and #{ endRow } 
+   </select>
+   
+   <!-- 비밀번호 찾기 관련 쿼리 -->
+   <select id="findMemberByEmployeeNoAndEmail" parameterType="Member" resultMap="resultList">
+      select * from TB_USER 
+      where EMPID = #{ empId }
+      and EMAIL = #{ email }
+      and IS_ACTIVE = 'Y'
+   </select>
+   
+   <update id="updateMemberPassword" parameterType="Member">
+      update TB_USER
+      set EMPPWD = #{ empPwd }
+      where EMPID = #{ empId }
+   </update>
+   
+   <!-- 로그인 시 마지막 로그인 날짜 업데이트 -->
+   <update id="updateLastLoginDate" parameterType="string">
+      update TB_USER
+      set LAST_LOGIN_DATE = SYSDATE
+      where EMPID = #{empId}
+   </update>
+   
+</mapper>
+
+
+

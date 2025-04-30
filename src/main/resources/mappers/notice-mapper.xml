@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticeMapper">
+
+	<resultMap type="Notice" id="resultTop3">
+		<result property="noticeNo" column="NOTICENO" />
+		<result property="noticeTitle" column="NOTICETITLE" />
+		<result property="noticeDate" column="NOTICEDATE" />
+	</resultMap>	
+	
+	<resultMap type="Notice" id="resultNotice">
+		<result column="NOTICENO" property="noticeNo" />
+		<result column="NOTICETITLE" property="noticeTitle" />
+		<result column="NOTICEDATE" property="noticeDate" />
+		<result column="NOTICEWRITER" property="noticeWriter" />
+		<result column="NOTICECONTENT" property="noticeContent" />
+		<result column="ORIGINAL_FILEPATH" property="originalFilePath" />
+		<result column="RENAME_FILEPATH" property="renameFilePath" />
+		<result column="IMPORTANCE" property="importance" />
+		<result column="IMP_END_DATE" property="impEndDate" />
+		<result column="READCOUNT" property="readCount" />
+	</resultMap>
+
+	<select id="selectTop3" resultMap="resultTop3">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE 
+			  FROM (SELECT * FROM NOTICE 
+				     WHERE IMPORTANCE = 'N' 
+				     ORDER BY NOTICEDATE DESC)) 
+		WHERE RNUM BETWEEN 1 AND 3
+	</select>
+	
+	<!--  공지글 총 갯수 조회용 쿼리 -->
+	<select id="selectListCount" resultType="_int">
+		select count(*) from notice
+	</select>
+	
+	<!-- 페이징 적용된 공지글 목록 조회용 쿼리 -->
+	<select id="selectList" parameterType="Paging" resultMap="resultNotice">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
+		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
+		      FROM (SELECT * FROM NOTICE              
+		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
+		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
+	</select>
+	
+	<!-- 전달온 공지번호로 공지글 1개 조회용 쿼리 -->
+	<select id="selectNotice" parameterType="_int" resultMap="resultNotice">
+		select * from notice
+		where NOTICENO = #{ no }
+	</select>
+	
+	<!-- dml ********************************************************** -->
+	<!-- 조회수 1증가 처리용 쿼리 -->
+	<update id="updateAddReadCount" parameterType="_int">
+		update notice
+		set readcount = readcount + 1
+		where NOTICENO = #{ no }
+	</update>
+	
+	<!-- 새 공지글 등록용 쿼리 -->
+	<insert id="insertNotice" parameterType="Notice">
+		insert into notice
+		<if test="importance != null">
+		values ((select max(noticeno) + 1 from notice), #{ noticeTitle }, sysdate, #{ noticeWriter }, 
+		        #{ noticeContent }, #{ originalFilePath }, #{ renameFilePath }, #{ importance },
+		        #{ impEndDate }, default)
+		</if>
+		<if test="importance == null">
+		values ((select max(noticeno) + 1 from notice), #{ noticeTitle }, sysdate, #{ noticeWriter }, 
+		        #{ noticeContent }, #{ originalFilePath }, #{ renameFilePath }, default,
+		        sysdate, default)
+		</if>
+	</insert>
+	
+	<!-- 공지글 삭제용 쿼리 -->
+	<delete id="deleteNotice" parameterType="_int">
+		delete from notice
+		where noticeno = #{ no }
+	</delete>
+	
+	<!-- 공지글 수정용 쿼리 -->
+	<update id="updateNotice" parameterType="Notice">
+		update notice
+		<if test="originalFilePath == null">
+			set noticetitle = #{ noticeTitle }, noticeWriter = #{ noticeWriter },
+				noticecontent = #{ noticeContent }, noticedate = sysdate,
+				original_filepath = null, rename_filepath = null,
+				importance = #{ importance }, imp_end_date = #{ impEndDate }
+		</if>
+		<if test="originalFilePath != null">
+			set noticetitle = #{ noticeTitle }, noticeWriter = #{ noticeWriter },
+				noticecontent = #{ noticeContent }, noticedate = sysdate,
+				original_filepath = #{ originalFilePath }, rename_filepath = #{ renameFilePath },
+				importance = #{ importance }, imp_end_date = #{ impEndDate }
+		</if>
+		where noticeno = #{ noticeNo }
+	</update>
+	
+	
+	<!-- 공지글 검색용 쿼리 **********************************************  -->
+	<!-- 페이징 적용된 공지글 제목 검색 목록 조회용 쿼리 -->
+	<select id="selectSearchTitle" parameterType="Search" resultMap="resultNotice">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
+		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
+		      FROM (SELECT * FROM NOTICE 
+		      		where NOTICETITLE like '%' || #{ keyword } || '%'             
+		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
+		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
+	</select>
+	
+	<!-- 페이징 적용된 공지글 내용 검색 목록 조회용 쿼리 -->
+	<select id="selectSearchContent" parameterType="Search" resultMap="resultNotice">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
+		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
+		      FROM (SELECT * FROM NOTICE  
+		      		where noticecontent like '%' || #{ keyword } || '%'            
+		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
+		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
+	</select>
+	
+	<!-- 페이징 적용된 공지글 등록날짜로 검색 목록 조회용 쿼리 -->
+	<select id="selectSearchDate" parameterType="Search" resultMap="resultNotice">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
+		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
+		      FROM (SELECT * FROM NOTICE  
+		      		where NOTICEDATE between #{ begin } and #{ end }            
+		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
+		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
+	</select>
+	
+	<!-- 공지글 검색관련 목록 총 갯수 조회용 쿼리 ***************************** -->
+	<!--  공지글 제목 검색 총 갯수 조회용 쿼리 -->
+	<select id="selectSearchTitleCount" resultType="_int" parameterType="string">
+		select count(*) from notice
+		where NOTICETITLE like '%' || #{ keyword } || '%'
+	</select>
+	
+	<!--  공지글 내용 검색 총 갯수 조회용 쿼리 -->
+	<select id="selectSearchContentCount" resultType="_int" parameterType="string">
+		select count(*) from notice
+		where noticecontent like '%' || #{ keyword } || '%'
+	</select>
+	
+	<!--  공지글 등록날짜 검색 총 갯수 조회용 쿼리 -->
+	<select id="selectSearchDateCount" resultType="_int" parameterType="Search">
+		select count(*) from notice
+		where NOTICEDATE between #{ begin } and #{ end }
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
