@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="warehouseMapper">
+
+    <!-- 창고 전체 목록 조회 -->
+    <select id="selectAllWarehouses" resultType="org.myweb.first.warehouse.model.dto.Warehouse">
+        SELECT warehouse_id AS warehouseId,
+               warehouse_type AS warehouseType,
+               warehouse_name AS warehouseName,
+               warehouse_address AS warehouseAddress,
+               warehouse_area AS warehouseArea,
+               empid,
+               manager_name AS managerName,
+               contact_info AS contactInfo,
+               email
+        FROM TB_WAREHOUSE
+        ORDER BY warehouse_id
+    </select>
+
+    <!-- 창고 상세 조회 -->
+    <select id="selectWarehouseById" parameterType="string" resultType="org.myweb.first.warehouse.model.dto.Warehouse">
+        SELECT warehouse_id AS warehouseId,
+               warehouse_type AS warehouseType,
+               warehouse_name AS warehouseName,
+               warehouse_address AS warehouseAddress,
+               warehouse_area AS warehouseArea,
+               empid,
+               manager_name AS managerName,
+               contact_info AS contactInfo,
+               email
+        FROM TB_WAREHOUSE
+        WHERE warehouse_id = #{warehouseId}
+    </select>
+
+    <!-- 창고 등록 -->
+    <insert id="insertWarehouse" parameterType="org.myweb.first.warehouse.model.dto.Warehouse">
+        INSERT INTO TB_WAREHOUSE (
+            warehouse_id, warehouse_type, warehouse_name, warehouse_address, warehouse_area, empid, manager_name, contact_info, email
+        ) VALUES (
+            #{warehouseId}, #{warehouseType}, #{warehouseName}, #{warehouseAddress}, #{warehouseArea}, #{empid}, #{managerName}, #{contactInfo}, #{email}
+        )
+    </insert>
+
+    <!-- 창고 수정 -->
+    <update id="updateWarehouse" parameterType="org.myweb.first.warehouse.model.dto.Warehouse">
+        UPDATE TB_WAREHOUSE
+        <set>
+            <if test="warehouseType != null">warehouse_type = #{warehouseType},</if>
+            <if test="warehouseName != null">warehouse_name = #{warehouseName},</if>
+            <if test="warehouseAddress != null">warehouse_address = #{warehouseAddress},</if>
+            <if test="warehouseArea != null">warehouse_area = #{warehouseArea},</if>
+            <if test="empid != null">empid = #{empid},</if>
+            <if test="managerName != null">manager_name = #{managerName},</if>
+            <if test="contactInfo != null">contact_info = #{contactInfo},</if>
+            <if test="email != null">email = #{email},</if>
+        </set>
+        WHERE warehouse_id = #{warehouseId}
+    </update>
+
+    <!-- 창고 삭제 -->
+    <delete id="deleteWarehouse" parameterType="string">
+        DELETE FROM TB_WAREHOUSE
+        WHERE warehouse_id = #{warehouseId}
+    </delete>
+
+    <!-- 검색 조건에 따른 창고 목록 조회 -->
+    <select id="searchWarehouses" parameterType="org.myweb.first.warehouse.model.dto.WarehouseSearchCondition" resultType="org.myweb.first.warehouse.model.dto.Warehouse">
+        SELECT warehouse_id AS warehouseId,
+               warehouse_type AS warehouseType,
+               warehouse_name AS warehouseName,
+               warehouse_address AS warehouseAddress,
+               warehouse_area AS warehouseArea,
+               empid,
+               manager_name AS managerName,
+               contact_info AS contactInfo,
+               email
+        FROM TB_WAREHOUSE
+        <where>
+            <if test="warehouseName != null and warehouseName != ''">
+                AND warehouse_name LIKE '%' || #{warehouseName} || '%'
+            </if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">
+                AND warehouse_address LIKE '%' || #{warehouseAddress} || '%'
+            </if>
+            <if test="managerName != null and managerName != ''">
+                AND manager_name LIKE '%' || #{managerName} || '%'
+            </if>
+            <if test="contactInfo != null and contactInfo != ''">
+                AND contact_info LIKE '%' || #{contactInfo} || '%'
+            </if>
+            <if test="warehouseType != null and warehouseType != ''">
+                AND warehouse_type = #{warehouseType}
+            </if>
+        </where>
+        ORDER BY warehouse_id
+    </select>
+
+</mapper> 
