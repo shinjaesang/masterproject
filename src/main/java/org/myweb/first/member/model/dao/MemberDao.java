@@ -7,6 +7,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.myweb.first.common.Paging;
 import org.myweb.first.common.Search;
 import org.myweb.first.member.model.dto.Member;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,89 +20,99 @@ public class MemberDao {
 	@Autowired  // root-context.xml 에서 생성한 객체를 자동 연결하는 어노테이션임
 	private SqlSessionTemplate sqlSessionTemplate;
 	
+	private static final Logger logger = LoggerFactory.getLogger(MemberDao.class);
+	
 	public Member selectLogin(Member member) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectLogin", member);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectLogin", member);
 	}
 	
 	public int selectCheckId(String userId) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectCheckId", userId);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectCheckId", userId);
 	}
 	
 	public Member selectMember(String userId) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectMember", userId);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectMember", userId);
 	}
 	
 	//dml -----------------------------------------
 	public int insertMember(Member member) {
-		return sqlSessionTemplate.insert("memberMapper.insertMember", member);
+		logger.info("MemberDao.insertMember 시작 - member: {}", member);
+		try {
+			int result = sqlSessionTemplate.insert("org.myweb.first.member.model.dao.MemberDao.insertMember", member);
+			logger.info("MemberDao.insertMember 결과 - result: {}", result);
+			return result;
+		} catch (Exception e) {
+			logger.error("MemberDao.insertMember 오류 발생: {}", e.getMessage(), e);
+			throw e;
+		}
 	}
 	
 	public int updateMember(Member member) {
-		return sqlSessionTemplate.update("memberMapper.updateMember", member);
+		return sqlSessionTemplate.update("org.myweb.first.member.model.dao.MemberDao.updateMember", member);
 	}
 	
 	public int deleteMember(String userId) {
-		return sqlSessionTemplate.delete("memberMapper.deleteMember", userId);
+		return sqlSessionTemplate.delete("org.myweb.first.member.model.dao.MemberDao.deleteMember", userId);
 	}
 	
 	// 관리자용 **************************************
 	
 	public int selectListCount() {
-		return sqlSessionTemplate.selectOne("memberMapper.selectListCount");
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectListCount");
 	}
 	
 	public ArrayList<Member> selectList(Paging paging){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectList", paging);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectList", paging);
 		return (ArrayList<Member>)list;
 	}
 	
 	public int updateLoginOk(Member member) {
-		return sqlSessionTemplate.update("memberMapper.updateLoginOk", member);
+		return sqlSessionTemplate.update("org.myweb.first.member.model.dao.MemberDao.updateLoginOk", member);
 	}
 	
 	//관리자용 회원 검색용 ************************************************
 	public int selectSearchUserIdCount(String keyword) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectSearchUserIdCount", keyword);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectSearchUserIdCount", keyword);
 	}
 	
 	public int selectSearchGenderCount(String keyword) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectSearchGenderCount", keyword);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectSearchGenderCount", keyword);
 	}
 	
 	public int selectSearchAgeCount(int age) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectSearchAgeCount", age);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectSearchAgeCount", age);
 	}
 	
 	public int selectSearchEnrollDateCount(Search search) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectSearchEnrollDateCount", search);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectSearchEnrollDateCount", search);
 	}
 	
 	public int selectSearchLoginOKCount(String keyword) {
-		return sqlSessionTemplate.selectOne("memberMapper.selectSearchLoginOKCount", keyword);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectSearchLoginOKCount", keyword);
 	}
 	
 	public ArrayList<Member> selectSearchUserId(Search search){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectSearchUserId", search);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectSearchUserId", search);
 		return (ArrayList<Member>)list;
 	}
 	
 	public ArrayList<Member> selectSearchGender(Search search){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectSearchGender", search);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectSearchGender", search);
 		return (ArrayList<Member>)list;
 	}
 	
 	public ArrayList<Member> selectSearchAge(Search search){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectSearchAge", search);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectSearchAge", search);
 		return (ArrayList<Member>)list;
 	}
 	
 	public ArrayList<Member> selectSearchEnrollDate(Search search){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectSearchEnrollDate", search);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectSearchEnrollDate", search);
 		return (ArrayList<Member>)list;
 	}
 	
 	public ArrayList<Member> selectSearchLoginOK(Search search){
-		List<Member> list = sqlSessionTemplate.selectList("memberMapper.selectSearchLoginOK", search);
+		List<Member> list = sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectSearchLoginOK", search);
 		return (ArrayList<Member>)list;
 	}
 	
@@ -109,16 +121,28 @@ public class MemberDao {
 		Member member = new Member();
 		member.setEmpId(empId);
 		member.setEmail(email);
-		return sqlSessionTemplate.selectOne("memberMapper.findMemberByEmployeeNoAndEmail", member);
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.findMemberByEmployeeNoAndEmail", member);
 	}
 	
 	public int updateMemberPassword(Member member) {
-		return sqlSessionTemplate.update("memberMapper.updateMemberPassword", member);
+		return sqlSessionTemplate.update("org.myweb.first.member.model.dao.MemberDao.updateMemberPassword", member);
 	}
 	
 	// 로그인 관련 메소드 ------------------
-	public void updateLastLoginDate(String empId) {
-		sqlSessionTemplate.update("memberMapper.updateLastLoginDate", empId);
+	public int updateLastLoginDate(String empId) {
+		return sqlSessionTemplate.update("org.myweb.first.member.model.dao.MemberDao.updateLastLoginDate", empId);
+	}
+	
+	public int selectCheckEmail(String email) {
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectCheckEmail", email);
+	}
+	
+	public int selectCheckPhone(String phone) {
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectCheckPhone", phone);
+	}
+	
+	public int selectCheckEmpNo(String empNo) {
+		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectCheckEmpNo", empNo);
 	}
 }
 
