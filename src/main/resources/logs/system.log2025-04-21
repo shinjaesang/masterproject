@@ -1,0 +1,1094 @@
+[16:03:37][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:03:38][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 709 ms
+[16:03:38][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:03:39][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1012 ms
+[16:07:55][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:07:56][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 708 ms
+[16:07:56][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:07:57][INFO ][FrameworkServlet.java: 554] - Completed initialization in 995 ms
+[16:11:44][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:11:45][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 696 ms
+[16:11:45][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:11:46][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1024 ms
+[16:17:23][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:17:23][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 699 ms
+[16:17:23][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:17:24][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1011 ms
+[16:21:27][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:21:28][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 675 ms
+[16:21:28][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:21:29][INFO ][FrameworkServlet.java: 554] - Completed initialization in 981 ms
+[16:28:23][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:28:23][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 673 ms
+[16:28:23][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:28:24][INFO ][FrameworkServlet.java: 554] - Completed initialization in 976 ms
+[16:29:25][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:29:26][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 692 ms
+[16:29:26][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:29:27][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1065 ms
+[16:41:43][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:41:44][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 632 ms
+[16:41:44][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:41:44][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:41:44][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:761)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 53 more
+Caused by: java.lang.NoClassDefFoundError: javax/servlet/http/HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 55 more
+Caused by: java.lang.ClassNotFoundException: javax.servlet.http.HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 59 more
+[16:43:01][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:43:01][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 580 ms
+[16:43:01][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:43:01][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:43:01][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 42 more
+Caused by: java.lang.NoClassDefFoundError: HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 44 more
+Caused by: java.lang.ClassNotFoundException: HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 48 more
+[16:43:05][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:43:06][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 639 ms
+[16:43:06][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:43:06][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:43:06][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:761)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 53 more
+Caused by: java.lang.NoClassDefFoundError: HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 55 more
+Caused by: java.lang.ClassNotFoundException: HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 59 more
+[16:44:00][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:44:00][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 484 ms
+[16:44:00][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:44:00][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+[16:44:00][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:608)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:421)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.lambda$resolveValueIfNecessary$0(BeanDefinitionValueResolver.java:149)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBean(BeanDefinitionValueResolver.java:262)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:148)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:206)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeansOfType(DefaultListableBeanFactory.java:721)
+	at org.springframework.context.support.AbstractApplicationContext.getBeansOfType(AbstractApplicationContext.java:1426)
+	at org.springframework.beans.factory.BeanFactoryUtils.beansOfTypeIncludingAncestors(BeanFactoryUtils.java:372)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.detectMappedInterceptors(AbstractHandlerMapping.java:444)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.initApplicationContext(AbstractHandlerMapping.java:418)
+	at org.springframework.web.servlet.handler.SimpleUrlHandlerMapping.initApplicationContext(SimpleUrlHandlerMapping.java:137)
+	at org.springframework.context.support.ApplicationObjectSupport.initApplicationContext(ApplicationObjectSupport.java:124)
+	at org.springframework.web.context.support.WebApplicationObjectSupport.initApplicationContext(WebApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationObjectSupport.setApplicationContext(ApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.invokeAwareInterfaces(ApplicationContextAwareProcessor.java:110)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.postProcessBeforeInitialization(ApplicationContextAwareProcessor.java:85)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:423)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1804)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601)
+	... 38 more
+Caused by: org.springframework.beans.factory.CannotLoadBeanClassException: Cannot find class [com.stockmaster.interceptor.LoginInterceptor] for bean with name 'com.stockmaster.interceptor.LoginInterceptor#0' defined in class path resource [spring/appServlet/servlet-context.xml]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:497)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:407)
+	... 65 more
+Caused by: java.lang.ClassNotFoundException: com.stockmaster.interceptor.LoginInterceptor
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:534)
+	at java.base/java.lang.Class.forName(Class.java:513)
+	at org.springframework.util.ClassUtils.forName(ClassUtils.java:321)
+	at org.springframework.beans.factory.support.AbstractBeanDefinition.resolveBeanClass(AbstractBeanDefinition.java:503)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doResolveBeanClass(AbstractBeanFactory.java:1641)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1566)
+	... 67 more
+[16:44:43][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:44:44][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 470 ms
+[16:44:44][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:44:44][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:44:44][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 42 more
+Caused by: java.lang.NoClassDefFoundError: HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 44 more
+Caused by: java.lang.ClassNotFoundException: HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 48 more
+[16:44:55][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:44:56][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 433 ms
+[16:44:56][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:44:56][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:44:56][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 42 more
+Caused by: java.lang.NoClassDefFoundError: javax/servlet/http/HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 44 more
+Caused by: java.lang.ClassNotFoundException: javax.servlet.http.HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 48 more
+[16:45:28][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:45:28][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 425 ms
+[16:45:28][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:45:28][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:45:28][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 42 more
+Caused by: java.lang.NoClassDefFoundError: javax/servlet/http/HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 44 more
+Caused by: java.lang.ClassNotFoundException: javax.servlet.http.HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 48 more
+[16:45:33][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:45:34][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 632 ms
+[16:45:34][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:45:34][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+[16:45:34][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'loginController': Lookup method resolution failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:498)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1320)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1215)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:761)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.stockmaster.controller.LoginController] from ClassLoader [ParallelWebappClassLoader
+  context: stockmaster
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@5910e440
+]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:320)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.checkLookupMethods(AutowiredAnnotationBeanPostProcessor.java:476)
+	... 53 more
+Caused by: java.lang.NoClassDefFoundError: javax/servlet/http/HttpServletRequest
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 55 more
+Caused by: java.lang.ClassNotFoundException: javax.servlet.http.HttpServletRequest
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	... 59 more
+[16:46:17][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:46:18][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 480 ms
+[16:46:18][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:46:18][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+[16:46:18][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:608)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardContext.reload(StandardContext.java:3261)
+	at org.apache.catalina.loader.WebappLoader.backgroundProcess(WebappLoader.java:234)
+	at org.apache.catalina.core.StandardContext.backgroundProcess(StandardContext.java:4832)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:421)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.lambda$resolveValueIfNecessary$0(BeanDefinitionValueResolver.java:149)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBean(BeanDefinitionValueResolver.java:262)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:148)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:206)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeansOfType(DefaultListableBeanFactory.java:721)
+	at org.springframework.context.support.AbstractApplicationContext.getBeansOfType(AbstractApplicationContext.java:1426)
+	at org.springframework.beans.factory.BeanFactoryUtils.beansOfTypeIncludingAncestors(BeanFactoryUtils.java:372)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.detectMappedInterceptors(AbstractHandlerMapping.java:444)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.initApplicationContext(AbstractHandlerMapping.java:418)
+	at org.springframework.web.servlet.handler.SimpleUrlHandlerMapping.initApplicationContext(SimpleUrlHandlerMapping.java:137)
+	at org.springframework.context.support.ApplicationObjectSupport.initApplicationContext(ApplicationObjectSupport.java:124)
+	at org.springframework.web.context.support.WebApplicationObjectSupport.initApplicationContext(WebApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationObjectSupport.setApplicationContext(ApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.invokeAwareInterfaces(ApplicationContextAwareProcessor.java:110)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.postProcessBeforeInitialization(ApplicationContextAwareProcessor.java:85)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:423)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1804)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601)
+	... 38 more
+Caused by: org.springframework.beans.factory.CannotLoadBeanClassException: Cannot find class [com.stockmaster.interceptor.LoginInterceptor] for bean with name 'com.stockmaster.interceptor.LoginInterceptor#0' defined in class path resource [spring/appServlet/servlet-context.xml]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:497)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:407)
+	... 65 more
+Caused by: java.lang.ClassNotFoundException: com.stockmaster.interceptor.LoginInterceptor
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:534)
+	at java.base/java.lang.Class.forName(Class.java:513)
+	at org.springframework.util.ClassUtils.forName(ClassUtils.java:321)
+	at org.springframework.beans.factory.support.AbstractBeanDefinition.resolveBeanClass(AbstractBeanDefinition.java:503)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doResolveBeanClass(AbstractBeanFactory.java:1641)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1566)
+	... 67 more
+[16:46:29][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:46:29][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 636 ms
+[16:46:29][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:46:29][WARN ][AbstractApplicationContext.java: 635] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+[16:46:29][ERROR][FrameworkServlet.java: 541] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0': Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:608)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:706)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:672)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:720)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:595)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:537)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:169)
+	at jakarta.servlet.GenericServlet.init(GenericServlet.java:143)
+	at jakarta.servlet.http.HttpServlet.init(HttpServlet.java:121)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:837)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:794)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:698)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4224)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4511)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:761)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.handler.MappedInterceptor#1': Cannot create inner bean 'com.stockmaster.interceptor.LoginInterceptor#0' of type [com.stockmaster.interceptor.LoginInterceptor] while setting constructor argument
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:421)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.lambda$resolveValueIfNecessary$0(BeanDefinitionValueResolver.java:149)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBean(BeanDefinitionValueResolver.java:262)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:148)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:206)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeansOfType(DefaultListableBeanFactory.java:721)
+	at org.springframework.context.support.AbstractApplicationContext.getBeansOfType(AbstractApplicationContext.java:1426)
+	at org.springframework.beans.factory.BeanFactoryUtils.beansOfTypeIncludingAncestors(BeanFactoryUtils.java:372)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.detectMappedInterceptors(AbstractHandlerMapping.java:444)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.initApplicationContext(AbstractHandlerMapping.java:418)
+	at org.springframework.web.servlet.handler.SimpleUrlHandlerMapping.initApplicationContext(SimpleUrlHandlerMapping.java:137)
+	at org.springframework.context.support.ApplicationObjectSupport.initApplicationContext(ApplicationObjectSupport.java:124)
+	at org.springframework.web.context.support.WebApplicationObjectSupport.initApplicationContext(WebApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationObjectSupport.setApplicationContext(ApplicationObjectSupport.java:78)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.invokeAwareInterfaces(ApplicationContextAwareProcessor.java:110)
+	at org.springframework.context.support.ApplicationContextAwareProcessor.postProcessBeforeInitialization(ApplicationContextAwareProcessor.java:85)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:423)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1804)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601)
+	... 49 more
+Caused by: org.springframework.beans.factory.CannotLoadBeanClassException: Cannot find class [com.stockmaster.interceptor.LoginInterceptor] for bean with name 'com.stockmaster.interceptor.LoginInterceptor#0' defined in class path resource [spring/appServlet/servlet-context.xml]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:497)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBeanValue(BeanDefinitionValueResolver.java:407)
+	... 76 more
+Caused by: java.lang.ClassNotFoundException: com.stockmaster.interceptor.LoginInterceptor
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1378)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1187)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:534)
+	at java.base/java.lang.Class.forName(Class.java:513)
+	at org.springframework.util.ClassUtils.forName(ClassUtils.java:321)
+	at org.springframework.beans.factory.support.AbstractBeanDefinition.resolveBeanClass(AbstractBeanDefinition.java:503)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doResolveBeanClass(AbstractBeanFactory.java:1641)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveBeanClass(AbstractBeanFactory.java:1566)
+	... 78 more
+[16:47:44][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:47:45][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 472 ms
+[16:47:45][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:47:45][INFO ][FrameworkServlet.java: 554] - Completed initialization in 276 ms
+[16:47:51][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:47:52][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 617 ms
+[16:47:52][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:47:52][INFO ][FrameworkServlet.java: 554] - Completed initialization in 311 ms
+[16:47:56][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:47:56][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:13][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:13][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:46][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:48:47][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 463 ms
+[16:48:47][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:48:47][INFO ][FrameworkServlet.java: 554] - Completed initialization in 261 ms
+[16:48:50][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:50][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:50][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:50][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:48:51][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:48:51][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:09][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:49:09][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 439 ms
+[16:49:09][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:49:09][INFO ][FrameworkServlet.java: 554] - Completed initialization in 263 ms
+[16:49:14][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:49:15][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 619 ms
+[16:49:15][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:49:15][INFO ][FrameworkServlet.java: 554] - Completed initialization in 307 ms
+[16:49:16][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:16][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:18][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:18][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:49:18][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:49:18][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:19][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:50:20][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 450 ms
+[16:50:20][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:50:20][INFO ][FrameworkServlet.java: 554] - Completed initialization in 261 ms
+[16:50:24][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:50:25][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 611 ms
+[16:50:25][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:50:25][INFO ][FrameworkServlet.java: 554] - Completed initialization in 307 ms
+[16:50:30][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:30][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:31][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:31][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:31][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:31][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:31][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:31][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:31][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:31][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:31][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:31][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:32][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:32][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:32][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:32][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:32][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:32][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:32][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:32][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:32][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:32][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:33][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:33][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:34][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:34][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:34][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:34][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:50:34][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:50:34][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:30][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:51:30][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 470 ms
+[16:51:31][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:51:31][INFO ][FrameworkServlet.java: 554] - Completed initialization in 266 ms
+[16:51:45][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:51:46][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 625 ms
+[16:51:46][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:51:46][INFO ][FrameworkServlet.java: 554] - Completed initialization in 308 ms
+[16:51:50][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:50][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:51][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:51][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:51][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:51][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:52][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:52][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:52][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:52][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:52][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:52][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:51:52][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:51:52][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:12][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[16:53:13][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 633 ms
+[16:53:13][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[16:53:13][INFO ][FrameworkServlet.java: 554] - Completed initialization in 306 ms
+[16:53:17][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:17][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:18][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:18][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:19][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:19][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:19][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:19][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:20][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:20][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:20][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:20][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:20][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:20][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:20][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:20][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:20][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:20][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:21][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:21][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:21][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:21][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:21][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:21][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:21][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:21][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:21][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:21][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:22][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:22][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:22][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:22][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:22][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:22][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:22][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:22][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:22][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:22][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:23][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:23][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:23][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:23][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:23][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:23][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:23][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:23][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:24][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:24][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:24][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:24][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:24][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:24][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:24][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:24][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:25][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:25][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:26][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:26][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:26][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:26][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:26][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:26][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:26][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:26][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:27][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:27][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:27][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:27][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:27][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:27][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[16:53:27][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[16:53:27][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:22:10][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:22:10][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 491 ms
+[17:22:10][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:22:11][INFO ][FrameworkServlet.java: 554] - Completed initialization in 266 ms
+[17:23:06][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:23:06][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 643 ms
+[17:23:06][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:23:07][INFO ][FrameworkServlet.java: 554] - Completed initialization in 318 ms
+[17:23:09][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:09][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:10][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:10][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:10][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:10][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:10][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:10][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:10][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:10][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:11][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:11][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:11][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:11][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:11][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:11][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:11][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:11][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:12][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:12][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:13][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:13][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:13][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:13][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:23:13][WARN ][DispatcherServlet.java: 1301] - No mapping for GET /stockmaster/
+[17:23:13][WARN ][DefaultHandlerExceptionResolver.java: 459] - No endpoint GET /stockmaster/.
+[17:28:49][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:28:50][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 769 ms
+[17:28:50][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:28:51][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1025 ms
+[17:31:54][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:31:54][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 617 ms
+[17:31:54][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:31:55][INFO ][FrameworkServlet.java: 554] - Completed initialization in 839 ms
+[17:32:54][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:32:54][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 685 ms
+[17:32:54][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:32:55][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1024 ms
+[17:48:46][INFO ][ContextLoader.java: 255] - Root WebApplicationContext: initialization started
+[17:48:47][INFO ][ContextLoader.java: 288] - Root WebApplicationContext initialized in 709 ms
+[17:48:47][INFO ][FrameworkServlet.java: 532] - Initializing Servlet 'appServlet'
+[17:48:48][INFO ][FrameworkServlet.java: 554] - Completed initialization in 1043 ms
