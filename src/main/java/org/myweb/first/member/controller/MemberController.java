@@ -308,4 +308,71 @@ public class MemberController {
 	public List<Member> searchMembers(@RequestParam Map<String, String> param) {
 		return memberService.searchMembers(param);
 	}
+
+	// 내 정보(이메일, 전화번호, 주소) 수정
+	@RequestMapping(value = "updateMyInfo.do", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateMyInfo(HttpSession session, @RequestParam("email") String email,
+							   @RequestParam("phone") String phone, @RequestParam("address") String address) {
+		try {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			if (loginUser == null) {
+				return "fail:로그인이 필요합니다.";
+			}
+			Member member = memberService.selectMember(loginUser.getEmpId());
+			member.setEmail(email);
+			member.setPhone(phone);
+			member.setAddress(address);
+			int result = memberService.updateMember(member);
+			if (result > 0) {
+				// 세션 정보도 갱신
+				loginUser.setEmail(email);
+				loginUser.setPhone(phone);
+				loginUser.setAddress(address);
+				session.setAttribute("loginUser", loginUser);
+				return "success";
+			} else {
+				return "fail:개인정보 저장에 실패했습니다.";
+			}
+		} catch (Exception e) {
+			return "fail:" + e.getMessage();
+		}
+	}
+
+	// 비밀번호 변경
+	@RequestMapping(value = "changePassword.do", method = RequestMethod.POST, produces = "text/plain; charset=UTF-8")
+	@ResponseBody
+	public String changePassword(HttpSession session, @RequestParam("currentPwd") String currentPwd,
+								 @RequestParam("newPwd") String newPwd) {
+		try {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			if (loginUser == null) {
+				return "fail:로그인이 필요합니다.";
+			}
+			Member member = memberService.selectMember(loginUser.getEmpId());
+			// 현재 비밀번호 확인 (BCrypt)
+			if (!bcryptPasswordEncoder.matches(currentPwd, member.getEmpPwd())) {
+				return "fail:현재 비밀번호가 일치하지 않습니다.";
+			}
+			// 새 비밀번호 암호화 및 저장
+			String encryptedPwd = bcryptPasswordEncoder.encode(newPwd);
+			member.setEmpPwd(encryptedPwd);
+			int result = memberService.updateMemberPassword(member);
+			if (result > 0) {
+				// 세션 정보도 갱신
+				loginUser.setEmpPwd(encryptedPwd);
+				session.setAttribute("loginUser", loginUser);
+				return "success";
+			} else {
+				return "fail:비밀번호 변경에 실패했습니다.";
+			}
+		} catch (Exception e) {
+			return "fail:" + e.getMessage();
+		}
+	}
+
+	@RequestMapping("passwordChange.do")
+	public String movePasswordChangePage() {
+		return "member/passwordChange";
+	}
 }
