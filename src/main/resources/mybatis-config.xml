@@ -18,11 +18,14 @@
 		<typeAlias type="org.myweb.first.board.model.dto.Board" alias="Board" />	
 		<typeAlias type="org.myweb.first.common.Paging" alias="Paging" />	
 		<typeAlias type="org.myweb.first.common.Search" alias="Search" />	
+		<typeAlias type="org.myweb.first.warehouse.model.dto.Warehouse" alias="Warehouse" />
+		<typeAlias type="org.myweb.first.warehouse.model.dto.WarehouseSearchCondition" alias="WarehouseSearchCondition" />
 	</typeAliases>
 	
 	<mappers>
 		<mapper resource="mappers/member-mapper.xml" />	
 		<mapper resource="mappers/notice-mapper.xml" />	
 		<mapper resource="mappers/board-mapper.xml" />		
+		<mapper resource="mappers/warehouse-mapper.xml" />
 	</mappers>
 </configuration>
