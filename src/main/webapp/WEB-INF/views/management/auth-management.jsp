@@ -86,6 +86,7 @@
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
+            display: inline-block;
         }
         .status-active {
             background-color: #28a745;
@@ -94,6 +95,149 @@
         .status-inactive {
             background-color: #dc3545;
             color: white;
+        }
+        /* 모달 스타일 */
+        .modal-content {
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+        }
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+        }
+        .modal-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 8px 8px;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        .form-select {
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+        }
+        .form-select:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5c636a;
+            border-color: #565e64;
+        }
+        /* Custom Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+            z-index: 1001;
+            min-width: 400px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            color: #6c757d;
+        }
+
+        .modal-close:hover {
+            color: #343a40;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* 상태 뱃지 스타일 */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* 아이콘 스타일 */
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .fa-check-circle, .fa-times-circle {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -214,32 +358,39 @@
                                 <c:choose>
                                     <c:when test="${not empty userList}">
                                         <c:forEach var="user" items="${userList}">
-                                            <tr class="user-row" data-user-id="${user.userId}">
+                                            <tr class="user-row" data-user-id="${user.empId}">
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <img src="${pageContext.request.contextPath}/resources/img/user.jpg" 
-                                                             alt="" class="rounded-circle" style="width: 40px; height: 40px;">
-                                                        <div class="ms-3">
-                                                            <div class="fw-bold">${user.userName}</div>
+                                                        <div>
+                                                            <div class="fw-bold">${user.empName}</div>
                                                             <c:if test="${not empty user.lastLoginDate}">
                                                                 <div class="text-muted small">마지막 사용: ${user.lastLoginDate}</div>
                                                             </c:if>
-                                                            <div class="text-muted small">${user.roleName}</div>
+                                                            <div class="text-muted small">${user.adminYN eq 'Y' ? '관리자' : '일반사용자'}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>${user.department}</td>
-                                                <td>${user.position}</td>
+                                                <td>${user.job}</td>
                                                 <td>${user.email}</td>
                                                 <td>
-                                                    <span class="status-badge ${user.status eq 'ACTIVE' ? 'status-active' : 'status-inactive'}">
-                                                        ${user.status eq 'ACTIVE' ? '활성' : '비활성'}
-                                                    </span>
+                                                    <div class="d-flex align-items-center">
+                                                        <c:choose>
+                                                            <c:when test="${user.isActive eq 'Y'}">
+                                                                <i class="fas fa-check-circle text-success me-2" id="statusIcon_${user.empId}"></i>
+                                                                <span class="status-badge status-active" id="statusText_${user.empId}">활성</span>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fas fa-times-circle text-danger me-2" id="statusIcon_${user.empId}"></i>
+                                                                <span class="status-badge status-inactive" id="statusText_${user.empId}">비활성</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
                                                 </td>
-                                                <td><fmt:formatDate value="${user.joinDate}" pattern="yyyy/MM/dd"/></td>
-                                                <td>${user.roleName}</td>
+                                                <td><fmt:formatDate value="${user.hireDate}" pattern="yyyy/MM/dd"/></td>
+                                                <td>${user.adminYN eq 'Y' ? '관리자' : '일반사용자'}</td>
                                                 <td>
-                                                    <button class="btn btn-link text-dark p-0" onclick="showActionMenu(event, '${user.userId}')">
+                                                    <button class="btn btn-link text-dark p-0" onclick="showActionMenu(event, '${user.empId}')">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </button>
                                                 </td>
@@ -269,15 +420,60 @@
         </div>
         <!-- Content End -->
 
+        <!-- Employee Edit Modal -->
+        <div class="modal-overlay" id="employeeEditModalOverlay"></div>
+        <div class="modal-container" id="employeeEditModal">
+            <div class="modal-header">
+                <h5 class="modal-title">사원 정보 수정</h5>
+                <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeEditForm">
+                    <input type="hidden" id="editEmpId" name="empId">
+                    <div class="mb-3">
+                        <label for="editEmpName" class="form-label">이름</label>
+                        <input type="text" class="form-control" id="editEmpName" name="empName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDepartment" class="form-label">부서</label>
+                        <select class="form-select" id="editDepartment" name="department" required>
+                            <option value="">부서 선택</option>
+                            <option value="경영지원부">경영지원부</option>
+                            <option value="개발부">개발부</option>
+                            <option value="물류부">물류부</option>
+                            <option value="영업부">영업부</option>
+                            <option value="인사부">인사부</option>
+                            <option value="재무부">재무부</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editJob" class="form-label">직급</label>
+                        <select class="form-select" id="editJob" name="job" required>
+                            <option value="">직급 선택</option>
+                            <option value="사원">사원</option>
+                            <option value="대리">대리</option>
+                            <option value="과장">과장</option>
+                            <option value="부장">부장</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">이메일</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">취소</button>
+                <button type="button" class="btn btn-primary" onclick="saveEmployeeInfo()">저장</button>
+            </div>
+        </div>
+
         <!-- Action Menu -->
         <div id="actionMenu" class="action-menu">
-            <button onclick="editRole(currentUserId)" class="action-item">
-                <i class="fas fa-edit me-2"></i>역할 편집
+            <button onclick="editEmployee(currentEmpId)" class="action-item">
+                <i class="fas fa-edit me-2"></i>정보 수정
             </button>
-            <button onclick="toggleUserStatus(currentUserId)" class="action-item">
-                <i class="fas fa-power-off me-2"></i>상태 변경
-            </button>
-            <button onclick="deleteUser(currentUserId)" class="action-item text-danger">
+            <button onclick="deleteUser(currentEmpId)" class="action-item text-danger">
                 <i class="fas fa-trash-alt me-2"></i>사용자 삭제
             </button>
         </div>
@@ -289,8 +485,9 @@
     </div>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/lib/chart/chart.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/lib/easing/easing.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/lib/waypoints/waypoints.min.js"></script>
@@ -304,7 +501,7 @@
 
     <!-- Page Specific Javascript -->
     <script>
-        let currentUserId = null;
+        let currentEmpId = null;
 
         // 사용자 필터링 함수
         function filterUsers() {
@@ -329,10 +526,10 @@
         }
 
         // 작업 메뉴 표시
-        function showActionMenu(event, userId) {
+        function showActionMenu(event, empId) {
             event.preventDefault();
             event.stopPropagation();
-            currentUserId = userId;
+            currentEmpId = empId;
             
             const menu = document.getElementById('actionMenu');
             const clickedButton = event.target.closest('button');
@@ -358,32 +555,93 @@
             document.removeEventListener('click', hideActionMenu);
         }
 
-        // 역할 편집 함수 (기존 editUser 함수 대체)
-        function editRole(userId) {
-            console.log('Edit role for user:', userId);
-            hideActionMenu();
-            // TODO: 역할 편집 모달 또는 페이지로 이동
-            alert('역할 편집 기능은 준비 중입니다.');
+        // 모달 열기
+        function openModal() {
+            document.getElementById('employeeEditModalOverlay').style.display = 'block';
+            document.getElementById('employeeEditModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
-        // 사용자 상태 변경
-        function toggleUserStatus(userId) {
-            console.log('Toggle status for user:', userId);
-            // TODO: 사용자 상태 변경 API 호출
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('employeeEditModalOverlay').style.display = 'none';
+            document.getElementById('employeeEditModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // 사원 정보 수정 페이지로 이동
+        function editEmployee(empId) {
+            window.location.href = '${pageContext.request.contextPath}/member/editMember.do?empId=' + empId;
+            hideActionMenu();
+        }
+
+        // 사원 정보 저장
+        function saveEmployeeInfo() {
+            const empId = document.getElementById('editEmpId').value;
+            const empName = document.getElementById('editEmpName').value;
+            const department = document.getElementById('editDepartment').value;
+            const job = document.getElementById('editJob').value;
+            const email = document.getElementById('editEmail').value;
+
+            if (!empName || !department || !job || !email) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+
+            $.ajax({
+                url: '${pageContext.request.contextPath}/authority/updateEmployee.do',
+                type: 'POST',
+                data: {
+                    empId: empId,
+                    empName: empName,
+                    department: department,
+                    job: job,
+                    email: email
+                },
+                success: function(response) {
+                    if(response === 'success') {
+                        alert('사원 정보가 성공적으로 수정되었습니다.');
+                        closeModal();
+                        // 페이지 새로고침
+                        location.reload();
+                    } else {
+                        alert('사원 정보 수정에 실패했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('사원 정보 수정 중 오류가 발생했습니다.');
+                    console.error('Error:', error);
+                }
+            });
         }
 
         // 사용자 삭제
-        function deleteUser(userId) {
+        function deleteUser(empId) {
             if (confirm('정말로 이 사용자를 삭제하시겠습니까?')) {
-                console.log('Delete user:', userId);
+                $.ajax({
+                    url: '${pageContext.request.contextPath}/authority/deleteUser.do',
+                    type: 'POST',
+                    data: { empId: empId },
+                    success: function(response) {
+                        if(response.success) {
+                            alert(response.message);
+                            // 삭제된 사용자 행을 테이블에서 제거
+                            $(`tr[data-user-id="${empId}"]`).remove();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('사용자 삭제 중 오류가 발생했습니다.');
+                        console.error('Error:', error);
+                    }
+                });
                 hideActionMenu();
-                // TODO: 사용자 삭제 API 호출
-                alert('사용자 삭제 기능은 준비 중입니다.');
             }
         }
 
-        // 페이지 로드 시 스피너 숨기기
-        $(document).ready(function() {
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
             // 스피너 숨기기
             $('#spinner').removeClass('show');
             
@@ -398,38 +656,36 @@
                     }
                 });
             });
+
+            // 상태 변경 이벤트 리스너 추가
+            window.addEventListener('userStatusChanged', function(e) {
+                const { empId, isActive } = e.detail;
+                updateUserStatusUI(empId, isActive);
+            });
         });
 
-        // 사용자 데이터 템플릿 함수 추가
-        function createUserRowHtml(user) {
-            return `
-                <tr class="user-row" data-user-id="${user.id}">
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <img src="${pageContext.request.contextPath}/resources/img/user.jpg" 
-                                 alt="" class="rounded-circle" style="width: 40px; height: 40px;">
-                            <div class="ms-3">
-                                <div class="fw-bold">${user.name}</div>
-                                <div class="text-muted small">마지막 사용: ${user.lastUsed}</div>
-                                <div class="text-muted small">${user.role}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${user.department}</td>
-                    <td>${user.position}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <span class="status-badge ${user.status == '활성' ? 'status-active' : 'status-inactive'}">${user.status}</span>
-                    </td>
-                    <td>${user.joinDate}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        <button class="btn btn-link text-dark p-0" onclick="showActionMenu(event, '${user.id}')">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+        // 사용자 상태 UI 업데이트 함수
+        function updateUserStatusUI(empId, isActive) {
+            const statusIcon = document.getElementById(`statusIcon_${empId}`);
+            const statusText = document.getElementById(`statusText_${empId}`);
+            
+            if (isActive === 'Y') {
+                statusIcon.className = 'fas fa-check-circle text-success me-2';
+                statusText.className = 'status-badge status-active';
+                statusText.textContent = '활성';
+            } else {
+                statusIcon.className = 'fas fa-times-circle text-danger me-2';
+                statusText.className = 'status-badge status-inactive';
+                statusText.textContent = '비활성';
+            }
+        }
+
+        // 사용자 상태 변경 이벤트 발생 함수
+        function notifyStatusChange(empId, isActive) {
+            const event = new CustomEvent('userStatusChanged', {
+                detail: { empId, isActive }
+            });
+            window.dispatchEvent(event);
         }
     </script>
 </body>

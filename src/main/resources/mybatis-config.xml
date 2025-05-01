@@ -27,5 +27,6 @@
 		<mapper resource="mappers/notice-mapper.xml" />	
 		<mapper resource="mappers/board-mapper.xml" />		
 		<mapper resource="mappers/warehouse-mapper.xml" />
+		<mapper resource="mappers/auth-mapper.xml" />
 	</mappers>
 </configuration>

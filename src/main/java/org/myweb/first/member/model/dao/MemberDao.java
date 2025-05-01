@@ -2,6 +2,7 @@ package org.myweb.first.member.model.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.myweb.first.common.Paging;
@@ -143,6 +144,21 @@ public class MemberDao {
 	
 	public int selectCheckEmpNo(String empNo) {
 		return sqlSessionTemplate.selectOne("org.myweb.first.member.model.dao.MemberDao.selectCheckEmpNo", empNo);
+	}
+	
+	// 사용자 전체 목록 조회
+	public List<Member> selectAllMembers() {
+		return sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.selectAllMembers");
+	}
+	
+	// 검색 조건에 따른 사용자 목록 조회
+	public List<Member> searchMembers(Map<String, String> param) {
+		return sqlSessionTemplate.selectList("org.myweb.first.member.model.dao.MemberDao.searchMembers", param);
+	}
+
+	// 계정 상태 업데이트
+	public int updateMemberStatus(Member member) {
+		return sqlSessionTemplate.update("org.myweb.first.member.model.dao.MemberDao.updateMemberStatus", member);
 	}
 }
 

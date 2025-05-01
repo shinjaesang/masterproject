@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.myweb.first.common.Paging;
 import org.myweb.first.common.Search;
@@ -156,6 +158,42 @@ public class MemberController {
 		return "member/mypage";
 	}
 
+	@RequestMapping("editMember.do")
+	public String editMember(@RequestParam("empId") String empId, Model model) {
+		Member member = memberService.selectMember(empId);
+		model.addAttribute("member", member);
+		return "member/editMember";
+	}
+
+	@RequestMapping(value = "updateMember.do", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateMember(Member updatedMember) {
+		try {
+			// 기존 회원 정보를 가져옴
+			Member existingMember = memberService.selectMember(updatedMember.getEmpId());
+			
+			// 업데이트할 필드만 변경하고 나머지는 기존 값 유지
+			existingMember.setEmpName(updatedMember.getEmpName());
+			existingMember.setDepartment(updatedMember.getDepartment());
+			existingMember.setJob(updatedMember.getJob());
+			existingMember.setEmail(updatedMember.getEmail());
+			existingMember.setHireDate(updatedMember.getHireDate());
+			existingMember.setIsActive(updatedMember.getIsActive());
+			
+			logger.info("사원 정보 업데이트 - empId: {}, isActive: {}", existingMember.getEmpId(), existingMember.getIsActive());
+			
+			int result = memberService.updateMember(existingMember);
+			if (result > 0) {
+				return "success";
+			} else {
+				return "fail:사원 정보 수정에 실패했습니다.";
+			}
+		} catch (Exception e) {
+			logger.error("사원 정보 수정 중 오류 발생: {}", e.getMessage(), e);
+			return "fail:" + e.getMessage();
+		}
+	}
+
 	@RequestMapping(value = "enrollUser.do", method = RequestMethod.POST)
 	public ModelAndView enrollUser(
 		@RequestParam("empId") String empId,
@@ -254,5 +292,20 @@ public class MemberController {
 		}
 
 		return mv;
+	}
+
+	// 사용자 목록 페이지 이동
+	@GetMapping("list.do")
+	public String moveMemberListPage(Model model) {
+		List<Member> memberList = memberService.selectAllMembers();
+		model.addAttribute("memberList", memberList);
+		return "member/memberList";
+	}
+	
+	// 검색 조건에 따른 사용자 목록 조회
+	@GetMapping("search.do")
+	@ResponseBody
+	public List<Member> searchMembers(@RequestParam Map<String, String> param) {
+		return memberService.searchMembers(param);
 	}
 }

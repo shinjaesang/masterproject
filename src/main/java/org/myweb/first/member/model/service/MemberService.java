@@ -1,6 +1,8 @@
 package org.myweb.first.member.model.service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.myweb.first.common.Paging;
 import org.myweb.first.common.Search;
@@ -45,4 +47,15 @@ public interface MemberService {
 	int selectCheckEmail(String email);
 	int selectCheckPhone(String phone);
 	int selectCheckEmpNo(String empNo);
+	
+	// 사용자 전체 목록 조회
+	List<Member> selectAllMembers();
+	
+	// 검색 조건에 따른 사용자 목록 조회
+	List<Member> searchMembers(Map<String, String> param);
+	
+	// 계정 상태 업데이트
+	int updateMemberStatus(Member member);
+	
+	// 한 페이지에 출력할 목록 조회용 : 관리자가 아닌 회원만 조회함
 }

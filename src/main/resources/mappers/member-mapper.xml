@@ -30,7 +30,7 @@
    <!-- 사원번호로 회원 정보 조회 쿼리 -->
    <select id="selectMember" parameterType="string" resultMap="resultList">
       select * from TB_USER 
-      where EMPID = #{ empId } and IS_ACTIVE = 'Y'
+      where EMPID = #{ empId }
    </select>
    
    <!-- 회원 가입시 사원번호 중복검사용 쿼리 -->
@@ -80,7 +80,8 @@
          EMAIL = #{email},
          PHONE = #{phone},
          ADDRESS = #{address},
-         EMPPWD = #{empPwd}
+         EMPPWD = #{empPwd},
+         IS_ACTIVE = #{isActive}
       where EMPID = #{empId}
    </update>
    
@@ -96,6 +97,32 @@
    <select id="selectListCount" resultType="_int">
       select count(*) from TB_USER
       where ADMIN_YN = 'N'
+   </select>
+   
+   <!-- 사용자 목록 조회 쿼리 -->
+   <select id="selectAllMembers" resultMap="resultList">
+      select * from TB_USER
+      order by EMPID
+   </select>
+   
+   <!-- 검색 조건에 따른 사용자 목록 조회 -->
+   <select id="searchMembers" parameterType="map" resultMap="resultList">
+      select * from TB_USER
+      <where>
+         <if test="empName != null and empName != ''">
+            and EMPNAME like '%' || #{empName} || '%'
+         </if>
+         <if test="department != null and department != ''">
+            and DEPARTMENT = #{department}
+         </if>
+         <if test="job != null and job != ''">
+            and JOB = #{job}
+         </if>
+         <if test="adminYN != null and adminYN != ''">
+            and ADMIN_YN = #{adminYN}
+         </if>
+      </where>
+      order by EMPID
    </select>
    
    <!-- 한 페이지에 출력할 목록 조회용 : 관리자가 아닌 회원만 조회함 -->

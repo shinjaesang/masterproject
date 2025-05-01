@@ -24,7 +24,7 @@
 	<tr><th width="120">제 목</th>
 		<td><input type="text" name="boardTitle" size="70"></td></tr>
 	<tr><th>작성자</th>
-		<td><input type="text" name="boardWriter" readonly value="${ sessionScope.loginUser.userId }"></td></tr>
+		<td><input type="text" name="boardWriter" readonly value="${ sessionScope.loginUser.empId }"></td></tr>
 	
 	<tr><th>첨부파일</th>
 		<td>
