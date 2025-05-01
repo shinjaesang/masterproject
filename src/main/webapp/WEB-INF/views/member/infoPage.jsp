@@ -67,7 +67,7 @@ window.onload = function() {
 <table id="outer" align="center" width="700" cellspacing="5" cellpadding="0">
     <tr><th colspan="2">등록된 회원님의 정보는 아래와 같습니다. <br>수정할 내용이 있으면 변경하고, 수정하기 버튼을 누르세요.</th></tr>
     <tr><th width="120">*아이디</th>
-        <td><input type="text" name="userId" id="userId" value="${requestScope.member.userId}" readonly></td></tr>
+        <td><input type="text" name="empId" id="empId" value="${requestScope.member.empId}" readonly></td></tr>
     <tr><th>사진첨부</th>
         <td>
         <c:if test="${!empty requestScope.member.photoFileName}">
@@ -115,7 +115,7 @@ window.onload = function() {
         <input type="submit" value="수정하기"> &nbsp;
         <input type="reset" value="수정취소"> &nbsp;
         <c:url var="mdel" value="${pageContext.request.contextPath}/mdelete.do">
-            <c:param name="userId" value="${requestScope.member.userId}"/>
+            <c:param name="empId" value="${requestScope.member.empId}"/>
         </c:url>
         <a href="${mdel}">탈퇴하기</a> &nbsp;
         <a href="${pageContext.request.contextPath}/main.do">Home</a>

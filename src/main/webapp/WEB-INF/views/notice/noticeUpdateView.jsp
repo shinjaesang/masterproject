@@ -27,7 +27,7 @@
 	<tr><th width="120">제 목</th>
 		<td><input type="text" name="noticeTitle" size="70" value="${ notice.noticeTitle }"></td></tr>
 	<tr><th>작성자</th>
-		<td><input type="text" name="noticeWriter" readonly value="${ sessionScope.loginUser.userId }"></td></tr>
+		<td><input type="text" name="noticeWriter" readonly value="${ sessionScope.loginUser.empId }"></td></tr>
 	<tr><th>중요도</th>
 		<td>
 			<c:if test="${ notice.importance eq 'Y' }">

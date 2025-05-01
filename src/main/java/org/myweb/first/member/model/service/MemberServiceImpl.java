@@ -1,6 +1,8 @@
 package org.myweb.first.member.model.service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.myweb.first.common.Paging;
@@ -74,6 +76,16 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int selectListCount() {
 		return memberDao.selectListCount();
+	}
+
+	@Override
+	public List<Member> selectAllMembers() {
+		return memberDao.selectAllMembers();
+	}
+
+	@Override
+	public List<Member> searchMembers(Map<String, String> param) {
+		return memberDao.searchMembers(param);
 	}
 
 	@Override
@@ -176,6 +188,12 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int selectCheckEmpNo(String empNo) {
 		return memberDao.selectCheckEmpNo(empNo);
+	}
+
+	@Override
+	@Transactional
+	public int updateMemberStatus(Member member) {
+		return memberDao.updateMemberStatus(member);
 	}
 
 }
