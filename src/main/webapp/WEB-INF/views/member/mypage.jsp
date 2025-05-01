@@ -42,29 +42,6 @@
                             <h4 class="mb-0">내 정보 관리</h4>
                         </div>
 
-                        <!-- 알림설정 -->
-                        <div class="mypage-section">
-                            <h5 class="mb-3">알림설정</h5>
-                            <div class="mypage-form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="emailAlert">
-                                    <label class="form-check-label" for="emailAlert">이메일 알림</label>
-                                </div>
-                            </div>
-                            <div class="mypage-form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="pushAlert">
-                                    <label class="form-check-label" for="pushAlert">푸시 알림</label>
-                                </div>
-                            </div>
-                            <div class="mypage-form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="smsAlert">
-                                    <label class="form-check-label" for="smsAlert">문자 알림</label>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- 개인정보 설정 -->
                         <div class="mypage-section">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -97,8 +74,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mypage-form-group">
-                                            <label class="mypage-label" for="department">부서</label>
-                                            <input type="text" class="form-control mypage-input" id="department" value="${member.department}" readonly>
+                                            <label class="mypage-label" for="address">주소</label>
+                                            <input type="text" class="form-control mypage-input" id="address" value="${member.address}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -153,11 +130,11 @@
                 originalValues = {
                     email: $('#email').val(),
                     phone: $('#phone').val(),
-                    department: $('#department').val()
+                    address: $('#address').val()
                 };
                 
                 // 입력 필드 활성화 (이름 제외)
-                $('#email, #phone, #department').prop('readonly', false);
+                $('#email, #phone, #address').prop('readonly', false);
                 
                 // 저장 버튼 표시
                 $('#saveButtonContainer').show();
@@ -169,10 +146,10 @@
                 // 원래 값으로 복원
                 $('#email').val(originalValues.email);
                 $('#phone').val(originalValues.phone);
-                $('#department').val(originalValues.department);
+                $('#address').val(originalValues.address);
                 
                 // 입력 필드 비활성화
-                $('#email, #phone, #department').prop('readonly', true);
+                $('#email, #phone, #address').prop('readonly', true);
                 
                 // 저장 버튼 숨김
                 $('#saveButtonContainer').hide();
@@ -193,10 +170,33 @@
                 alert('올바른 이메일 형식이 아닙니다.');
                 return;
             }
-            
-            // TODO: 저장 로직 구현
-            alert('개인정보가 저장되었습니다.');
-            $('#editToggleBtn').click(); // 수정 모드 종료
+            const phone = $('#phone').val();
+            const address = $('#address').val();
+            $.ajax({
+                url: '${pageContext.request.contextPath}/member/updateMyInfo.do',
+                type: 'POST',
+                data: {
+                    email: email,
+                    phone: phone,
+                    address: address
+                },
+                success: function(response) {
+                    if(response === 'success') {
+                        alert('개인정보가 저장되었습니다.');
+                        $('#editToggleBtn').click(); // 수정 모드 종료
+                    } else {
+                        alert('개인정보 저장에 실패했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('개인정보 저장 중 오류가 발생했습니다.');
+                }
+            });
+        });
+
+        // 비밀번호 변경 버튼 클릭 시 passwordChange.do로 이동
+        $('#pwChange').click(function() {
+            window.location.href = '${pageContext.request.contextPath}/member/passwordChange.do';
         });
     });
 </script>
