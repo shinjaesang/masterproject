@@ -378,11 +378,9 @@
                                                         <c:choose>
                                                             <c:when test="${user.isActive eq 'Y'}">
                                                                 <i class="fas fa-check-circle text-success me-2" id="statusIcon_${user.empId}"></i>
-                                                                <span class="status-badge status-active" id="statusText_${user.empId}">활성</span>
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <i class="fas fa-times-circle text-danger me-2" id="statusIcon_${user.empId}"></i>
-                                                                <span class="status-badge status-inactive" id="statusText_${user.empId}">비활성</span>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </div>
@@ -667,16 +665,11 @@
         // 사용자 상태 UI 업데이트 함수
         function updateUserStatusUI(empId, isActive) {
             const statusIcon = document.getElementById(`statusIcon_${empId}`);
-            const statusText = document.getElementById(`statusText_${empId}`);
             
             if (isActive === 'Y') {
                 statusIcon.className = 'fas fa-check-circle text-success me-2';
-                statusText.className = 'status-badge status-active';
-                statusText.textContent = '활성';
             } else {
                 statusIcon.className = 'fas fa-times-circle text-danger me-2';
-                statusText.className = 'status-badge status-inactive';
-                statusText.textContent = '비활성';
             }
         }
 
