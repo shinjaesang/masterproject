@@ -190,6 +190,10 @@ $(function() {
                     } else {
                         alert('삭제에 실패했습니다.');
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error('삭제 중 오류 발생:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
                 }
             });
         }
