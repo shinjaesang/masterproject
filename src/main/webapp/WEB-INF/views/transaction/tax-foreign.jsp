@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
     <meta charset="utf-8">
-    <title>Stockmaster - 세금계산서 조회</title>
+    <title>Stockmaster - Invoice 조회</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -56,14 +56,24 @@
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
         .invoice-table th, .invoice-table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .invoice-table th {
             background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .details {
             display: none;
@@ -109,22 +119,49 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="mb-4 d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">세금계산서 조회</h4>
-                        <small class="text-muted">Invoice Ninja API를 통해 세금계산서(인보이스)를 조회합니다.</small>
+                        <h4 class="mb-0">Invoice 조회</h4>
+                        <small class="text-muted">Invoice Ninja API를 통해 Invoice를 조회합니다.</small>
                     </div>
                 </div>
+
+                <!-- 탭 메뉴 추가 -->
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="${pageContext.request.contextPath}/transaction/taxdomesticlist.do">
+                            <i class="fa fa-file-invoice me-2"></i>세금계산서
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/transaction/taxforeignlist.do">
+                            <i class="fa fa-file-invoice-dollar me-2"></i>Invoice
+                        </a>
+                    </li>
+                </ul>
+
                 <!-- 검색 필터 영역 -->
                 <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="date" class="form-control" id="searchDate" placeholder="발행일자">
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" id="searchClient" placeholder="거래처">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" id="searchItem" placeholder="항목">
+                    <div class="col-md-2">
+                        <input type="date" class="form-control" id="searchDueDate" placeholder="결제기한">
                     </div>
                     <div class="col-md-2">
+                        <input type="text" class="form-control" id="searchClient" placeholder="거래처명">
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" id="searchCurrency">
+                            <option value="">통화</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="JPY">JPY</option>
+                            <option value="CNY">CNY</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" id="searchItem" placeholder="제품명">
+                    </div>
+                    <div class="col-md-1">
                         <select class="form-select" id="searchStatus">
                             <option value="">발행구분</option>
                             <option value="issued">발행완료</option>
@@ -140,7 +177,7 @@
                     <div class="col-12">
                         <div class="invoice-card">
                             <div class="invoice-header">
-                                <div class="invoice-title">세금계산서 목록</div>
+                                <div class="invoice-title">Invoice 목록</div>
                             </div>
                             <div class="table-responsive">
                                 <table class="invoice-table" id="invoiceTable">
@@ -148,11 +185,20 @@
                                         <tr>
                                             <th>송장번호</th>
                                             <th>발행일자</th>
-                                            <th>클라이언트</th>
-                                            <th>항목</th>
+                                            <th>결제기한</th>
+                                            <th>거래처</th>
+                                            <th>통화</th>
+                                            <th>세율</th>
+                                            <th>제품명</th>
+                                            <th>수량</th>
+                                            <th>단가</th>
                                             <th>공급가액</th>
                                             <th>세액</th>
+                                            <th>총액</th>
+                                            <th>결제수단</th>
+                                            <th>원산지</th>
                                             <th>발행상태</th>
+                                            <th>담당자</th>
                                             <th>비고</th>
                                         </tr>
                                     </thead>
@@ -206,20 +252,36 @@
                     let tbody = $('#invoiceTable tbody');
                     tbody.empty();
                     response.data.forEach(invoice => {
-                        // 다국어 지원: 공급가액, 세액 포맷팅
-                        const supplyAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.amount - (invoice.tax || 0));
-                        const taxAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.tax || 0);
+                        const supplyAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: invoice.currency || 'KRW' }).format(invoice.amount - (invoice.tax || 0));
+                        const taxAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: invoice.currency || 'KRW' }).format(invoice.tax || 0);
+                        const totalAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: invoice.currency || 'KRW' }).format(invoice.amount);
                         const statusText = invoice.status === 'issued' ? '발행완료' : '미발행';
+                        
+                        // 제품 정보 처리
+                        const items = invoice.invoice_items || [];
+                        const productName = items.map(item => item.product_key).join(', ');
+                        const quantity = items.map(item => item.quantity).join(', ');
+                        const unitPrice = items.map(item => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: invoice.currency || 'KRW' }).format(item.cost)).join(', ');
+
                         tbody.append(`
                             <tr>
-                                <td>\${invoice.invoice_number}</td>
-                                <td>\${invoice.date}</td>
-                                <td>\${invoice.client_id}</td>
-                                <td>\${invoice.invoice_items.map(item => item.notes).join(', ')}</td>
-                                <td>\${supplyAmount}</td>
-                                <td>\${taxAmount}</td>
-                                <td>\${statusText}</td>
-                                <td><a href="#" class="text-primary" onclick="viewInvoiceDetails('\${invoice.id}')" style="text-decoration: none;">[상세보기]</a></td>
+                                <td>${invoice.invoice_number}</td>
+                                <td>${invoice.date}</td>
+                                <td>${invoice.due_date || '-'}</td>
+                                <td>${invoice.client_name || invoice.client_id}</td>
+                                <td>${invoice.currency || 'KRW'}</td>
+                                <td>${invoice.tax_rate || '0'}%</td>
+                                <td>${productName}</td>
+                                <td>${quantity}</td>
+                                <td>${unitPrice}</td>
+                                <td>${supplyAmount}</td>
+                                <td>${taxAmount}</td>
+                                <td>${totalAmount}</td>
+                                <td>${invoice.payment_method || '-'}</td>
+                                <td>${invoice.origin_country || '-'}</td>
+                                <td>${statusText}</td>
+                                <td>${invoice.user_name || '담당자'}</td>
+                                <td><a href="#" class="text-primary" onclick="viewInvoiceDetails('${invoice.id}')" style="text-decoration: none;">[상세보기]</a></td>
                             </tr>
                         `);
                     });
