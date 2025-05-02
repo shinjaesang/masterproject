@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -139,13 +140,11 @@ function checkEmail() {
                 <td><input type="text" name="email" id="email" placeholder="이메일 입력" onblur="checkEmail()"></td>
                 <th>역할</th>
                 <td>
-                    <select name="role">
-                        <option value="">역할 선택 </option>
-                        <option value="관리자">관리자</option>
-                        <option value="재고관리자">재고관리자</option>
-                        <option value="거래처관리자">거래처관리자</option>
-                        <option value="일반사용자">일반사용자</option>
-                        <option value="결재자">결재자</option>
+                    <select name="roleGroupId">
+                        <option value="">역할 선택</option>
+                        <c:forEach var="role" items="${roleList}">
+                            <option value="${role.roleGroupId}">${role.roleGroupName}</option>
+                        </c:forEach>
                     </select>
                 </td>
             </tr>

@@ -7,11 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.myweb.first.common.Paging;
 import org.myweb.first.common.Search;
 import org.myweb.first.member.model.dto.Member;
 import org.myweb.first.member.model.service.MemberService;
+import org.myweb.first.authority.model.dto.Role;
+import org.myweb.first.authority.model.service.AuthorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +45,18 @@ public class MemberController {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 
+	@Autowired
+	private AuthorityService authorityService;
+
 	@RequestMapping("/loginPage.do")
 	public String moveLoginPage() {
 		return "member/loginPage";
 	}
 
 	@RequestMapping("enrollPage.do")
-	public String moveEnrollPage() {
+	public String moveEnrollPage(Model model) {
+		List<Role> roleList = authorityService.selectAllRoles();
+		model.addAttribute("roleList", roleList);
 		return "member/enrollPage";
 	}
 
@@ -205,7 +213,8 @@ public class MemberController {
 		@RequestParam("empNo") String empNo,
 		@RequestParam("hireDate") String hireDateStr,
 		@RequestParam("address") String address,
-		@RequestParam("empPwd") String empPwd) {
+		@RequestParam("empPwd") String empPwd,
+		@RequestParam("roleGroupId") String roleGroupId) {
 		
 		logger.info("enrollUser.do 시작 - empId: {}, empName: {}", empId, empName);
 		ModelAndView mv = new ModelAndView();
@@ -275,6 +284,12 @@ public class MemberController {
 			logger.info("회원 등록 결과: {}", result);
 
 			if (result > 0) {
+				// 사용자 역할 추가
+				Map<String, String> roleParams = new HashMap<>();
+				roleParams.put("userId", empId);
+				roleParams.put("roleGroupId", roleGroupId);
+				authorityService.insertUserRole(roleParams);
+				
 				mv.addObject("message", "사용자 등록이 성공적으로 완료되었습니다.");
 				mv.setViewName("member/enrollSuccess");
 			} else {
