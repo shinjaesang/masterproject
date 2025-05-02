@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.myweb.first.authority.model.dao.AuthorityDao;
 import org.myweb.first.member.model.dto.Member;
+import org.myweb.first.authority.model.dto.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,5 +59,16 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public List<Member> getUsersByPage(int page, int pageSize, Map<String, String> params) {
         return authorityDao.getUsersByPage(params);
+    }
+
+    @Override
+    public List<Role> selectAllRoles() {
+        return authorityDao.selectAllRoles();
+    }
+
+    @Override
+    @Transactional
+    public int insertUserRole(Map<String, String> params) {
+        return authorityDao.insertUserRole(params);
     }
 } 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.myweb.first.member.model.dto.Member;
+import org.myweb.first.authority.model.dto.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +48,15 @@ public class AuthorityDao {
     // 페이지별 사용자 목록 조회
     public List<Member> getUsersByPage(Map<String, String> params) {
         return sqlSession.selectList("org.myweb.first.authority.model.dao.AuthorityDao.getUsersByPage", params);
+    }
+    
+    // 역할 목록 조회
+    public List<Role> selectAllRoles() {
+        return sqlSession.selectList("org.myweb.first.authority.model.dao.AuthorityDao.selectAllRoles");
+    }
+    
+    // 사용자 역할 추가
+    public int insertUserRole(Map<String, String> params) {
+        return sqlSession.insert("org.myweb.first.authority.model.dao.AuthorityDao.insertUserRole", params);
     }
 } 
