@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.myweb.first.authority.model.service.AuthorityService;
+import org.myweb.first.authority.model.dto.Role;
 import org.myweb.first.member.model.dto.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -119,7 +120,28 @@ public class AuthorityController {
 
 	// 역할 관리 목록 페이지
 	@GetMapping("/role.do")
-	public String roleList(Model model) {
+	public String roleManagementPage(Model model) {
+		// 역할 목록 조회
+		List<Role> roleList = authorityService.selectAllRoles();
+		
+		// 각 역할별 사용자 수 조회
+		Map<String, Integer> userCountMap = new HashMap<>();
+		for (Role role : roleList) {
+			int userCount = authorityService.getUserCountByRole(role.getRoleGroupId());
+			userCountMap.put(role.getRoleGroupId(), userCount);
+		}
+		
+		// 각 역할별 권한 수 조회
+		Map<String, Integer> permissionCountMap = new HashMap<>();
+		for (Role role : roleList) {
+			int permissionCount = authorityService.getPermissionCountByRole(role.getRoleGroupId());
+			permissionCountMap.put(role.getRoleGroupId(), permissionCount);
+		}
+		
+		model.addAttribute("roleList", roleList);
+		model.addAttribute("userCountMap", userCountMap);
+		model.addAttribute("permissionCountMap", permissionCountMap);
+		
 		return "management/role-management";
 	}
 
@@ -152,5 +174,12 @@ public class AuthorityController {
 	@GetMapping("/log.do")
 	public String logList(Model model) {
 		return "management/auth-updatelog";
+	}
+
+	// 역할별 사용자 목록 조회
+	@GetMapping("/roleUsers.do")
+	@ResponseBody
+	public List<Member> getUsersByRole(@RequestParam("roleGroupId") String roleGroupId) {
+		return authorityService.getUsersByRole(roleGroupId);
 	}
 }

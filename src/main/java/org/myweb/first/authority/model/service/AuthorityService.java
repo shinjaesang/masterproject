@@ -33,4 +33,13 @@ public interface AuthorityService {
     
     // 사용자 역할 추가
     int insertUserRole(Map<String, String> params);
+    
+    // 역할별 사용자 수 조회
+    int getUserCountByRole(String roleGroupId);
+    
+    // 역할별 권한 수 조회
+    int getPermissionCountByRole(String roleGroupId);
+    
+    // 역할별 사용자 목록 조회
+    List<Member> getUsersByRole(String roleGroupId);
 } 

@@ -71,4 +71,19 @@ public class AuthorityServiceImpl implements AuthorityService {
     public int insertUserRole(Map<String, String> params) {
         return authorityDao.insertUserRole(params);
     }
+
+    @Override
+    public int getUserCountByRole(String roleGroupId) {
+        return authorityDao.getUserCountByRole(roleGroupId);
+    }
+
+    @Override
+    public int getPermissionCountByRole(String roleGroupId) {
+        return authorityDao.getPermissionCountByRole(roleGroupId);
+    }
+
+    @Override
+    public List<Member> getUsersByRole(String roleGroupId) {
+        return authorityDao.getUsersByRole(roleGroupId);
+    }
 } 
