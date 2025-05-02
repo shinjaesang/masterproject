@@ -38,4 +38,14 @@ public class AuthorityDao {
     public int deleteUser(String empId) {
         return sqlSession.delete("org.myweb.first.authority.model.dao.AuthorityDao.deleteUser", empId);
     }
+    
+    // 전체 사용자 수 조회
+    public int getTotalUsers(Map<String, String> params) {
+        return sqlSession.selectOne("org.myweb.first.authority.model.dao.AuthorityDao.getTotalUsers", params);
+    }
+    
+    // 페이지별 사용자 목록 조회
+    public List<Member> getUsersByPage(Map<String, String> params) {
+        return sqlSession.selectList("org.myweb.first.authority.model.dao.AuthorityDao.getUsersByPage", params);
+    }
 } 

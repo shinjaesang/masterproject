@@ -408,6 +408,35 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <c:if test="${pagination.currentPage > 1}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=${pagination.currentPage - 1}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                                
+                                <c:forEach begin="${pagination.startPage}" end="${pagination.endPage}" var="page">
+                                    <li class="page-item ${page == pagination.currentPage ? 'active' : ''}">
+                                        <a class="page-link" href="?page=${page}">${page}</a>
+                                    </li>
+                                </c:forEach>
+                                
+                                <c:if test="${pagination.currentPage < pagination.totalPages}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=${pagination.currentPage + 1}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <!-- Auth Management End -->
@@ -503,24 +532,21 @@
 
         // 사용자 필터링 함수
         function filterUsers() {
-            const name = document.getElementById('searchName').value.toLowerCase();
+            const name = document.getElementById('searchName').value;
             const department = document.getElementById('searchDepartment').value;
             const position = document.getElementById('searchPosition').value;
             const role = document.getElementById('searchRole').value;
-
-            document.querySelectorAll('.user-table tbody tr').forEach(row => {
-                const userName = row.querySelector('.fw-bold').textContent.toLowerCase();
-                const userDepartment = row.querySelector('td:nth-child(2)').textContent;
-                const userPosition = row.querySelector('td:nth-child(3)').textContent;
-                const userRole = row.querySelector('td:nth-child(5)').textContent;
-
-                const matchName = userName.includes(name);
-                const matchDepartment = !department || userDepartment === department;
-                const matchPosition = !position || userPosition === position;
-                const matchRole = !role || userRole === role;
-
-                row.style.display = matchName && matchDepartment && matchPosition && matchRole ? '' : 'none';
-            });
+            
+            // 검색 조건을 URL 파라미터로 추가
+            const params = new URLSearchParams(window.location.search);
+            params.set('name', name);
+            params.set('department', department);
+            params.set('position', position);
+            params.set('role', role);
+            params.set('page', '1'); // 검색 시 첫 페이지로 이동
+            
+            // 검색 조건으로 페이지 새로고침
+            window.location.href = window.location.pathname + '?' + params.toString();
         }
 
         // 작업 메뉴 표시
