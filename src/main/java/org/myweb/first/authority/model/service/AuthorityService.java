@@ -20,4 +20,10 @@ public interface AuthorityService {
     
     // 사용자 삭제
     int deleteUser(String empId);
+    
+    // 전체 사용자 수 조회
+    int getTotalUsers(Map<String, String> params);
+    
+    // 페이지별 사용자 목록 조회
+    List<Member> getUsersByPage(int page, int pageSize, Map<String, String> params);
 } 

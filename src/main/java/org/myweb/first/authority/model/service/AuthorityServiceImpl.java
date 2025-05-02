@@ -49,4 +49,14 @@ public class AuthorityServiceImpl implements AuthorityService {
     public int deleteUser(String empId) {
         return authorityDao.deleteUser(empId);
     }
+
+    @Override
+    public int getTotalUsers(Map<String, String> params) {
+        return authorityDao.getTotalUsers(params);
+    }
+
+    @Override
+    public List<Member> getUsersByPage(int page, int pageSize, Map<String, String> params) {
+        return authorityDao.getUsersByPage(params);
+    }
 } 
