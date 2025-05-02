@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
     <meta charset="utf-8">
-    <title>stockmaster - 거래처 목록</title>
+    <title>stockmaster - 거래처관리</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="${pageContext.request.contextPath}/resources/img/favicon.ico" rel="icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -50,82 +50,80 @@
         <jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
         <!-- Navbar End -->
         <div class="container-fluid pt-4 px-4">
-            <div class="partner-title mb-4">거래처 목록</div>
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0">거래처관리</h4>
+                            <button class="btn btn-success" type="button" id="btnRegisterPartner"><i class="fa fa-plus me-1"></i>신규거래처등록</button>
+                        </div>
             <!-- 검색 필터 -->
             <div class="filter-section mb-3">
                 <form class="row g-2 align-items-end" id="searchForm">
                     <div class="col-md-2">
-                        <label class="form-label">거래처</label>
-                        <select class="form-select" name="partnerGroup">
-                            <option value="">거래처그룹</option>
-                            <option>그룹A</option>
-                            <option>그룹B</option>
-                        </select>
+                                    <label class="form-label">거래처명</label>
+                                    <input type="text" class="form-control" name="partnerName" placeholder="거래처명 입력">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">거래처유형</label>
+                                    <label class="form-label">거래처 유형</label>
                         <select class="form-select" name="partnerType">
                             <option value="">전체</option>
-                            <option>공급처</option>
-                            <option>판매처</option>
+                                        <option value="공급처">공급처</option>
+                                        <option value="판매처">판매처</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">검색조건</label>
-                        <select class="form-select" name="searchCondition">
-                            <option value="">검색</option>
-                            <option>거래처명</option>
-                            <option>담당자</option>
+                                    <label class="form-label">사업자번호</label>
+                                    <input type="text" class="form-control" name="businessRegNo" placeholder="사업자번호 입력">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">담당자</label>
+                                    <input type="text" class="form-control" name="managerName" placeholder="이름 입력">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">연락처</label>
+                                    <input type="text" class="form-control" name="contactInfo" placeholder="연락처 입력">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">거래상태</label>
+                                    <select class="form-select" name="transactionStatus">
+                                        <option value="">전체</option>
+                                        <option value="Active">거래중</option>
+                                        <option value="Inactive">거래중지</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">검색어</label>
-                        <div class="d-flex align-items-end gap-3" style="flex-wrap: nowrap;">
-                            <input type="text" class="form-control" name="searchKeyword" placeholder="검색어를 입력해 주세요.">
-                            <button class="btn btn-primary btn-md px-4" style="min-width: 80px; white-space: nowrap;" type="button">검색</button>
-                            <button class="btn btn-black btn-md px-4 ms-1" style="min-width: 80px; white-space: nowrap;" type="button">다운로드</button>
-                        </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-primary w-100" type="button" id="btnSearch">검색</button>
                     </div>
                 </form>
-            </div>
-            <div class="mb-2">
-                <button class="btn btn-gray" type="button"><a href="${pageContext.request.contextPath}/partner/register.do" class="text-primary">거래처 등록</a></button>
             </div>
             <!-- 데이터 테이블 -->
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th>수정</th>
-                        <th>거래처 코드</th>
+                                    <th>거래처코드</th>
                         <th>거래처명</th>
-                        <th>거래처 담당자</th>
-                        <th>거래처 담당 연락처</th>
-                        <th>지역</th>
+                                    <th>거래처유형</th>
+                                    <th>사업자번호</th>
+                                    <th>담당자</th>
+                                    <th>연락처</th>
+                                    <th>이메일</th>
+                                    <th>주소</th>
+                                    <th>대표자명</th>
+                                    <th>법인형태</th>
+                                    <th>거래상태</th>
+                                    <th>담당사원번호</th>
+                                    <th>관리</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td><a href="${pageContext.request.contextPath}/partner/edit.do" class="text-primary">수정</a></td>
-                        <td>10019</td>
-                        <td>하이닉스</td>
-                        <td>김닉스</td>
-                        <td>010-3541-1231</td>
-                        <td>서울</td>
-                    </tr>
+                                <tbody id="partnerTableBody">
+                                <!-- JS로 동적 렌더링 -->
                     </tbody>
                 </table>
             </div>
-            <!-- 페이징 -->
-            <div class="d-flex justify-content-center align-items-center mt-3">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#">/ 1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#">>></a></li>
-                    </ul>
-                </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -134,5 +132,93 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+<script>
+function loadPartnerList() {
+    var params = {
+        partnerName: $('input[name=partnerName]').val(),
+        partnerType: $('select[name=partnerType]').val(),
+        businessRegNo: $('input[name=businessRegNo]').val(),
+        managerName: $('input[name=managerName]').val(),
+        contactInfo: $('input[name=contactInfo]').val(),
+        transactionStatus: $('select[name=transactionStatus]').val()
+    };
+    $.ajax({
+        url: "${pageContext.request.contextPath}/partner/list",
+        method: "GET",
+        data: params,
+        dataType: "json",
+        success: function(data) {
+            var html = "";
+            if(data.length === 0) {
+                html = "<tr><td colspan='12'>등록된 거래처가 없습니다.</td></tr>";
+            } else {
+                $.each(data, function(i, p) {
+                    html += "<tr>";
+                    html += "<td>" + (p.partnerId || '') + "</td>";
+                    html += "<td>" + (p.partnerName || '') + "</td>";
+                    html += "<td>" + (p.partnerType || '') + "</td>";
+                    html += "<td>" + (p.businessRegNo || '') + "</td>";
+                    html += "<td>" + (p.managerName || '-') + "</td>";
+                    html += "<td>" + (p.contactInfo || '-') + "</td>";
+                    html += "<td>" + (p.email || '-') + "</td>";
+                    html += "<td>" + (p.partnerAddress || '-') + "</td>";
+                    html += "<td>" + (p.representativeName || '-') + "</td>";
+                    html += "<td>" + (p.corporateType || '-') + "</td>";
+                    html += "<td>" + (p.transactionStatus === 'Active' ? '거래중' : '거래중지') + "</td>";
+                    html += "<td>" + (p.empid || '-') + "</td>";
+                    html += "<td>";
+                    html += "<button class='btn btn-outline-primary btn-sm btn-edit-partner me-1' data-id='" + (p.partnerId || '') + "'>수정</button>";
+                    html += "<button class='btn btn-outline-danger btn-sm btn-delete-partner' data-id='" + (p.partnerId || '') + "'>삭제</button>";
+                    html += "</td>";
+                    html += "</tr>";
+                });
+            }
+            $("#partnerTableBody").html(html);
+        }
+    });
+}
+
+$(function() {
+    loadPartnerList();
+
+    $('#btnRegisterPartner').on('click', function() {
+        window.location.href = "${pageContext.request.contextPath}/partner/register.do";
+    });
+
+    // 검색 버튼 클릭
+    $('#btnSearch').on('click', function() {
+        loadPartnerList();
+    });
+
+    // 수정 버튼 클릭
+    $('#partnerTableBody').on('click', '.btn-edit-partner', function() {
+        var pid = $(this).data('id');
+        if (!pid) {
+            alert('partnerId가 없습니다!');
+            return;
+        }
+        window.location.href = "${pageContext.request.contextPath}/partner/edit.do?partnerId=" + encodeURIComponent(pid);
+    });
+
+    // 삭제 버튼 클릭
+    $('#partnerTableBody').on('click', '.btn-delete-partner', function() {
+        if(confirm('정말 삭제하시겠습니까?')) {
+            var pid = $(this).data('id');
+            $.ajax({
+                url: "${pageContext.request.contextPath}/partner/delete/" + pid,
+                method: "DELETE",
+                success: function(res) {
+                    if(res > 0) {
+                        alert('삭제되었습니다.');
+                        loadPartnerList();
+                    } else {
+                        alert('삭제에 실패했습니다.');
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
 </body>
 </html>

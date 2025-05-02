@@ -1,147 +1,45 @@
 package org.myweb.first.notice.model.dto;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+public class Notice implements Serializable {
+    private Long postId;
+    private String title;
+    private String content;
+    private String author;
+    private Date createdAt;
+    private Integer viewCount;
+    private byte[] attachedFile;
+    private String attachedFileName; // 첨부파일 원본 이름
+    private String authorName; // TB_USER 테이블과 조인하여 가져올 작성자 이름
 
-public class Notice implements java.io.Serializable {
-	private static final long serialVersionUID = -8269302835859129601L;
+    public Notice() {}
 
-	private int noticeNo;			//NOTICENO	NUMBER
-	private String noticeTitle;		//NOTICETITLE	VARCHAR2(50 BYTE)
-	
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") //날짜시간 직렬화 (Long 정수형 밀리초 출력) 해결 방법임
-	private java.sql.Date noticeDate;	//NOTICEDATE	DATE, 날짜가 Jackson 을 사용시 Date 객체가 직렬화되어서 밀리초로 표시됨
-	private String noticeWriter;		//NOTICEWRITER	VARCHAR2(50 BYTE)
-	private String noticeContent;		//NOTICECONTENT	VARCHAR2(2000 BYTE)
-	private String originalFilePath;	//ORIGINAL_FILEPATH	VARCHAR2(100 BYTE)
-	private String renameFilePath;	//RENAME_FILEPATH	VARCHAR2(100 BYTE)
-	private String importance;		//IMPORTANCE	CHAR(1 BYTE)
-	
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-	private java.sql.Date impEndDate;	//IMP_END_DATE	DATE
-	private int readCount;			//READCOUNT	NUMBER
-	
-	public Notice() {
-		super();
-	}
-
-	public Notice(int noticeNo, String noticeTitle, Date noticeDate, String noticeWriter, String noticeContent,
-			String originalFilePath, String renameFilePath) {
-		super();
-		this.noticeNo = noticeNo;
-		this.noticeTitle = noticeTitle;
-		this.noticeDate = noticeDate;
-		this.noticeWriter = noticeWriter;
-		this.noticeContent = noticeContent;
-		this.originalFilePath = originalFilePath;
-		this.renameFilePath = renameFilePath;
-	}
-
-	public Notice(int noticeNo, String noticeTitle, Date noticeDate, String noticeWriter, String noticeContent,
-			String originalFilePath, String renameFilePath, String importance, Date impEndDate, int readCount) {
-		super();
-		this.noticeNo = noticeNo;
-		this.noticeTitle = noticeTitle;
-		this.noticeDate = noticeDate;
-		this.noticeWriter = noticeWriter;
-		this.noticeContent = noticeContent;
-		this.originalFilePath = originalFilePath;
-		this.renameFilePath = renameFilePath;
-		this.importance = importance;
-		this.impEndDate = impEndDate;
-		this.readCount = readCount;
-	}
-
-	public int getNoticeNo() {
-		return noticeNo;
-	}
-
-	public void setNoticeNo(int noticeNo) {
-		this.noticeNo = noticeNo;
-	}
-
-	public String getNoticeTitle() {
-		return noticeTitle;
-	}
-
-	public void setNoticeTitle(String noticeTitle) {
-		this.noticeTitle = noticeTitle;
-	}
-
-	public java.sql.Date getNoticeDate() {
-		return noticeDate;
-	}
-
-	public void setNoticeDate(java.sql.Date noticeDate) {
-		this.noticeDate = noticeDate;
-	}
-
-	public String getNoticeWriter() {
-		return noticeWriter;
-	}
-
-	public void setNoticeWriter(String noticeWriter) {
-		this.noticeWriter = noticeWriter;
-	}
-
-	public String getNoticeContent() {
-		return noticeContent;
-	}
-
-	public void setNoticeContent(String noticeContent) {
-		this.noticeContent = noticeContent;
-	}
-
-	public String getOriginalFilePath() {
-		return originalFilePath;
-	}
-
-	public void setOriginalFilePath(String originalFilePath) {
-		this.originalFilePath = originalFilePath;
-	}
-
-	public String getRenameFilePath() {
-		return renameFilePath;
-	}
-
-	public void setRenameFilePath(String renameFilePath) {
-		this.renameFilePath = renameFilePath;
-	}
-
-	public String getImportance() {
-		return importance;
-	}
-
-	public void setImportance(String importance) {
-		this.importance = importance;
-	}
-
-	public java.sql.Date getImpEndDate() {
-		return impEndDate;
-	}
-
-	public void setImpEndDate(java.sql.Date impEndDate) {
-		this.impEndDate = impEndDate;
-	}
-
-	public int getReadCount() {
-		return readCount;
-	}
-
-	public void setReadCount(int readCount) {
-		this.readCount = readCount;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	@Override
-	public String toString() {
-		return "Notice [noticeNo=" + noticeNo + ", noticeTitle=" + noticeTitle + ", noticeDate=" + noticeDate
-				+ ", noticeWriter=" + noticeWriter + ", noticeContent=" + noticeContent + ", originalFilePath="
-				+ originalFilePath + ", renameFilePath=" + renameFilePath + ", importance=" + importance
-				+ ", impEndDate=" + impEndDate + ", readCount=" + readCount + "]";
-	}
-}
+    public Long getPostId() { return postId; }
+    public void setPostId(Long postId) { this.postId = postId; }
+    
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
+    
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    
+    public Integer getViewCount() { return viewCount; }
+    public void setViewCount(Integer viewCount) { this.viewCount = viewCount; }
+    
+    public byte[] getAttachedFile() { return attachedFile; }
+    public void setAttachedFile(byte[] attachedFile) { this.attachedFile = attachedFile; }
+    
+    public String getAttachedFileName() { return attachedFileName; }
+    public void setAttachedFileName(String attachedFileName) { this.attachedFileName = attachedFileName; }
+    
+    public String getAuthorName() { return authorName; }
+    public void setAuthorName(String authorName) { this.authorName = authorName; }
+} 

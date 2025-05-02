@@ -13,13 +13,19 @@
 
 	<!-- 존재하지 않는 클래스와 매퍼파일을 먼저 등록 설정하면 톰켓 구동 안함 : 에러 발생함 -->
 	<typeAliases>		
-		<typeAlias type="org.myweb.first.member.model.dto.Member" alias="Member" />	
-		<typeAlias type="org.myweb.first.notice.model.dto.Notice" alias="Notice" />	
+		<typeAlias type="org.myweb.first.member.model.dto.Member" alias="Member" />		
 		<typeAlias type="org.myweb.first.board.model.dto.Board" alias="Board" />	
 		<typeAlias type="org.myweb.first.common.Paging" alias="Paging" />	
 		<typeAlias type="org.myweb.first.common.Search" alias="Search" />	
 		<typeAlias type="org.myweb.first.warehouse.model.dto.Warehouse" alias="Warehouse" />
 		<typeAlias type="org.myweb.first.warehouse.model.dto.WarehouseSearchCondition" alias="WarehouseSearchCondition" />
+		<typeAlias type="org.myweb.first.inout.model.dto.InOutVoice" alias="InOutVoice"/>
+		<typeAlias type="org.myweb.first.partner.model.dto.Partner" alias="Partner"/>
+		<typeAlias type="org.myweb.first.partner.model.dto.PartnerSearchCondition" alias="PartnerSearchCondition"/>
+		<typeAlias type="org.myweb.first.product.model.dto.Product" alias="Product"/>
+		<typeAlias type="org.myweb.first.product.model.dto.ProductSearchCondition" alias="ProductSearchCondition"/>
+		<typeAlias type="org.myweb.first.notice.model.dto.Notice" alias="Notice"/>
+		<typeAlias type="org.myweb.first.notice.model.dto.NoticeSearchCondition" alias="NoticeSearchCondition"/>
 	</typeAliases>
 	
 	<mappers>
@@ -28,5 +34,8 @@
 		<mapper resource="mappers/board-mapper.xml" />		
 		<mapper resource="mappers/warehouse-mapper.xml" />
 		<mapper resource="mappers/auth-mapper.xml" />
+		<mapper resource="mappers/inoutvoice-mapper.xml"/>
+		<mapper resource="mappers/partner-mapper.xml"/>
+		<mapper resource="mappers/product-mapper.xml"/>
 	</mappers>
 </configuration>

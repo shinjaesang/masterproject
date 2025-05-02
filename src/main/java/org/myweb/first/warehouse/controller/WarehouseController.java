@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -79,14 +80,19 @@ public class WarehouseController {
     }
 
     // 창고 삭제 (JSON)
-    @DeleteMapping("/delete/{warehouseId}")
+    @GetMapping("/delete")
     @ResponseBody
-    public ResponseEntity<String> deleteWarehouse(@PathVariable String warehouseId) {
-        int result = warehouseService.deleteWarehouse(warehouseId);
-        if(result > 0) {
-            return ResponseEntity.ok("success");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
+    public ResponseEntity<String> deleteWarehouse(@RequestParam("id") String warehouseId) {
+        try {
+            int result = warehouseService.deleteWarehouse(warehouseId);
+            if(result > 0) {
+                return ResponseEntity.ok("success");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 } 

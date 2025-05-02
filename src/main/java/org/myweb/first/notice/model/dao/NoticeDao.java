@@ -1,88 +1,51 @@
 package org.myweb.first.notice.model.dao;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.mybatis.spring.SqlSessionTemplate;
-import org.myweb.first.common.Paging;
-import org.myweb.first.common.Search;
+import org.apache.ibatis.session.SqlSession;
 import org.myweb.first.notice.model.dto.Notice;
+import org.myweb.first.notice.model.dto.NoticeSearchCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-@Repository("noticeDao")
+@Repository
 public class NoticeDao {
-	
-	@Autowired
-	private SqlSessionTemplate sqlSessionTemplate;
-	
-	public ArrayList<Notice> selectTop3(){
-		List<Notice> list = sqlSessionTemplate.selectList("noticeMapper.selectTop3");
-		return (ArrayList<Notice>)list;
-	}
-	
-	public int selectListCount() {
-		return sqlSessionTemplate.selectOne("noticeMapper.selectListCount");
-	}
-	
-	public ArrayList<Notice> selectList(Paging paging){
-		List<Notice> list = sqlSessionTemplate.selectList("noticeMapper.selectList", paging);
-		return (ArrayList<Notice>)list;
-	}
-	
-	public Notice selectNotice(int noticeNo) {
-		return sqlSessionTemplate.selectOne("noticeMapper.selectNotice", noticeNo);
-	}
-	
-	// dml -----------------------------------------------------------
-	public void updateAddReadCount(int noticeNo) {
-		sqlSessionTemplate.update("noticeMapper.updateAddReadCount", noticeNo);
-	}
-	
-	public int insertNotice(Notice notice) {
-		return sqlSessionTemplate.insert("noticeMapper.insertNotice", notice);
-	}
-	
-	public int deleteNotice(int noticeNo) {
-		return sqlSessionTemplate.delete("noticeMapper.deleteNotice", noticeNo);
-	}
-	
-	public int updateNotice(Notice notice) {
-		return sqlSessionTemplate.update("noticeMapper.updateNotice", notice);
-	}
-	
-	
-	//공지글 검색 관련 메소드 --------------------------------------------------------
-	public int selectSearchTitleCount(String keyword) {
-		return sqlSessionTemplate.selectOne("noticeMapper.selectSearchTitleCount", keyword);
-	}
-	
-	public int selectSearchContentCount(String keyword) {
-		return sqlSessionTemplate.selectOne("noticeMapper.selectSearchContentCount", keyword);
-	}
-	
-	public int selectSearchDateCount(Search search) {
-		return sqlSessionTemplate.selectOne("noticeMapper.selectSearchDateCount", search);
-	}
-	
-	public ArrayList<Notice> selectSearchTitle(Search search){
-		List<Notice> list = sqlSessionTemplate.selectList("noticeMapper.selectSearchTitle", search);
-		return (ArrayList<Notice>)list;
-	}
-	
-	public ArrayList<Notice> selectSearchContent(Search search){
-		List<Notice> list = sqlSessionTemplate.selectList("noticeMapper.selectSearchContent", search);
-		return (ArrayList<Notice>)list;
-	}
-	
-	public ArrayList<Notice> selectSearchDate(Search search){
-		List<Notice> list = sqlSessionTemplate.selectList("noticeMapper.selectSearchDate", search);
-		return (ArrayList<Notice>)list;
-	}
-}
+    @Autowired
+    private SqlSession sqlSession;
 
+    private static final String NAMESPACE = "noticeMapper.";
 
+    // 공지사항 전체 목록 조회
+    public List<Notice> selectAllNotices() {
+        return sqlSession.selectList(NAMESPACE + "selectAllNotices");
+    }
 
+    // 공지사항 상세 조회
+    public Notice selectNoticeById(Long postId) {
+        return sqlSession.selectOne(NAMESPACE + "selectNoticeById", postId);
+    }
 
+    // 공지사항 등록
+    public int insertNotice(Notice notice) {
+        return sqlSession.insert(NAMESPACE + "insertNotice", notice);
+    }
 
+    // 공지사항 수정
+    public int updateNotice(Notice notice) {
+        return sqlSession.update(NAMESPACE + "updateNotice", notice);
+    }
 
+    // 공지사항 삭제
+    public int deleteNotice(Long postId) {
+        return sqlSession.delete(NAMESPACE + "deleteNotice", postId);
+    }
+
+    // 조회수 증가
+    public int updateViewCount(Long postId) {
+        return sqlSession.update(NAMESPACE + "updateViewCount", postId);
+    }
+
+    // 검색 조건에 따른 공지사항 목록 조회
+    public List<Notice> searchNotices(NoticeSearchCondition cond) {
+        return sqlSession.selectList(NAMESPACE + "searchNotices", cond);
+    }
+} 
