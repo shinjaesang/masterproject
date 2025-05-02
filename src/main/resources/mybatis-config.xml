@@ -26,6 +26,7 @@
 		<typeAlias type="org.myweb.first.product.model.dto.ProductSearchCondition" alias="ProductSearchCondition"/>
 		<typeAlias type="org.myweb.first.notice.model.dto.Notice" alias="Notice"/>
 		<typeAlias type="org.myweb.first.notice.model.dto.NoticeSearchCondition" alias="NoticeSearchCondition"/>
+		<typeAlias type="org.myweb.first.transaction.model.dto.Transaction" alias="Transaction"/>
 	</typeAliases>
 	
 	<mappers>
@@ -37,5 +38,6 @@
 		<mapper resource="mappers/inoutvoice-mapper.xml"/>
 		<mapper resource="mappers/partner-mapper.xml"/>
 		<mapper resource="mappers/product-mapper.xml"/>
+		<mapper resource="mappers/transaction-mapper.xml"/>
 	</mappers>
 </configuration>

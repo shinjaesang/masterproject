@@ -83,7 +83,8 @@
                 <div class="dropdown-menu bg-transparent border-0">
                     <a href="${pageContext.request.contextPath}/document/list.do" class="dropdown-item">전자문서조회</a>
                     <a href="${pageContext.request.contextPath}/document/register.do" class="dropdown-item">전자문서등록</a>
-                    <a href="${pageContext.request.contextPath}/document/tax-invoice.do" class="dropdown-item">세금계산서</a>
+                    <a href="${pageContext.request.contextPath}/transaction/taxdomesticlist.do" class="dropdown-item">세금계산서</a>
+                    <a href="${pageContext.request.contextPath}/transaction/list.do" class="dropdown-item">거래문서함</a>
                 </div>
             </div>
 					<div class="nav-item dropdown">

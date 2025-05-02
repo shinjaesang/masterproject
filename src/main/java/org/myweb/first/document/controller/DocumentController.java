@@ -71,13 +71,6 @@ public class DocumentController {
         }
     }
     
- // 세금계산서 목록 페이지
-    @GetMapping("/tax-invoice.do")
-    public String taxInvoiceList(Model model) {
-        // TODO: 세금계산서 목록 조회 로직
-        return "document/taxinvoice";
-    }
-    
     
     
 }
