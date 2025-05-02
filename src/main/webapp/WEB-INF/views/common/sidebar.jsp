@@ -14,7 +14,7 @@
 				<c:when test="${not empty loginUser}">
 					<a href="${pageContext.request.contextPath}/"
 						class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
-					<a href="${pageContext.request.contextPath}/notices.do"
+					<a href="${pageContext.request.contextPath}/notice/list.do"
 						class="nav-item nav-link"><i class="fa fa-bullhorn me-2"></i>공지사항</a>
 					<a href="${pageContext.request.contextPath}/warehouse/warehouse.do"
 						class="nav-item nav-link"><i class="fa fa-warehouse me-2"></i>창고관리</a>
@@ -34,9 +34,9 @@
 						<a href="#" class="nav-link dropdown-toggle"
 							data-bs-toggle="dropdown"><i class="fa fa-barcode me-2"></i>상품관리</a>
 						<div class="dropdown-menu bg-transparent border-0">
-							<a href="${pageContext.request.contextPath}/products/list.do"
+							<a href="${pageContext.request.contextPath}/product/product.do"
 								class="dropdown-item">상품 조회</a> <a
-								href="${pageContext.request.contextPath}/products/register.do"
+								href="${pageContext.request.contextPath}/product/register.do"
 								class="dropdown-item">상품 등록</a>
 						</div>
 					</div>

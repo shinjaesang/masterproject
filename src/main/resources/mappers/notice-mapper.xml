@@ -1,171 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE mapper PUBLIC
-"-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="noticeMapper">
 
-	<resultMap type="Notice" id="resultTop3">
-		<result property="noticeNo" column="NOTICENO" />
-		<result property="noticeTitle" column="NOTICETITLE" />
-		<result property="noticeDate" column="NOTICEDATE" />
-	</resultMap>	
-	
-	<resultMap type="Notice" id="resultNotice">
-		<result column="NOTICENO" property="noticeNo" />
-		<result column="NOTICETITLE" property="noticeTitle" />
-		<result column="NOTICEDATE" property="noticeDate" />
-		<result column="NOTICEWRITER" property="noticeWriter" />
-		<result column="NOTICECONTENT" property="noticeContent" />
-		<result column="ORIGINAL_FILEPATH" property="originalFilePath" />
-		<result column="RENAME_FILEPATH" property="renameFilePath" />
-		<result column="IMPORTANCE" property="importance" />
-		<result column="IMP_END_DATE" property="impEndDate" />
-		<result column="READCOUNT" property="readCount" />
-	</resultMap>
+    <!-- 공지사항 전체 목록 조회 -->
+    <select id="selectAllNotices" resultType="Notice">
+        SELECT 
+            n.post_id AS postId,
+            n.title,
+            n.content,
+            n.author,
+            u.empname AS authorName,
+            n.created_at AS createdAt,
+            n.view_count AS viewCount,
+            n.attached_file AS attachedFile,
+            n.attached_file_name AS attachedFileName
+        FROM TB_NOTICE_BOARD n
+        LEFT JOIN TB_USER u ON n.author = u.empid
+        ORDER BY n.post_id DESC
+    </select>
 
-	<select id="selectTop3" resultMap="resultTop3">
-		SELECT * 
-		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE 
-			  FROM (SELECT * FROM NOTICE 
-				     WHERE IMPORTANCE = 'N' 
-				     ORDER BY NOTICEDATE DESC)) 
-		WHERE RNUM BETWEEN 1 AND 3
-	</select>
-	
-	<!--  공지글 총 갯수 조회용 쿼리 -->
-	<select id="selectListCount" resultType="_int">
-		select count(*) from notice
-	</select>
-	
-	<!-- 페이징 적용된 공지글 목록 조회용 쿼리 -->
-	<select id="selectList" parameterType="Paging" resultMap="resultNotice">
-		SELECT * 
-		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
-		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
-		      FROM (SELECT * FROM NOTICE              
-		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
-		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
-	</select>
-	
-	<!-- 전달온 공지번호로 공지글 1개 조회용 쿼리 -->
-	<select id="selectNotice" parameterType="_int" resultMap="resultNotice">
-		select * from notice
-		where NOTICENO = #{ no }
-	</select>
-	
-	<!-- dml ********************************************************** -->
-	<!-- 조회수 1증가 처리용 쿼리 -->
-	<update id="updateAddReadCount" parameterType="_int">
-		update notice
-		set readcount = readcount + 1
-		where NOTICENO = #{ no }
-	</update>
-	
-	<!-- 새 공지글 등록용 쿼리 -->
-	<insert id="insertNotice" parameterType="Notice">
-		insert into notice
-		<if test="importance != null">
-		values ((select max(noticeno) + 1 from notice), #{ noticeTitle }, sysdate, #{ noticeWriter }, 
-		        #{ noticeContent }, #{ originalFilePath }, #{ renameFilePath }, #{ importance },
-		        #{ impEndDate }, default)
-		</if>
-		<if test="importance == null">
-		values ((select max(noticeno) + 1 from notice), #{ noticeTitle }, sysdate, #{ noticeWriter }, 
-		        #{ noticeContent }, #{ originalFilePath }, #{ renameFilePath }, default,
-		        sysdate, default)
-		</if>
-	</insert>
-	
-	<!-- 공지글 삭제용 쿼리 -->
-	<delete id="deleteNotice" parameterType="_int">
-		delete from notice
-		where noticeno = #{ no }
-	</delete>
-	
-	<!-- 공지글 수정용 쿼리 -->
-	<update id="updateNotice" parameterType="Notice">
-		update notice
-		<if test="originalFilePath == null">
-			set noticetitle = #{ noticeTitle }, noticeWriter = #{ noticeWriter },
-				noticecontent = #{ noticeContent }, noticedate = sysdate,
-				original_filepath = null, rename_filepath = null,
-				importance = #{ importance }, imp_end_date = #{ impEndDate }
-		</if>
-		<if test="originalFilePath != null">
-			set noticetitle = #{ noticeTitle }, noticeWriter = #{ noticeWriter },
-				noticecontent = #{ noticeContent }, noticedate = sysdate,
-				original_filepath = #{ originalFilePath }, rename_filepath = #{ renameFilePath },
-				importance = #{ importance }, imp_end_date = #{ impEndDate }
-		</if>
-		where noticeno = #{ noticeNo }
-	</update>
-	
-	
-	<!-- 공지글 검색용 쿼리 **********************************************  -->
-	<!-- 페이징 적용된 공지글 제목 검색 목록 조회용 쿼리 -->
-	<select id="selectSearchTitle" parameterType="Search" resultMap="resultNotice">
-		SELECT * 
-		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
-		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
-		      FROM (SELECT * FROM NOTICE 
-		      		where NOTICETITLE like '%' || #{ keyword } || '%'             
-		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
-		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
-	</select>
-	
-	<!-- 페이징 적용된 공지글 내용 검색 목록 조회용 쿼리 -->
-	<select id="selectSearchContent" parameterType="Search" resultMap="resultNotice">
-		SELECT * 
-		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
-		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
-		      FROM (SELECT * FROM NOTICE  
-		      		where noticecontent like '%' || #{ keyword } || '%'            
-		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
-		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
-	</select>
-	
-	<!-- 페이징 적용된 공지글 등록날짜로 검색 목록 조회용 쿼리 -->
-	<select id="selectSearchDate" parameterType="Search" resultMap="resultNotice">
-		SELECT * 
-		FROM (SELECT ROWNUM RNUM, NOTICENO, NOTICETITLE, NOTICEDATE, noticewriter,
-		                noticecontent, original_filepath, rename_filepath, importance, imp_end_date, readcount
-		      FROM (SELECT * FROM NOTICE  
-		      		where NOTICEDATE between #{ begin } and #{ end }            
-		             ORDER BY importance desc, NOTICEDATE DESC, noticeno desc)) 
-		WHERE RNUM BETWEEN #{ startRow } AND #{ endRow }
-	</select>
-	
-	<!-- 공지글 검색관련 목록 총 갯수 조회용 쿼리 ***************************** -->
-	<!--  공지글 제목 검색 총 갯수 조회용 쿼리 -->
-	<select id="selectSearchTitleCount" resultType="_int" parameterType="string">
-		select count(*) from notice
-		where NOTICETITLE like '%' || #{ keyword } || '%'
-	</select>
-	
-	<!--  공지글 내용 검색 총 갯수 조회용 쿼리 -->
-	<select id="selectSearchContentCount" resultType="_int" parameterType="string">
-		select count(*) from notice
-		where noticecontent like '%' || #{ keyword } || '%'
-	</select>
-	
-	<!--  공지글 등록날짜 검색 총 갯수 조회용 쿼리 -->
-	<select id="selectSearchDateCount" resultType="_int" parameterType="Search">
-		select count(*) from notice
-		where NOTICEDATE between #{ begin } and #{ end }
-	</select>
-</mapper>
+    <!-- 공지사항 상세 조회 -->
+    <select id="selectNoticeById" parameterType="long" resultType="Notice">
+        SELECT 
+            n.post_id AS postId,
+            n.title,
+            n.content,
+            n.author,
+            u.empname AS authorName,
+            n.created_at AS createdAt,
+            n.view_count AS viewCount,
+            n.attached_file AS attachedFile,
+            n.attached_file_name AS attachedFileName
+        FROM TB_NOTICE_BOARD n
+        LEFT JOIN TB_USER u ON n.author = u.empid
+        WHERE n.post_id = #{postId}
+    </select>
 
+    <!-- 공지사항 등록 -->
+    <insert id="insertNotice" parameterType="Notice">
+        INSERT INTO TB_NOTICE_BOARD (
+            post_id, title, content, author, 
+            created_at, view_count, attached_file, attached_file_name
+        ) VALUES (
+            seq_notice_board.NEXTVAL, #{title}, #{content}, #{author},
+            SYSDATE, 0, #{attachedFile}, #{attachedFileName}
+        )
+    </insert>
 
+    <!-- 공지사항 수정 -->
+    <update id="updateNotice" parameterType="Notice">
+        UPDATE TB_NOTICE_BOARD
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            attached_file = #{attachedFile},
+            attached_file_name = #{attachedFileName}
+        </set>
+        WHERE post_id = #{postId}
+    </update>
 
+    <!-- 공지사항 삭제 -->
+    <delete id="deleteNotice" parameterType="long">
+        DELETE FROM TB_NOTICE_BOARD
+        WHERE post_id = #{postId}
+    </delete>
 
+    <!-- 조회수 증가 -->
+    <update id="updateViewCount" parameterType="long">
+        UPDATE TB_NOTICE_BOARD
+        SET view_count = view_count + 1
+        WHERE post_id = #{postId}
+    </update>
 
+    <!-- 검색 조건에 따른 공지사항 목록 조회 -->
+    <select id="searchNotices" parameterType="NoticeSearchCondition" resultType="Notice">
+        SELECT 
+            n.post_id AS postId,
+            n.title,
+            n.content,
+            n.author,
+            u.empname AS authorName,
+            n.created_at AS createdAt,
+            n.view_count AS viewCount,
+            n.attached_file AS attachedFile
+        FROM TB_NOTICE_BOARD n
+        LEFT JOIN TB_USER u ON n.author = u.empid
+        <where>
+            <if test="title != null and title != ''">
+                AND n.title LIKE '%' || #{title} || '%'
+            </if>
+            <if test="author != null and author != ''">
+                AND (n.author LIKE '%' || #{author} || '%' OR u.empname LIKE '%' || #{author} || '%')
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND n.created_at >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND n.created_at &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+            </if>
+        </where>
+        ORDER BY n.post_id DESC
+    </select>
 
-
-
-
-
-
-
-
-
-
+</mapper> 

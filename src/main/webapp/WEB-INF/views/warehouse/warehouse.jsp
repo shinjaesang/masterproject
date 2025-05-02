@@ -139,7 +139,12 @@ function loadWarehouseList() {
                     html += "<td>" + (w.contactInfo || '-') + "</td>";
                     html += "<td>" + (w.warehouseType || '-') + "</td>";
                     html += "<td>사용</td>";
-                    html += "<td><button class='btn btn-outline-primary btn-sm btn-edit-warehouse' data-id='" + w.warehouseId + "'>수정</button></td>";
+                    html += "<td>";
+                    html += "<div class='d-flex justify-content-center gap-2'>";
+                    html += "<button class='btn btn-outline-primary btn-sm btn-edit-warehouse' data-id='" + w.warehouseId + "'>수정</button>";
+                    html += "<button class='btn btn-outline-danger btn-sm btn-delete-warehouse' data-id='" + w.warehouseId + "'>삭제</button>";
+                    html += "</div>";
+                    html += "</td>";
                     html += "</tr>";
                 });
             }
@@ -161,9 +166,32 @@ $(function() {
         window.location.href = "${pageContext.request.contextPath}/warehouse/edit.do?warehouseId=" + wid;
     });
 
+    // 삭제 버튼 이벤트 위임
+    $('#warehouseTableBody').on('click', '.btn-delete-warehouse', function() {
+        var wid = $(this).data('id');
+        if(confirm('정말로 이 창고를 삭제하시겠습니까?')) {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/warehouse/delete",
+                method: "GET",
+                data: { id: wid },
+                success: function(res) {
+                    if(res === "success") {
+                        alert('창고가 삭제되었습니다.');
+                        loadWarehouseList();
+                    } else {
+                        alert('삭제에 실패했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    });
+
     // 검색 버튼 클릭 시 (검색 조건은 추가 구현 필요)
     $('#searchForm button[type=button]').on('click', function() {
-        // TODO: 검색 조건을 읽어서 AJAX에 data로 넘기기
         loadWarehouseList();
     });
 });

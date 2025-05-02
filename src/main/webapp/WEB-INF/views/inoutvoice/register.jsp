@@ -64,42 +64,55 @@
                                 <form id="inoutForm" action="${pageContext.request.contextPath}/inout/register.do" method="post">
                                     <div class="row mb-4">
                                         <div class="col-md-3">
-                                            <label for="status" class="form-label">창고</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select id="status" name="status" class="form-select">
-                                                <option value="normal" selected>정상</option>
-                                                <option value="return">반품</option>
-                                                <option value="defective">불량</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="returnCheck" name="returnCheck">
-                                                <label class="form-check-label" for="returnCheck">반품</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mb-4">
-                                        <div class="col-md-3">
-                                            <label for="documentType" class="form-label">전표유형</label>
+                                            <label for="warehouseId" class="form-label">창고 선택</label>
                                         </div>
                                         <div class="col-md-9">
-                                            <select id="documentType" name="documentType" class="form-select">
-                                                <option value="in" selected>입고</option>
-                                                <option value="out">출고</option>
-                                                <option value="move">이동</option>
+                                            <select id="warehouseId" name="warehouseId" class="form-select" required>
+                                                <option value="">창고를 선택하세요</option>
+                                                <c:forEach items="${warehouseList}" var="warehouse">
+                                                    <option value="${warehouse.warehouseId}">${warehouse.warehouseName}</option>
+                                                </c:forEach>
                                             </select>
                                         </div>
                                     </div>
                                     
                                     <div class="row mb-4">
                                         <div class="col-md-3">
-                                            <label for="documentTitle" class="form-label">전표제목</label>
+                                            <label for="inoutvoiceType" class="form-label">전표유형</label>
                                         </div>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" id="documentTitle" name="documentTitle" placeholder="전표제목을 입력하세요">
+                                            <select id="inoutvoiceType" name="inoutvoiceType" class="form-select" required>
+                                                <option value="">전표유형을 선택하세요</option>
+                                                <option value="입고">입고</option>
+                                                <option value="출고">출고</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <label for="inoutvoiceName" class="form-label">전표제목</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="inoutvoiceName" name="inoutvoiceName" placeholder="전표제목을 입력하세요" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <label for="orderId" class="form-label">주문번호</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="orderId" name="orderId" placeholder="주문번호를 입력하세요" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <label for="workerId" class="form-label">작업자 ID</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="workerId" name="workerId" placeholder="작업자 ID를 입력하세요" required>
                                         </div>
                                     </div>
                                     
@@ -143,9 +156,34 @@
             e.preventDefault();
             
             // 필수 입력 필드 검증
-            const documentTitle = document.getElementById('documentTitle').value.trim();
-            if (!documentTitle) {
+            const inoutvoiceName = document.getElementById('inoutvoiceName').value.trim();
+            const warehouseId = document.getElementById('warehouseId').value;
+            const inoutvoiceType = document.getElementById('inoutvoiceType').value;
+            const orderId = document.getElementById('orderId').value.trim();
+            const workerId = document.getElementById('workerId').value.trim();
+            
+            if (!warehouseId) {
+                alert('창고를 선택해주세요.');
+                return false;
+            }
+            
+            if (!inoutvoiceType) {
+                alert('전표유형을 선택해주세요.');
+                return false;
+            }
+            
+            if (!inoutvoiceName) {
                 alert('전표제목을 입력해주세요.');
+                return false;
+            }
+            
+            if (!orderId) {
+                alert('주문번호를 입력해주세요.');
+                return false;
+            }
+            
+            if (!workerId) {
+                alert('작업자 ID를 입력해주세요.');
                 return false;
             }
             
@@ -153,51 +191,31 @@
             this.submit();
         });
         
-        // 반품 체크박스 이벤트
-        document.getElementById('returnCheck').addEventListener('change', function() {
-            const statusSelect = document.getElementById('status');
-            if (this.checked) {
-                statusSelect.value = 'return';
-            } else {
-                statusSelect.value = 'normal';
-            }
-        });
-        
-        // 상태 선택 이벤트
-        document.getElementById('status').addEventListener('change', function() {
-            const returnCheck = document.getElementById('returnCheck');
-            if (this.value === 'return') {
-                returnCheck.checked = true;
-            } else {
-                returnCheck.checked = false;
-            }
-        });
-        
         // 전표유형 변경 이벤트
-        document.getElementById('documentType').addEventListener('change', function() {
-            // 필요한 경우 전표유형에 따라 UI 요소 변경
-            const documentTitle = document.getElementById('documentTitle');
+        document.getElementById('inoutvoiceType').addEventListener('change', function() {
+            const inoutvoiceName = document.getElementById('inoutvoiceName');
             const type = this.value;
             
-            if (!documentTitle.value) {
-                if (type === 'in') {
-                    documentTitle.placeholder = '입고 전표제목을 입력하세요';
-                } else if (type === 'out') {
-                    documentTitle.placeholder = '출고 전표제목을 입력하세요';
-                } else {
-                    documentTitle.placeholder = '이동 전표제목을 입력하세요';
+            if (!inoutvoiceName.value) {
+                switch(type) {
+                    case '입고':
+                        inoutvoiceName.placeholder = '입고 전표제목을 입력하세요';
+                        break;
+                    case '출고':
+                        inoutvoiceName.placeholder = '출고 전표제목을 입력하세요';
+                        break;
+                    default:
+                        inoutvoiceName.placeholder = '전표제목을 입력하세요';
                 }
             }
         });
 
         // 사이드바 메뉴 활성화
         document.addEventListener('DOMContentLoaded', function() {
-            // 다른 메뉴의 active 클래스를 제거
             document.querySelectorAll('.nav-link.dropdown-toggle').forEach(el => {
                 el.classList.remove('active');
             });
             
-            // 입출고관리 메뉴에 active 클래스 추가
             const inoutMenu = document.querySelector('.nav-link.dropdown-toggle:nth-of-type(8)');
             if (inoutMenu) {
                 inoutMenu.classList.add('active');

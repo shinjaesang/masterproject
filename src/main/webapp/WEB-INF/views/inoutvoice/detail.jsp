@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="utf-8">
-    <title>Stockmaster - 입출고전표상세</title>
+    <title>Stockmaster - 입출고 전표 상세</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="재고관리 ERP 시스템" name="keywords">
     <meta content="효율적인 재고 관리를 위한 Stockmaster ERP 시스템" name="description">
@@ -74,143 +75,51 @@
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <div class="esc-hint">
-                                전체 화면을 종료하려면 <kbd>Esc</kbd> 키를 누르세요.
-                            </div>
+                            
                             
                             <h3 class="mb-4">입출고전표상세</h3>
                             
-                            <div class="table-responsive mb-4">
-                                <table class="table table-bordered detail-table">
-                                    <tbody>
-                                        <tr>
-                                            <th>생성일</th>
-                                            <td>2025.04.01</td>
-                                            <th>작업자</th>
-                                            <td>DevSync</td>
-                                            <th>입고창고</th>
-                                            <td>정상</td>
-                                            <th>전표유형</th>
-                                            <td>입고</td>
-                                        </tr>
-                                        <tr>
-                                            <th>반품</th>
-                                            <td>-</td>
-                                            <th>출고창고</th>
-                                            <td>-</td>
-                                            <th>이동창고</th>
-                                            <td>-</td>
-                                            <th>상태</th>
-                                            <td>완료</td>
-                                        </tr>
-                                        <tr>
-                                            <th>제목</th>
-                                            <td colspan="7">[DevSync] 250401 입고전표 테스트</td>
-                                        </tr>
-                                        <tr>
-                                            <th>메모</th>
-                                            <td colspan="7" class="memo-field"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <button class="btn btn-sm btn-outline-secondary" id="btnAddProduct">상품추가</button>
+                            <div class="row mb-4">
+                                <div class="col-12 text-end">
+                                    <a href="${pageContext.request.contextPath}/inout/list.do" class="btn btn-secondary">목록</a>
+                                    <a href="${pageContext.request.contextPath}/inout/update.do?inoutvoiceId=${inOutVoice.inoutvoiceId}" class="btn btn-primary ms-2">수정</a>
+                                    <button type="button" class="btn btn-danger ms-2" onclick="deleteInOutVoice('${inOutVoice.inoutvoiceId}')">삭제</button>
+                                </div>
                             </div>
                             
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover text-center product-table">
-                                    <thead>
-                                        <tr>
-                                            <th><input type="checkbox" class="form-check-input" id="selectAll"></th>
-                                            <th>공급처</th>
-                                            <th>상품코드</th>
-                                            <th>공급자상품명</th>
-                                            <th>바코드</th>
-                                            <th>상품명</th>
-                                            <th>옵션</th>
-                                            <th>수량</th>
-                                            <th>원가</th>
-                                            <th>총원가</th>
-                                            <th>판매가</th>
-                                            <th>총판매가</th>
-                                            <th>작업자</th>
-                                            <th>현재고</th>
-                                        </tr>
-                                    </thead>
+                                <table class="table">
                                     <tbody>
                                         <tr>
-                                            <td><input type="checkbox" class="form-check-input product-select"></td>
-                                            <td>애플</td>
-                                            <td>S1234</td>
-                                            <td>AP7</td>
-                                            <td>AP7WH</td>
-                                            <td>Airpods Pro 7</td>
-                                            <td>white</td>
-                                            <td>1000</td>
-                                            <td>15,000</td>
-                                            <td>15,000,000</td>
-                                            <td>79,000</td>
-                                            <td>79,000,000</td>
-                                            <td>DevSync</td>
-                                            <td>100</td>
+                                            <th class="col-2">전표번호</th>
+                                            <td>${inOutVoice.inoutvoiceId}</td>
                                         </tr>
                                         <tr>
-                                            <td><input type="checkbox" class="form-check-input product-select"></td>
-                                            <td>애플</td>
-                                            <td>S1235</td>
-                                            <td>AU7</td>
-                                            <td>AU7BK</td>
-                                            <td>Airpods Ultra 7</td>
-                                            <td>black</td>
-                                            <td>1500</td>
-                                            <td>30,000</td>
-                                            <td>45,000,000</td>
-                                            <td>149,000</td>
-                                            <td>223,500,000</td>
-                                            <td>DevSync</td>
-                                            <td>150</td>
+                                            <th>전표명</th>
+                                            <td>${inOutVoice.inoutvoiceName}</td>
                                         </tr>
                                         <tr>
-                                            <td><input type="checkbox" class="form-check-input product-select"></td>
-                                            <td>삼성</td>
-                                            <td>S1236</td>
-                                            <td>MB7</td>
-                                            <td>MB7GR</td>
-                                            <td>Magsafe 7</td>
-                                            <td>grey</td>
-                                            <td>2000</td>
-                                            <td>20,000</td>
-                                            <td>40,000,000</td>
-                                            <td>99,000</td>
-                                            <td>198,000,000</td>
-                                            <td>DevSync</td>
-                                            <td>200</td>
+                                            <th>전표유형</th>
+                                            <td>${inOutVoice.inoutvoiceType}</td>
                                         </tr>
                                         <tr>
-                                            <td><input type="checkbox" class="form-check-input product-select"></td>
-                                            <td>소니</td>
-                                            <td>S1237</td>
-                                            <td>SP7</td>
-                                            <td>SP7BL</td>
-                                            <td>Sony Pro 7</td>
-                                            <td>blue</td>
-                                            <td>700</td>
-                                            <td>40,000</td>
-                                            <td>28,000,000</td>
-                                            <td>179,000</td>
-                                            <td>125,300,000</td>
-                                            <td>DevSync</td>
-                                            <td>70</td>
+                                            <th>주문번호</th>
+                                            <td>${inOutVoice.orderId}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>작업자</th>
+                                            <td>${inOutVoice.workerId}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>창고</th>
+                                            <td>${inOutVoice.warehouseId}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>등록일</th>
+                                            <td><fmt:formatDate value="${inOutVoice.createdAt}" pattern="yyyy-MM-dd"/></td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                            
-                            <div class="text-center mt-4">
-                                <button type="button" class="btn btn-primary mx-2" id="btnSave">저장</button>
-                                <button type="button" class="btn btn-dark mx-2" id="btnClose">닫기</button>
                             </div>
                         </div>
                     </div>
@@ -289,6 +198,12 @@
                 inoutMenu.classList.add('active');
             }
         });
+
+        function deleteInOutVoice(inoutvoiceId) {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                location.href = '${pageContext.request.contextPath}/inout/delete.do?inoutvoiceId=' + inoutvoiceId;
+            }
+        }
     </script>
 </body>
 </html> 
