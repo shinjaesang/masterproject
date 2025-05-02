@@ -59,4 +59,19 @@ public class AuthorityDao {
     public int insertUserRole(Map<String, String> params) {
         return sqlSession.insert("org.myweb.first.authority.model.dao.AuthorityDao.insertUserRole", params);
     }
+    
+    // 역할별 사용자 수 조회
+    public int getUserCountByRole(String roleGroupId) {
+        return sqlSession.selectOne("org.myweb.first.authority.model.dao.AuthorityDao.getUserCountByRole", roleGroupId);
+    }
+    
+    // 역할별 권한 수 조회
+    public int getPermissionCountByRole(String roleGroupId) {
+        return sqlSession.selectOne("org.myweb.first.authority.model.dao.AuthorityDao.getPermissionCountByRole", roleGroupId);
+    }
+    
+    // 역할별 사용자 목록 조회
+    public List<Member> getUsersByRole(String roleGroupId) {
+        return sqlSession.selectList("org.myweb.first.authority.model.dao.AuthorityDao.getUsersByRole", roleGroupId);
+    }
 } 

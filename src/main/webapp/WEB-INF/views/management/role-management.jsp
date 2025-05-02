@@ -140,112 +140,54 @@
 
                 <!-- Role List -->
                 <div class="row">
-                    <!-- 관리자 역할 -->
-                    <div class="col-md-4">
-                        <div class="role-card">
-                            <div class="role-header">
-                                <div class="role-title">관리자</div>
-                                <div class="role-description">시스템의 모든 기능을 관리하고 접근할 수 있는 최고 권한을 가진 역할입니다.</div>
-                            </div>
-                            <div class="role-stats">
-                                <span><i class="fas fa-users me-1"></i>사용자 3명</span>
-                                <span><i class="fas fa-key me-1"></i>권한 12개</span>
-                            </div>
-                            <div class="role-actions">
-                                <button class="btn-edit" onclick="editRole('ADMIN')">
-                                    <i class="fas fa-edit me-1"></i>편집
-                                </button>
-                                <button class="btn-delete" onclick="deleteRole('ADMIN')">
-                                    <i class="fas fa-trash me-1"></i>삭제
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 재고관리자 역할 -->
-                    <div class="col-md-4">
-                        <div class="role-card">
-                            <div class="role-header">
-                                <div class="role-title">재고관리자</div>
-                                <div class="role-description">재고 관련 기능을 관리하고 접근할 수 있는 권한을 가진 역할입니다.</div>
-                            </div>
-                            <div class="role-stats">
-                                <span><i class="fas fa-users me-1"></i>사용자 5명</span>
-                                <span><i class="fas fa-key me-1"></i>권한 8개</span>
-                            </div>
-                            <div class="role-actions">
-                                <button class="btn-edit" onclick="editRole('STOCK_MANAGER')">
-                                    <i class="fas fa-edit me-1"></i>편집
-                                </button>
-                                <button class="btn-delete" onclick="deleteRole('STOCK_MANAGER')">
-                                    <i class="fas fa-trash me-1"></i>삭제
-                                </button>
+                    <c:forEach var="role" items="${roleList}">
+                        <div class="col-md-4">
+                            <div class="role-card" style="cursor: pointer;" onclick="showRoleUsers('${role.roleGroupId}', '${role.roleGroupName}')">
+                                <div class="role-header">
+                                    <div class="role-title">${role.roleGroupName}</div>
+                                    <div class="role-description">${role.roleGroupId}</div>
+                                </div>
+                                <div class="role-stats">
+                                    <span><i class="fas fa-users me-1"></i>사용자 ${userCountMap[role.roleGroupId]}명</span>
+                                    <span><i class="fas fa-key me-1"></i>권한 ${permissionCountMap[role.roleGroupId]}개</span>
+                                </div>
+                                <div class="role-actions">
+                                    <button class="btn-edit" onclick="event.stopPropagation(); editRole('${role.roleGroupId}')">
+                                        <i class="fas fa-edit me-1"></i>편집
+                                    </button>
+                                    <button class="btn-delete" onclick="event.stopPropagation(); deleteRole('${role.roleGroupId}')">
+                                        <i class="fas fa-trash me-1"></i>삭제
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </c:forEach>
+                </div>
 
-                    <!-- 거래처관리자 역할 -->
-                    <div class="col-md-4">
-                        <div class="role-card">
-                            <div class="role-header">
-                                <div class="role-title">거래처관리자</div>
-                                <div class="role-description">거래처 관련 기능을 관리하고 접근할 수 있는 권한을 가진 역할입니다.</div>
+                <!-- Role Users Modal -->
+                <div class="modal fade" id="roleUsersModal" tabindex="-1" aria-labelledby="roleUsersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="roleUsersModalLabel">역할 사용자 목록</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="role-stats">
-                                <span><i class="fas fa-users me-1"></i>사용자 4명</span>
-                                <span><i class="fas fa-key me-1"></i>권한 6개</span>
-                            </div>
-                            <div class="role-actions">
-                                <button class="btn-edit" onclick="editRole('VENDOR_MANAGER')">
-                                    <i class="fas fa-edit me-1"></i>편집
-                                </button>
-                                <button class="btn-delete" onclick="deleteRole('VENDOR_MANAGER')">
-                                    <i class="fas fa-trash me-1"></i>삭제
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 일반사용자 역할 -->
-                    <div class="col-md-4">
-                        <div class="role-card">
-                            <div class="role-header">
-                                <div class="role-title">일반사용자</div>
-                                <div class="role-description">기본적인 시스템 기능에 접근할 수 있는 일반 사용자 역할입니다.</div>
-                            </div>
-                            <div class="role-stats">
-                                <span><i class="fas fa-users me-1"></i>사용자 15명</span>
-                                <span><i class="fas fa-key me-1"></i>권한 4개</span>
-                            </div>
-                            <div class="role-actions">
-                                <button class="btn-edit" onclick="editRole('USER')">
-                                    <i class="fas fa-edit me-1"></i>편집
-                                </button>
-                                <button class="btn-delete" onclick="deleteRole('USER')">
-                                    <i class="fas fa-trash me-1"></i>삭제
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 결재자 역할 -->
-                    <div class="col-md-4">
-                        <div class="role-card">
-                            <div class="role-header">
-                                <div class="role-title">결재자</div>
-                                <div class="role-description">결재 관련 기능을 수행할 수 있는 권한을 가진 역할입니다.</div>
-                            </div>
-                            <div class="role-stats">
-                                <span><i class="fas fa-users me-1"></i>사용자 7명</span>
-                                <span><i class="fas fa-key me-1"></i>권한 5개</span>
-                            </div>
-                            <div class="role-actions">
-                                <button class="btn-edit" onclick="editRole('APPROVER')">
-                                    <i class="fas fa-edit me-1"></i>편집
-                                </button>
-                                <button class="btn-delete" onclick="deleteRole('APPROVER')">
-                                    <i class="fas fa-trash me-1"></i>삭제
-                                </button>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>이름</th>
+                                                <th>부서</th>
+                                                <th>직급</th>
+                                                <th>이메일</th>
+                                                <th>상태</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="roleUsersList">
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -471,6 +413,31 @@
             $('#spinner').removeClass('show');
             $('.content').addClass('show');
         });
+
+        function showRoleUsers(roleGroupId, roleName) {
+            // 모달 제목 설정
+            document.getElementById('roleUsersModalLabel').textContent = roleName + ' 사용자 목록';
+            
+            // 사용자 목록 조회
+            $.get('${pageContext.request.contextPath}/authority/roleUsers.do', { roleGroupId: roleGroupId }, function(users) {
+                var tbody = $('#roleUsersList');
+                tbody.empty();
+                
+                users.forEach(function(user) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(user.empName));
+                    row.append($('<td>').text(user.department));
+                    row.append($('<td>').text(user.job));
+                    row.append($('<td>').text(user.email));
+                    row.append($('<td>').text(user.isActive === 'Y' ? '활성' : '비활성'));
+                    tbody.append(row);
+                });
+                
+                // 모달 표시
+                var modal = new bootstrap.Modal(document.getElementById('roleUsersModal'));
+                modal.show();
+            });
+        }
     </script>
 </body>
 </html>
