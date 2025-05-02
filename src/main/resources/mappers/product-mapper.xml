@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="productMapper">
+
+    <!-- 상품 전체 목록 조회 -->
+    <select id="selectAllProducts" resultType="Product">
+        SELECT 
+            p.product_id AS productId,
+            p.product_name AS productName,
+            p.option_value AS optionValue,
+            p.product_type AS productType,
+            p.cost_price AS costPrice,
+            p.selling_price AS sellingPrice,
+            p.manufacturer,
+            p.country_of_origin AS countryOfOrigin,
+            p.partner_id AS partnerId,
+            (SELECT partner_name FROM TB_PARTNER WHERE partner_id = p.partner_id) AS partnerName,
+            p.category,
+            p.safe_stock AS safeStock,
+            p.product_image AS productImage,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt
+        FROM TB_PRODUCT p
+        ORDER BY p.product_id
+    </select>
+
+    <!-- 상품 상세 조회 -->
+    <select id="selectProductById" parameterType="string" resultType="Product">
+        SELECT 
+            p.product_id AS productId,
+            p.product_name AS productName,
+            p.option_value AS optionValue,
+            p.product_type AS productType,
+            p.cost_price AS costPrice,
+            p.selling_price AS sellingPrice,
+            p.manufacturer,
+            p.country_of_origin AS countryOfOrigin,
+            p.partner_id AS partnerId,
+            (SELECT partner_name FROM TB_PARTNER WHERE partner_id = p.partner_id) AS partnerName,
+            p.category,
+            p.safe_stock AS safeStock,
+            p.product_image AS productImage,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt
+        FROM TB_PRODUCT p
+        WHERE p.product_id = #{productId}
+    </select>
+
+    <!-- 상품 등록 -->
+    <insert id="insertProduct" parameterType="Product">
+        INSERT INTO TB_PRODUCT (
+            product_id, product_name, option_value, product_type, 
+            cost_price, selling_price, manufacturer, country_of_origin,
+            partner_id, category, safe_stock, product_image, 
+            created_at, updated_at
+        ) VALUES (
+            #{productId}, #{productName}, #{optionValue}, #{productType},
+            #{costPrice}, #{sellingPrice}, #{manufacturer}, #{countryOfOrigin},
+            #{partnerId}, #{category}, #{safeStock}, #{productImage},
+            SYSDATE, NULL
+        )
+    </insert>
+
+    <!-- 상품 수정 -->
+    <update id="updateProduct" parameterType="Product">
+        UPDATE TB_PRODUCT
+        <set>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="optionValue != null">option_value = #{optionValue},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="costPrice != null">cost_price = #{costPrice},</if>
+            <if test="sellingPrice != null">selling_price = #{sellingPrice},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="countryOfOrigin != null">country_of_origin = #{countryOfOrigin},</if>
+            <if test="partnerId != null">partner_id = #{partnerId},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="safeStock != null">safe_stock = #{safeStock},</if>
+            product_image = #{productImage},
+            updated_at = SYSDATE
+        </set>
+        WHERE product_id = #{productId}
+    </update>
+
+    <!-- 상품 삭제 -->
+    <delete id="deleteProduct" parameterType="string">
+        DELETE FROM TB_PRODUCT
+        WHERE product_id = #{productId}
+    </delete>
+
+    <!-- 검색 조건에 따른 상품 목록 조회 -->
+    <select id="searchProducts" parameterType="ProductSearchCondition" resultType="Product">
+        SELECT 
+            p.product_id AS productId,
+            p.product_name AS productName,
+            p.option_value AS optionValue,
+            p.product_type AS productType,
+            p.cost_price AS costPrice,
+            p.selling_price AS sellingPrice,
+            p.manufacturer,
+            p.country_of_origin AS countryOfOrigin,
+            p.partner_id AS partnerId,
+            (SELECT partner_name FROM TB_PARTNER WHERE partner_id = p.partner_id) AS partnerName,
+            p.category,
+            p.safe_stock AS safeStock,
+            p.product_image AS productImage,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt
+        FROM TB_PRODUCT p
+        <where>
+            <if test="productId != null and productId != ''">
+                AND p.product_id LIKE '%' || #{productId} || '%'
+            </if>
+            <if test="productName != null and productName != ''">
+                AND p.product_name LIKE '%' || #{productName} || '%'
+            </if>
+            <if test="productType != null and productType != ''">
+                AND p.product_type = #{productType}
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                AND p.partner_id = #{partnerId}
+            </if>
+            <if test="category != null and category != ''">
+                AND p.category LIKE '%' || #{category} || '%'
+            </if>
+            <if test="countryOfOrigin != null and countryOfOrigin != ''">
+                AND p.country_of_origin LIKE '%' || #{countryOfOrigin} || '%'
+            </if>
+        </where>
+        ORDER BY p.product_id
+    </select>
+
+</mapper> 

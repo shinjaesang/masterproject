@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.myweb.first.transaction.model.dao.TransactionDao">
+
+ <resultMap id="transactionResultMap" type="Transaction">
+        <result property="tdocId" column="TDOC_ID" />
+        <result property="docName" column="DOC_NAME" />
+        <result property="docType" column="DOC_TYPE" />
+        <result property="relatedPartyType" column="RELATED_PARTY_TYPE" />
+        <result property="relatedPartyId" column="RELATED_PARTY_ID" />
+        <result property="uploadedAt" column="UPLOADED_AT" />
+        <result property="uploadedBy" column="UPLOADED_BY" />
+        <result property="validUntil" column="VALID_UNTIL" />
+        <result property="status" column="STATUS" />
+        <result property="content" column="CONTENT" />
+        <result property="attachedFile" column="ATTACHED_FILE" />
+        <result property="partnerName" column="PARTNER_NAME" />
+        <result property="uploaderName" column="UPLOADER_NAME" />
+    </resultMap>
+    
+    <!-- 거래문서 목록 조회 -->
+    <select id="selectTransactionList" parameterType="map" resultMap="transactionResultMap">
+        SELECT 
+            t.TDOC_ID,
+            t.DOC_NAME,
+            t.DOC_TYPE,
+            t.RELATED_PARTY_TYPE,
+            t.RELATED_PARTY_ID,
+            p.PARTNER_NAME,
+            t.UPLOADED_AT,
+            t.UPLOADED_BY,
+            u.EMPNAME as UPLOADER_NAME,
+            t.VALID_UNTIL,
+            t.STATUS,
+            t.CONTENT,
+            t.ATTACHED_FILE
+        FROM TB_TRANSACTION_DOCUMENTS t
+        LEFT JOIN TB_PARTNER p ON t.RELATED_PARTY_ID = p.PARTNER_ID
+        LEFT JOIN TB_USER u ON t.UPLOADED_BY = u.EMPID
+        <where>
+            <if test="tdocId != null and tdocId != ''">
+                AND t.TDOC_ID LIKE '%' || #{tdocId} || '%'
+            </if>
+            <if test="docName != null and docName != ''">
+                AND t.DOC_NAME LIKE '%' || #{docName} || '%'
+            </if>
+            <if test="docType != null and docType != ''">
+                AND t.DOC_TYPE = #{docType}
+            </if>
+            <if test="relatedPartyId != null and relatedPartyId != ''">
+                AND t.RELATED_PARTY_ID LIKE '%' || #{relatedPartyId} || '%'
+            </if>
+            <if test="uploaderName != null and uploaderName != ''">
+                AND u.EMPNAME LIKE '%' || #{uploaderName} || '%'
+            </if>
+            <if test="status != null and status != ''">
+                AND t.STATUS = #{status}
+            </if>
+            <if test="uploadedAt != null and uploadedAt != ''">
+                AND TO_CHAR(t.UPLOADED_AT, 'YYYY-MM-DD') = #{uploadedAt}
+            </if>
+        </where>
+        ORDER BY t.UPLOADED_AT DESC
+    </select>
+
+    <!-- 거래문서 상세 조회 -->
+    <select id="selectTransactionDetail" parameterType="string" resultMap="transactionResultMap">
+        SELECT 
+            t.TDOC_ID,
+            t.DOC_NAME,
+            t.DOC_TYPE,
+            t.RELATED_PARTY_TYPE,
+            t.RELATED_PARTY_ID,
+            p.PARTNER_NAME,
+            t.UPLOADED_AT,
+            t.UPLOADED_BY,
+            u.EMPNAME as UPLOADER_NAME,
+            t.VALID_UNTIL,
+            t.STATUS,
+            t.CONTENT,
+            t.ATTACHED_FILE
+        FROM TB_TRANSACTION_DOCUMENTS t
+        LEFT JOIN TB_PARTNER p ON t.RELATED_PARTY_ID = p.PARTNER_ID
+        LEFT JOIN TB_USER u ON t.UPLOADED_BY = u.EMPID
+        WHERE t.TDOC_ID = #{tdocId}
+    </select>
+
+    <!-- 거래문서 등록 -->
+    <insert id="insertTransaction" parameterType="Transaction">
+        INSERT INTO TB_TRANSACTION_DOCUMENTS (
+            TDOC_ID,
+            DOC_NAME,
+            DOC_TYPE,
+            RELATED_PARTY_TYPE,
+            RELATED_PARTY_ID,
+            UPLOADED_AT,
+            UPLOADED_BY,
+            VALID_UNTIL,
+            STATUS,
+            CONTENT,
+            ATTACHED_FILE
+        ) VALUES (
+            'TD' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(SEQ_TRANSACTION_DOC.NEXTVAL, 4, '0'),
+            #{docName},
+            #{docType},
+            'PARTNER',
+            #{relatedPartyId},
+            SYSDATE,
+            #{uploadedBy},
+            #{validUntil},
+            #{status},
+            #{content},
+            #{attachedFile}
+        )
+    </insert>
+</mapper>
