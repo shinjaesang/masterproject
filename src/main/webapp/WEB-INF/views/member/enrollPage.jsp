@@ -114,47 +114,50 @@ function checkEmail() {
                 <th>부서</th>
                 <td>
                     <select name="department">
-                        <option value="">부서 선택 ▼</option>
-                        <option value="인사팀">인사팀</option>
-                        <option value="총무팀">총무팀</option>
-                        <option value="재무팀">재무팀</option>
-                        <option value="영업팀">영업팀</option>
-                        <option value="마케팅팀">마케팅팀</option>
-                        <option value="개발팀">개발팀</option>
-                        <option value="디자인팀">디자인팀</option>
-                        <option value="품질관리팀">품질관리팀</option>
+                        <option value="">부서 선택 </option>
+                        <option value="경영지원부">경영지원부</option>
+                        <option value="개발부">개발부</option>
+                        <option value="물류부">물류부</option>
+                        <option value="영업부">영업부</option>
+                        <option value="인사부">인사부</option>
+                        <option value="재무부">재무부</option>
                     </select>
                 </td>
                 <th>직급</th>
                 <td>
                     <select name="job">
-                        <option value="">직급 선택 ▼</option>
+                        <option value="">직급 선택 </option>
                         <option value="사원">사원</option>
                         <option value="대리">대리</option>
                         <option value="과장">과장</option>
-                        <option value="차장">차장</option>
                         <option value="부장">부장</option>
-                        <option value="이사">이사</option>
-                        <option value="상무">상무</option>
-                        <option value="전무">전무</option>
-                        <option value="부사장">부사장</option>
-                        <option value="사장">사장</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>이메일</th>
                 <td><input type="text" name="email" id="email" placeholder="이메일 입력" onblur="checkEmail()"></td>
+                <th>역할</th>
+                <td>
+                    <select name="role">
+                        <option value="">역할 선택 </option>
+                        <option value="관리자">관리자</option>
+                        <option value="재고관리자">재고관리자</option>
+                        <option value="거래처관리자">거래처관리자</option>
+                        <option value="일반사용자">일반사용자</option>
+                        <option value="결재자">결재자</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <th>전화번호</th>
                 <td><input type="text" name="phone" placeholder="전화번호 입력"></td>
-            </tr>
-            <tr>
                 <th>주민등록번호</th>
                 <td><input type="text" name="empNo" placeholder="주민등록번호 입력"></td>
-                <th>입사일</th>
-                <td><input type="date" name="hireDate"></td>
             </tr>
             <tr>
+                <th>입사일</th>
+                <td><input type="date" name="hireDate"></td>
                 <th>주소</th>
                 <td colspan="3">
                     <input type="text" name="address" placeholder="주소 입력" style="width: 100%;">
