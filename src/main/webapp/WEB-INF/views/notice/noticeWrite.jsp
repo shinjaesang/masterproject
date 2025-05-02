@@ -34,7 +34,7 @@
                             <h4 class="mb-0">공지사항 등록</h4>
                             <button class="btn btn-secondary" type="button" onclick="history.back()">목록으로</button>
                         </div>
-                        <form id="noticeForm" method="post" action="${pageContext.request.contextPath}/notice/write.do" enctype="multipart/form-data">
+                        <form id="noticeForm" method="post" action="${pageContext.request.contextPath}/notice/write.do">
                             <div class="form-section">
                                 <div class="row g-3">
                                     <div class="col-12">
@@ -48,10 +48,6 @@
                                     <div class="col-md-6">
                                         <label class="form-label">작성자</label>
                                         <input type="text" class="form-control" name="author" value="${sessionScope.loginUser.empId}" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">첨부파일</label>
-                                        <input type="file" class="form-control" name="file">
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +106,10 @@ $(function() {
         $('#content').val(content);
         
         // 폼 제출
-        $('#noticeForm').submit();
+        var form = $('#noticeForm');
+        form.attr('method', 'post');
+        form.attr('action', '${pageContext.request.contextPath}/notice/write.do');
+        form.submit();
     });
 });
 </script>

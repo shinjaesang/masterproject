@@ -120,12 +120,28 @@ $(function() {
             return;
         }
         
-        // CKEditor 내용을 hidden input에 설정
-        var $contentInput = $('textarea[name=content]');
-        $contentInput.val(content);
+        // CKEditor 내용을 textarea에 설정
+        $('#content').val(content);
         
-        // 폼을 직접 서버로 전송
-        e.target.submit();
+        // FormData 객체 생성
+        var formData = new FormData(this);
+        
+        // AJAX로 폼 제출
+        $.ajax({
+            url: '${pageContext.request.contextPath}/notice/edit.do',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('수정이 완료되었습니다.');
+                window.location.href = '${pageContext.request.contextPath}/notice/view.do?postId=${notice.postId}';
+            },
+            error: function(xhr, status, error) {
+                console.error('수정 중 오류 발생:', error);
+                alert('수정 중 오류가 발생했습니다.');
+            }
+        });
     });
 });
 </script>
