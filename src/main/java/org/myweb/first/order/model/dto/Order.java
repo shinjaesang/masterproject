@@ -2,8 +2,12 @@ package org.myweb.first.order.model.dto;
 
 import java.util.Date;
 
-public class Order {
-    private Long orderId;           // 주문 ID
+public class Order implements java.io.Serializable {
+	
+
+	private static final long serialVersionUID = 2504099203000256398L;
+	
+	private String orderId;           // 주문 ID
     private String partnerId;       // 거래처 ID
     private String partnerName;     // 거래처명
     private String partnerType;     // 거래처 유형
@@ -13,19 +17,20 @@ public class Order {
     private String productId;       // 상품 ID
     private String productName;     // 상품명
     private String optionValue;     // 상품 옵션
-    private Double sellingPrice;    // 판매가
-    private Integer quantity;       // 주문 수량
-    private String stockStatus;     // 재고 상태 (입고/출고)
+    private Integer sellingPrice;   // 판매가
+    private Integer quantity;        // 주문 수량
+    private String orderType;       // 주문 유형
+    private String orderStatus;     // 주문 상태 (접수, 처리중, 완료, 취소)
     private Date createdAt;         // 주문 등록일
     
     // 기본 생성자
     public Order() {}
     
     // 전체 필드 생성자
-    public Order(Long orderId, String partnerId, String partnerName, String partnerType, 
+    public Order(String orderId, String partnerId, String partnerName, String partnerType, 
                 String managerName, String contactInfo, String partnerAddress, String productId, 
-                String productName, String optionValue, Double sellingPrice, Integer quantity, 
-                String stockStatus, Date createdAt) {
+                String productName, String optionValue, Integer sellingPrice, Integer quantity, 
+                String orderType, String orderStatus, Date createdAt) {
         this.orderId = orderId;
         this.partnerId = partnerId;
         this.partnerName = partnerName;
@@ -38,16 +43,17 @@ public class Order {
         this.optionValue = optionValue;
         this.sellingPrice = sellingPrice;
         this.quantity = quantity;
-        this.stockStatus = stockStatus;
+        this.orderType = orderType;
+        this.orderStatus = orderStatus;
         this.createdAt = createdAt;
     }
     
     // Getter와 Setter
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
     
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
     
@@ -123,11 +129,11 @@ public class Order {
         this.optionValue = optionValue;
     }
     
-    public Double getSellingPrice() {
+    public Integer getSellingPrice() {
         return sellingPrice;
     }
     
-    public void setSellingPrice(Double sellingPrice) {
+    public void setSellingPrice(Integer sellingPrice) {
         this.sellingPrice = sellingPrice;
     }
     
@@ -139,12 +145,20 @@ public class Order {
         this.quantity = quantity;
     }
     
-    public String getStockStatus() {
-        return stockStatus;
+    public String getOrderType() {
+        return orderType;
     }
     
-    public void setStockStatus(String stockStatus) {
-        this.stockStatus = stockStatus;
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+    
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+    
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
     
     public Date getCreatedAt() {
@@ -161,6 +175,6 @@ public class Order {
                 + ", partnerType=" + partnerType + ", managerName=" + managerName + ", contactInfo=" + contactInfo 
                 + ", partnerAddress=" + partnerAddress + ", productId=" + productId + ", productName=" + productName 
                 + ", optionValue=" + optionValue + ", sellingPrice=" + sellingPrice + ", quantity=" + quantity 
-                + ", stockStatus=" + stockStatus + ", createdAt=" + createdAt + "]";
+                + ", orderType=" + orderType + ", orderStatus=" + orderStatus + ", createdAt=" + createdAt + "]";
     }
 }

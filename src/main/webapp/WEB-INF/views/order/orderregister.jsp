@@ -80,6 +80,12 @@
 	.content.show {
 		opacity: 1;
 	}
+
+	input[readonly] {
+		background-color: #e9ecef !important;
+		color: #212529 !important;
+		opacity: 1 !important;
+	}
 </style>
 
 <!-- Initial Scripts -->
@@ -138,120 +144,160 @@
 
 					<!-- 주문 등록 폼 -->
 					<form class="row g-3" action="registerOrder.do" method="post">
-						<!-- 거래처 유형 선택 -->
+						<!-- 주문 유형 선택 -->
 						<div class="col-md-6">
-							<label for="transactionType" class="form-label">거래처 유형</label> <select
-								class="form-control" id="transactionType" name="transactionType"
-								required>
-								<option value="" disabled selected>거래처 유형 선택</option>
-								<option value="wholesale">공급처</option>
-								<option value="retail">판매처</option>
+							<label for="orderType" class="form-label">주문 유형</label>
+							<select class="form-control" id="orderType" name="orderType" required>
+								<option value="" disabled selected>주문 유형 선택</option>
+								<option value="발주">발주</option>
+								<option value="수주">수주</option>
 							</select>
 						</div>
 
 						<!-- 거래처 선택 -->
 						<div class="col-md-6">
-							<label for="client" class="form-label">거래처</label> <select
-								class="form-control" id="client" name="client" required>
+							<label for="partnerId" class="form-label">거래처</label>
+							<select class="form-control" id="partnerId" name="partnerId" required>
 								<option value="" disabled selected>거래처 선택</option>
-								<c:forEach var="client" items="${clients}">
-									<option value="${client.id}">${client.name}
-										(${client.id})</option>
-								</c:forEach>
 							</select>
 						</div>
 
-						<!-- 상품명 -->
+						<!-- 상품 코드 -->
 						<div class="col-md-6">
-							<label for="productName" class="form-label">상품명</label> <input
-								type="text" class="form-control" id="productName"
-								name="productName" placeholder="상품명 입력" required>
+							<label for="productId" class="form-label">상품 코드</label>
+							<input type="text" class="form-control" id="productId" name="productId" placeholder="상품 코드 입력" required>
 						</div>
 
-						<!-- 옵션 -->
+						<!-- 상품명 (자동 입력) -->
 						<div class="col-md-6">
-							<label for="option" class="form-label">옵션</label> <input
-								type="text" class="form-control" id="option" name="option"
-								placeholder="옵션 입력 (예: 색상: 블랙)">
+							<label for="productName" class="form-label">상품명</label>
+							<input type="text" class="form-control" id="productName" name="productName" readonly>
+						</div>
+
+						<!-- 옵션 (자동 입력) -->
+						<div class="col-md-6">
+							<label for="optionValue" class="form-label">옵션</label>
+							<input type="text" class="form-control" id="optionValue" name="optionValue" readonly>
 						</div>
 
 						<!-- 수량 -->
 						<div class="col-md-6">
-							<label for="quantity" class="form-label">수량</label> <input
-								type="number" class="form-control" id="quantity" name="quantity"
-								min="1" placeholder="수량 입력" required>
+							<label for="quantity" class="form-label">수량</label>
+							<input type="number" class="form-control" id="quantity" name="quantity" min="1" placeholder="수량 입력" required>
 						</div>
 
-						<!-- 판매가 -->
+						<!-- 판매가 (자동 입력) -->
 						<div class="col-md-6">
-							<label for="price" class="form-label">판매가</label> <input
-								type="number" class="form-control" id="price" name="price"
-								min="0" placeholder="판매가 입력" required>
-						</div>
-
-						<!-- 담당자명 -->
-						<div class="col-md-6">
-							<label for="managerName" class="form-label">담당자명</label> <input
-								type="text" class="form-control" id="managerName"
-								name="managerName" placeholder="담당자명 입력" required>
-						</div>
-
-						<!-- 담당자 연락처 -->
-						<div class="col-md-6">
-							<label for="managerContact" class="form-label">담당자 연락처</label> <input
-								type="text" class="form-control" id="managerContact"
-								name="managerContact" placeholder="010-XXXX-XXXX"
-								pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
-						</div>
-
-						<!-- 거래처 주소지 -->
-						<div class="col-12">
-							<label for="address" class="form-label">거래처 주소지</label> <input
-								type="text" class="form-control" id="address" name="address"
-								placeholder="거래처 주소지 입력" required>
+							<label for="sellingPrice" class="form-label">판매가</label>
+							<input type="number" class="form-control" id="sellingPrice" name="sellingPrice" readonly>
 						</div>
 
 						<!-- 버튼 -->
 						<div class="col-12 d-flex justify-content-end mt-3">
-							<button type="button" class="btn btn-secondary me-2"
-								onclick="cancelRegistration()">취소</button>
+							<button type="button" class="btn btn-secondary me-2" onclick="cancelRegistration()">취소</button>
 							<button type="submit" class="btn btn-primary">등록</button>
 						</div>
 					</form>
 
 					<!-- JavaScript -->
 					<script>
+						$(document).ready(function() {
+							// 초기 상태에서 거래처 드롭다운 비활성화
+							$('#partnerId').prop('disabled', true);
+
+							// 거래처 목록 로딩
+							function loadPartnerList(partnerType) {
+								$.ajax({
+									url: "${pageContext.request.contextPath}/partner/list",
+									method: "GET",
+									dataType: "json",
+									success: function(data) {
+										var html = '<option value="">거래처를 선택하세요</option>';
+										$.each(data, function(i, partner) {
+											if (!partnerType || partner.partnerType === partnerType) {
+												html += '<option value="' + partner.partnerId + '">' + 
+													   partner.partnerName + '</option>';
+											}
+										});
+										$('#partnerId').html(html);
+									}
+								});
+							}
+
+							// 초기 거래처 목록 로딩
+							loadPartnerList();
+
+							// 주문 유형 변경 시 거래처 목록 필터링 및 드롭다운 활성화
+							$('#orderType').on('change', function() {
+								var orderType = $(this).val();
+								var partnerType = '';
+								
+								if (orderType === '발주') {
+									partnerType = '공급처';
+								} else if (orderType === '수주') {
+									partnerType = '판매처';
+								}
+								
+								loadPartnerList(partnerType);
+								$('#partnerId').prop('disabled', false);
+							});
+
+							// 상품 코드 입력 시 상품 정보 조회
+							function getProductInfo() {
+								var productId = $('#productId').val().trim();
+								if (productId) {
+									$.ajax({
+										url: '${pageContext.request.contextPath}/order/product-info.do',
+										type: 'GET',
+										data: { productId: productId },
+										success: function(response) {
+											if (response.success) {
+												$('#productName').val(response.productName);
+												$('#optionValue').val(response.optionValue);
+												$('#sellingPrice').val(response.sellingPrice);
+											} else {
+												alert('상품 정보를 찾을 수 없습니다.');
+												$('#productId').val('');
+												$('#productName').val('');
+												$('#optionValue').val('');
+												$('#sellingPrice').val('');
+											}
+										},
+										error: function() {
+											alert('상품 정보 조회 중 오류가 발생했습니다.');
+										}
+									});
+								}
+							}
+
+							// 상품 코드 입력 필드에서 엔터키 이벤트 처리
+							$('#productId').on('keypress', function(e) {
+								if (e.which === 13) { // 엔터키
+									e.preventDefault();
+									getProductInfo();
+								}
+							});
+
+							// 상품 코드 입력 필드에서 포커스 아웃 이벤트 처리
+							$('#productId').on('blur', function() {
+								getProductInfo();
+							});
+
+							// 수량 입력 제한
+							$('#quantity').on('input', function() {
+								var value = parseInt($(this).val());
+								if (value < 1) {
+									$(this).val(1);
+								}
+							});
+						});
+
 						// 취소 버튼 클릭 시 처리
 						function cancelRegistration() {
-							if (isFormModified()) {
-								if (confirm('입력하신 내용이 저장되지 않습니다. 주문 조회 페이지로 이동하시겠습니까?')) {
-									navigateToOrders();
-								}
-							} else {
-								navigateToOrders();
+							if (confirm('입력하신 내용이 저장되지 않습니다. 주문 조회 페이지로 이동하시겠습니까?')) {
+								window.location.href = '${pageContext.request.contextPath}/order/list.do';
 							}
 						}
-
-						// 주문 조회 페이지로 이동
-						function navigateToOrders() {
-							window.location.href = '${pageContext.request.contextPath}/order/list.do';
-						}
-
-						// 폼 수정 여부 확인
-						function isFormModified() {
-							return $('form input, form select').filter(function() {
-								return $(this).val() !== '';
-							}).length > 0;
-						}
-
-						// 입력값 검증
-						document.getElementById("price").addEventListener("input", function() {
-							if (this.value < 0) this.value = 0;
-						});
-
-						document.getElementById("quantity").addEventListener("input", function() {
-							if (this.value < 1) this.value = 1;
-						});
 					</script>
 				</div>
 			</div>

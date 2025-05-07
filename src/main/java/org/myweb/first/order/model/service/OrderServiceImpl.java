@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.myweb.first.order.model.dao.OrderDao;
 import org.myweb.first.order.model.dto.Order;
+import org.myweb.first.product.model.dto.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-    public Order getOrderById(Long orderId) {
+    public Order getOrderById(String orderId) {
         return orderDao.selectOrderById(orderId);
     }
     
@@ -38,18 +39,34 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
     @Transactional
-    public int removeOrder(Long orderId) {
+    public int removeOrder(String orderId) {
         return orderDao.deleteOrder(orderId);
     }
     
     @Override
     @Transactional
-    public int changeOrderStatus(Long orderId, String stockStatus) {
-        return orderDao.updateOrderStatus(orderId, stockStatus);
+    public int changeOrderStatus(String orderId, String orderStatus) {
+        return orderDao.updateOrderStatus(orderId, orderStatus);
     }
     
     @Override
     public int getOrderCount(Map<String, Object> params) {
         return orderDao.selectOrderCount(params);
+    }
+    
+    @Override
+    public Product getProductInfo(String productId) {
+        return orderDao.selectProductInfo(productId);
+    }
+    
+    @Override
+    public List<Map<String, Object>> getPartnerList() {
+        return orderDao.selectPartnerList();
+    }
+    
+    @Override
+    @Transactional
+    public int deleteSelectedOrders(List<String> orderIds) {
+        return orderDao.deleteSelectedOrders(orderIds);
     }
 }
