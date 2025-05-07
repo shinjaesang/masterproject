@@ -129,4 +129,8 @@
         ORDER BY p.product_id
     </select>
 
+    <select id="selectProductImage" parameterType="string" resultType="_byte[]">
+        SELECT product_image FROM TB_PRODUCT WHERE product_id = #{productId}
+    </select>
+
 </mapper> 
