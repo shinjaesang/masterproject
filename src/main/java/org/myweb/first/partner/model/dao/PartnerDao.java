@@ -61,4 +61,8 @@ public class PartnerDao {
         logger.info("=== 거래처 검색 종료 ===");
         return result;
     }
+
+    public List<Partner> selectSuppliersOnly() {
+        return sqlSession.selectList(NAMESPACE + "selectSuppliersOnly");
+    }
 } 

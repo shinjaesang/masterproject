@@ -27,6 +27,14 @@
 		<typeAlias type="org.myweb.first.notice.model.dto.Notice" alias="Notice"/>
 		<typeAlias type="org.myweb.first.notice.model.dto.NoticeSearchCondition" alias="NoticeSearchCondition"/>
 		<typeAlias type="org.myweb.first.transaction.model.dto.Transaction" alias="Transaction"/>
+		<typeAlias type="org.myweb.first.inventory.model.dto.Inventory" alias="Inventory"/>
+		<typeAlias type="org.myweb.first.order.model.dto.Order" alias="Order"/>
+		<typeAlias type="org.myweb.first.report.model.dto.InOutStatDto" alias="InOutStatDto"/>
+		<typeAlias type="org.myweb.first.report.model.dto.ProductInOutChartDto" alias="ProductInOutChartDto"/>
+		<typeAlias type="org.myweb.first.report.model.dto.WarehouseStockChartDto" alias="WarehouseStockChartDto"/>
+		<typeAlias type="org.myweb.first.document.model.dto.Document" alias="Document"/>
+		<typeAlias type="org.myweb.first.order.model.dto.OrderItem" alias="OrderItem"/>
+
 	</typeAliases>
 	
 	<mappers>
@@ -39,5 +47,9 @@
 		<mapper resource="mappers/partner-mapper.xml"/>
 		<mapper resource="mappers/product-mapper.xml"/>
 		<mapper resource="mappers/transaction-mapper.xml"/>
+		<mapper resource="mappers/inventory-mapper.xml"/>
+		<mapper resource="mappers/order-mapper.xml"/>
+		<mapper resource="mappers/inoutstat-mapper.xml"/>
+		<mapper resource="mappers/document-mapper.xml"/>
 	</mappers>
 </configuration>

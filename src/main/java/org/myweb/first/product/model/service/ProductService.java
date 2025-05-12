@@ -11,4 +11,5 @@ public interface ProductService {
     int updateProduct(Product product);
     int deleteProduct(String productId);
     List<Product> searchProducts(ProductSearchCondition cond);
+    byte[] getProductImage(String productId);
 } 

@@ -49,7 +49,13 @@
             margin-bottom: 20px;
         }
         .search-box input {
-            flex: 1;
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 200px;
+        }
+        .search-box select {
+            width: 120px;
+            flex: none;
         }
         .table {
             font-size: 0.9rem;
@@ -66,6 +72,10 @@
         .selected-row {
             background-color: #e9ecef;
         }
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -79,6 +89,11 @@
                 <div class="search-box">
                     <input type="text" class="form-control" id="leftSearch" placeholder="이름 검색">
                     <input type="text" class="form-control" id="leftDeptSearch" placeholder="부서 검색">
+                    <select class="form-control" id="jobFilter">
+                        <option value="">직급 선택</option>
+                        <option value="부장">부장</option>
+                        <option value="과장">과장</option>
+                    </select>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="leftTable">
@@ -91,7 +106,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- 기존 사용자 목록이 여기에 표시됩니다 -->
+                            <c:forEach items="${employees}" var="emp">
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input"></td>
+                                    <td>${emp.department}</td>
+                                    <td>${emp.empName}</td>
+                                    <td>${emp.job}</td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -119,7 +141,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- 선택된 검토자가 여기에 추가됨 -->
+                            <!-- 선택된 참조자가 여기에 추가됨 -->
                         </tbody>
                     </table>
                 </div>
@@ -135,47 +157,41 @@
 
     <!-- Page specific Javascript -->
     <script>
-        // 현재 페이지의 타입을 서버에서 받아옴
-        const currentType = '${param.type}' || 'reviewer';
-        let selectedUsers = [];
+        let previouslySelectedUsers = [];
+        let removedUsers = new Set();
+        let rightTableUsers = new Set();
 
-        console.log('Page initialized with type:', currentType);
-
+        // 이전에 선택된 사용자 초기화
         function initializeSelectedUsers(users) {
-            console.log('Initializing with users:', users);
+            if (!users || !Array.isArray(users)) return;
             
-            if (!users || !Array.isArray(users)) {
-                console.log('No users to initialize or invalid data');
-                return;
-            }
-            
-            try {
-                // 오른쪽 테이블 초기화
-                $('#rightTable tbody').empty();
-                selectedUsers = [...users];
+            // 오른쪽 테이블 초기화
+            $('#rightTable tbody').empty();
+            rightTableUsers.clear();
 
-                // 이전에 선택된 사용자들을 오른쪽 테이블에 추가
-                users.forEach((user, index) => {
-                    addUserToRightTable(user);
-                });
+            // 이전에 선택된 사용자들을 오른쪽 테이블에 추가
+            users.forEach(user => {
+                addUserToRightTable(user);
+                rightTableUsers.add(user.name);
+            });
 
-                console.log('Initialization complete. Selected users:', selectedUsers);
-            } catch (error) {
-                console.error('Error during initialization:', error);
-            }
+            // 왼쪽 테이블에서 선택된 사용자 제거
+            $('#leftTable tbody tr').each(function() {
+                const name = $(this).find('td:eq(2)').text();
+                if (rightTableUsers.has(name)) {
+                    $(this).remove();
+                }
+            });
         }
 
         $(document).ready(function() {
-            console.log('Page loaded. Current type:', currentType);
-            
-            // 부모 창에서 현재 선택된 사용자 정보 가져오기
-            try {
-                if (window.parent && window.parent.selectedUsers && window.parent.selectedUsers[currentType]) {
-                    console.log('Found existing users in parent window');
-                    initializeSelectedUsers(window.parent.selectedUsers[currentType]);
-                }
-            } catch (error) {
-                console.error('Error getting parent window data:', error);
+            // 이전에 선택된 사용자 정보 가져오기
+            if (window.parent && window.parent.getCurrentLineUsers) {
+                previouslySelectedUsers = window.parent.getCurrentLineUsers('referrer');
+                // 이전 선택된 사용자들을 오른쪽 테이블에 추가
+                previouslySelectedUsers.forEach(user => {
+                    addUserToRightTable(user);
+                });
             }
 
             // 테이블 행 선택 기능
@@ -194,16 +210,19 @@
             });
 
             // 검색 기능
-            $('#leftSearch, #leftDeptSearch').on('keyup', function() {
+            $('#leftSearch, #leftDeptSearch, #jobFilter').on('change keyup', function() {
                 const nameSearch = $('#leftSearch').val().toLowerCase();
                 const deptSearch = $('#leftDeptSearch').val().toLowerCase();
+                const jobFilter = $('#jobFilter').val();
 
                 $('#leftTable tbody tr').each(function() {
                     const name = $(this).find('td:eq(2)').text().toLowerCase();
                     const dept = $(this).find('td:eq(1)').text().toLowerCase();
+                    const job = $(this).find('td:eq(3)').text();
                     const matchName = name.includes(nameSearch);
                     const matchDept = dept.includes(deptSearch);
-                    $(this).toggle(matchName && matchDept);
+                    const matchJob = jobFilter === '' || job === jobFilter;
+                    $(this).toggle(matchName && matchDept && matchJob);
                 });
             });
 
@@ -214,7 +233,7 @@
                 });
 
                 if (checkedRows.length === 0) {
-                    alert('추가할 검토자를 선택해주세요.');
+                    alert('추가할 참조자를 선택해주세요.');
                     return;
                 }
 
@@ -223,14 +242,14 @@
                     const name = $(this).find('td:eq(2)').text();
                     const position = $(this).find('td:eq(3)').text();
 
-                    if (!selectedUsers.includes(name)) {
+                    if (!rightTableUsers.has(name)) {
                         const user = {
                             department: dept,
                             name: name,
                             position: position
                         };
                         addUserToRightTable(user);
-                        selectedUsers.push(name);
+                        rightTableUsers.add(name);
                         $(this).remove();
                     }
                 });
@@ -243,7 +262,7 @@
                 });
 
                 if (checkedRows.length === 0) {
-                    alert('제거할 검토자를 선택해주세요.');
+                    alert('제거할 참조자를 선택해주세요.');
                     return;
                 }
 
@@ -252,7 +271,7 @@
                     const name = $(this).find('td:eq(3)').text();
                     const position = $(this).find('td:eq(4)').text();
 
-                    selectedUsers = selectedUsers.filter(user => user !== name);
+                    rightTableUsers.delete(name);
                     addUserToLeftTable({
                         department: dept,
                         name: name,
@@ -265,26 +284,30 @@
             });
         });
 
-        function addUserToRightTable(user) {
-            try {
-                console.log('Adding user to right table:', user);
-                
-                const order = $('#rightTable tbody tr').length + 1;
-                const newRow = $('<tr>');
-                newRow.append($('<td>').append($('<input>').attr({
-                    type: 'checkbox',
-                    class: 'form-check-input'
-                })));
-                newRow.append($('<td>').text(order));
-                newRow.append($('<td>').text(user.department));
-                newRow.append($('<td>').text(user.name));
-                newRow.append($('<td>').text(user.position));
+        // 삭제된 사용자 복원 함수
+        function restoreUser(userName) {
+            removedUsers.add(userName);
+        }
 
-                $('#rightTable tbody').append(newRow);
-                updateOrder();
-            } catch (error) {
-                console.error('Error adding user to right table:', error);
+        // 사용자 추가 시 삭제된 사용자 확인
+        function addUserToRightTable(user) {
+            if (removedUsers.has(user.name)) {
+                removedUsers.delete(user.name);
             }
+            
+            const order = $('#rightTable tbody tr').length + 1;
+            const newRow = $('<tr>');
+            newRow.append($('<td>').append($('<input>').attr({
+                type: 'checkbox',
+                class: 'form-check-input'
+            })));
+            newRow.append($('<td>').text(order));
+            newRow.append($('<td>').text(user.department));
+            newRow.append($('<td>').text(user.name));
+            newRow.append($('<td>').text(user.position));
+
+            $('#rightTable tbody').append(newRow);
+            updateOrder();
         }
 
         function addUserToLeftTable(user) {
@@ -307,64 +330,28 @@
         }
 
         function saveSelection() {
-            console.log('Starting save selection process. Current type:', currentType);
-            
-            try {
-                const selectedUsers = [];
-                
-                // 선택된 사용자 정보 수집
-                $('#rightTable tbody tr').each(function() {
-                    const user = {
-                        order: $(this).find('td:eq(1)').text(),
-                        department: $(this).find('td:eq(2)').text(),
-                        name: $(this).find('td:eq(3)').text(),
-                        position: $(this).find('td:eq(4)').text()
-                    };
-
-                    // 사용자 데이터 유효성 검사
-                    if (!user.name || !user.department || !user.position) {
-                        throw new Error('불완전한 사용자 정보가 있습니다.');
-                    }
-
-                    selectedUsers.push(user);
+            const selectedUsers = [];
+            $('#rightTable tbody tr').each(function() {
+                selectedUsers.push({
+                    order: $(this).find('td:eq(1)').text(),
+                    department: $(this).find('td:eq(2)').text(),
+                    name: $(this).find('td:eq(3)').text(),
+                    position: $(this).find('td:eq(4)').text()
                 });
+            });
 
-                console.log('Collected users for type:', currentType, selectedUsers);
-
-                // 부모 창 존재 여부 확인
-                if (!window.parent) {
-                    throw new Error('부모 창을 찾을 수 없습니다.');
-                }
-
-                // 부모 창의 함수 존재 여부 확인
-                if (typeof window.parent.handleApprovalLineSelection !== 'function') {
-                    throw new Error('부모 창의 처리 함수를 찾을 수 없습니다.');
-                }
-
-                // 타입이 비어있는지 확인
-                if (!currentType) {
-                    throw new Error('결재선 유형이 지정되지 않았습니다.');
-                }
-
-                // 부모 창의 함수 호출
-                console.log('Calling parent window function with type:', currentType);
-                window.parent.handleApprovalLineSelection(currentType, selectedUsers);
-                
-                console.log('Save operation completed successfully');
-            } catch (error) {
-                console.error('Error in saveSelection:', error);
-                alert('검토자 정보 저장 중 오류가 발생했습니다.\n' + error.message);
+            if (window.parent && typeof window.parent.handleApprovalLineSelection === 'function') {
+                window.parent.handleApprovalLineSelection('reviewer', selectedUsers);
+            } else {
+                alert('검토자 정보를 전달할 수 없습니다.');
             }
         }
 
         function cancelSelection() {
-            try {
-                if (window.parent && window.parent.$('#approvalLineModal').length) {
-                    window.parent.$('#approvalLineModal').modal('hide');
-                }
-            } catch (error) {
-                console.error('Error in cancelSelection:', error);
-                window.close();
+            if (window.parent && typeof window.parent.cancelApprovalLine === 'function') {
+                window.parent.cancelApprovalLine();
+            } else {
+                window.parent.$('#approvalLineModal').modal('hide');
             }
         }
     </script>

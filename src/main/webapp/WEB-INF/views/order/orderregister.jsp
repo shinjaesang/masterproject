@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%-- <%@ include file="../include/header.jsp" %> --%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -19,7 +18,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Favicon -->
-<link href="${pageContext.request.contextPath}/resources/img/favicon.ico" rel="icon">
+<link
+	href="${pageContext.request.contextPath}/resources/img/favicon.ico"
+	rel="icon">
 
 <!-- Google Web Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,80 +41,82 @@
 <!-- Template Stylesheet -->
 <link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet">
 
-<!-- Critical CSS -->
 <style>
-	.spinner-border {
-		display: inline-block;
-		width: 2rem;
-		height: 2rem;
-		vertical-align: text-bottom;
-		border: .25em solid currentColor;
-		border-right-color: transparent;
-		border-radius: 50%;
-		animation: spinner-border .75s linear infinite;
-	}
+/* 필수적인 스타일만 인라인으로 포함 */
+.spinner-border {
+	display: inline-block;
+	width: 2rem;
+	height: 2rem;
+	vertical-align: text-bottom;
+	border: .25em solid currentColor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	animation: spinner-border .75s linear infinite
+}
 
-	@keyframes spinner-border {
-		to {
-			transform: rotate(360deg);
-		}
-	}
+@keyframes spinner-border {
+	to { transform: rotate(360deg); }
+}
+#spinner {
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity .5s ease-out, visibility 0s linear .5s;
+	z-index: 99999
+}
 
-	#spinner {
-		opacity: 0;
-		visibility: hidden;
-		transition: opacity .5s ease-out, visibility 0s linear .5s;
-		z-index: 99999;
-	}
+#spinner.show {
+	transition: opacity .5s ease-out, visibility 0s linear 0s;
+	visibility: visible;
+	opacity: 1
+}
 
-	#spinner.show {
-		transition: opacity .5s ease-out, visibility 0s linear 0s;
-		visibility: visible;
-		opacity: 1;
-	}
+.content {
+	opacity: 0;
+	transition: opacity 0.3s ease-in;
+}
 
-	.content {
-		opacity: 0;
-		transition: opacity 0.3s ease-in;
-	}
+.content.show {
+	opacity: 1;
+}
 
-	.content.show {
-		opacity: 1;
+input[readonly] { background-color: #e9ecef !important; color: #212529 !important; opacity: 1 !important; }
+
+.order-row-flex {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: center;
+}
+
+.order-row-flex>.col-md-6, .order-row-flex>.col-md-12 {
+	flex: 1 1 0;
+	min-width: 200px;
+	margin-bottom: 0;
+}
+
+@media ( max-width : 900px) {
+	.order-row-flex {
+		flex-direction: column;
 	}
+}
 </style>
 
-<!-- Initial Scripts -->
 <script>
-	// 페이지 로드 시 실행될 초기화 함수
-	function initializePage() {
-		hideSpinner();
-	}
-
-	// 스피너 제어 함수
-	function showSpinner() {
-		document.getElementById('spinner').classList.add('show');
-	}
-
-	function hideSpinner() {
-		document.getElementById('spinner').classList.remove('show');
-		document.querySelector('.content').classList.add('show');
-	}
-
-	// DOMContentLoaded 이벤트에서 초기화 실행
-	document.addEventListener('DOMContentLoaded', initializePage);
-
-	// 페이지가 완전히 로드된 후 실행
-	window.onload = function() {
-		hideSpinner();
-	};
+function initializePage() { hideSpinner(); }
+function showSpinner() { document.getElementById('spinner').classList.add('show'); }
+function hideSpinner() { document.getElementById('spinner').classList.remove('show'); document.querySelector('.content').classList.add('show'); }
+document.addEventListener('DOMContentLoaded', initializePage);
+window.onload = function() { hideSpinner(); };
 </script>
 </head>
 
 <body>
 	<div class="container-fluid position-relative bg-white d-flex p-0">
 		<!-- Spinner Start -->
-		<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-			<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+		<div id="spinner"
+			class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+			<div class="spinner-border text-primary"
+				style="width: 3rem; height: 3rem;" role="status">
 				<span class="sr-only">Loading...</span>
 			</div>
 		</div>
@@ -129,133 +132,88 @@
 			<jsp:include page="../common/navbar.jsp" />
 			<!-- Navbar End -->
 
-			<!-- Order Registration Start -->
+			<!-- Order Update Start -->
 			<div class="container-fluid pt-4 px-4">
 				<div class="bg-light text-center rounded p-4">
 					<div class="d-flex align-items-center justify-content-between mb-4">
-						<h6 class="mb-0">주문 등록</h6>
+						<h4 class="mb-0">주문 등록</h4>
+						<div style="font-size:1rem; color:#666;">
+							주문번호: <span style="font-weight:bold;">${order.orderId}</span>
+							&nbsp;|&nbsp;
+							주문일자: <span><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></span>
+						</div>
 					</div>
 
-					<!-- 주문 등록 폼 -->
-					<form class="row g-3" action="registerOrder.do" method="post">
-						<!-- 거래처 유형 선택 -->
+					<!-- 주문 수정 폼 -->
+					<form class="row g-3" action="updateOrder.do" method="post" id="orderForm">
+						<input type="hidden" name="orderId" value="${order.orderId}">
+						<input type="hidden" name="orderStatus" value="${order.orderStatus}">
+						<!-- 주문 유형 선택 -->
 						<div class="col-md-6">
-							<label for="transactionType" class="form-label">거래처 유형</label> <select
-								class="form-control" id="transactionType" name="transactionType"
-								required>
-								<option value="" disabled selected>거래처 유형 선택</option>
-								<option value="wholesale">공급처</option>
-								<option value="retail">판매처</option>
+							<label for="orderType" class="form-label">주문 유형</label>
+							<select class="form-control" id="orderType" name="orderType" required>
+								<option value="">주문 유형 선택</option>
+								<option value="발주">발주</option>
+								<option value="수주">수주</option>
 							</select>
 						</div>
-
 						<!-- 거래처 선택 -->
 						<div class="col-md-6">
-							<label for="client" class="form-label">거래처</label> <select
-								class="form-control" id="client" name="client" required>
-								<option value="" disabled selected>거래처 선택</option>
-								<c:forEach var="client" items="${clients}">
-									<option value="${client.id}">${client.name}
-										(${client.id})</option>
-								</c:forEach>
+							<label for="partnerId" class="form-label">거래처</label>
+							<select class="form-control" id="partnerId" name="partnerId" required disabled>
+								<option value="" selected>거래처 선택</option>
 							</select>
 						</div>
-
-						<!-- 상품명 -->
-						<div class="col-md-6">
-							<label for="productName" class="form-label">상품명</label> <input
-								type="text" class="form-control" id="productName"
-								name="productName" placeholder="상품명 입력" required>
-						</div>
-
-						<!-- 옵션 -->
-						<div class="col-md-6">
-							<label for="option" class="form-label">옵션</label> <input
-								type="text" class="form-control" id="option" name="option"
-								placeholder="옵션 입력 (예: 색상: 블랙)">
-						</div>
-
-						<!-- 수량 -->
-						<div class="col-md-6">
-							<label for="quantity" class="form-label">수량</label> <input
-								type="number" class="form-control" id="quantity" name="quantity"
-								min="1" placeholder="수량 입력" required>
-						</div>
-
-						<!-- 판매가 -->
-						<div class="col-md-6">
-							<label for="price" class="form-label">판매가</label> <input
-								type="number" class="form-control" id="price" name="price"
-								min="0" placeholder="판매가 입력" required>
-						</div>
-
-						<!-- 담당자명 -->
-						<div class="col-md-6">
-							<label for="managerName" class="form-label">담당자명</label> <input
-								type="text" class="form-control" id="managerName"
-								name="managerName" placeholder="담당자명 입력" required>
-						</div>
-
-						<!-- 담당자 연락처 -->
-						<div class="col-md-6">
-							<label for="managerContact" class="form-label">담당자 연락처</label> <input
-								type="text" class="form-control" id="managerContact"
-								name="managerContact" placeholder="010-XXXX-XXXX"
-								pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
-						</div>
-
-						<!-- 거래처 주소지 -->
+						<!-- 상품 목록 테이블 -->
 						<div class="col-12">
-							<label for="address" class="form-label">거래처 주소지</label> <input
-								type="text" class="form-control" id="address" name="address"
-								placeholder="거래처 주소지 입력" required>
+							<div class="card">
+								<div class="card-header d-flex justify-content-between align-items-center">
+									<h6 class="mb-0">상품 목록</h6>
+									<button type="button" class="btn btn-primary btn-sm" onclick="addProductRow()">
+										<i class="fa fa-plus"></i> 상품 추가
+									</button>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table" id="productTable">
+											<thead>
+												<tr>
+													<th>상품코드</th>
+													<th>상품명</th>
+													<th>옵션</th>
+													<th>원가</th>
+													<th>판매가</th>
+													<th>수량</th>
+													<th>관리</th>
+												</tr>
+											</thead>
+											<tbody>
+												<c:forEach var="item" items="${order.items}">
+													<tr>
+														<td><input type="text" class="form-control product-code" value="${item.productId}" required></td>
+														<td><input type="text" class="form-control product-name" value="${item.productName}" readonly></td>
+														<td><input type="text" class="form-control product-option" value="${item.optionValue}" readonly></td>
+														<td><input type="number" class="form-control product-cost" value="${item.costPrice}" readonly></td>
+														<td><input type="number" class="form-control product-price" value="${item.sellingPrice}" readonly></td>
+														<td><input type="number" class="form-control product-quantity" value="${item.quantity}" min="1" required></td>
+														<td><button type="button" class="btn btn-danger btn-sm" onclick="removeProductRow(this)"><i class="fa fa-trash"></i></button></td>
+													</tr>
+												</c:forEach>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
 						</div>
-
 						<!-- 버튼 -->
 						<div class="col-12 d-flex justify-content-end mt-3">
-							<button type="button" class="btn btn-secondary me-2"
-								onclick="cancelRegistration()">취소</button>
-							<button type="submit" class="btn btn-primary">등록</button>
+							<button type="button" class="btn btn-secondary me-2" onclick="cancelUpdate()">취소</button>
+							<button type="submit" class="btn btn-primary">저장</button>
 						</div>
 					</form>
-
-					<!-- JavaScript -->
-					<script>
-						// 취소 버튼 클릭 시 처리
-						function cancelRegistration() {
-							if (isFormModified()) {
-								if (confirm('입력하신 내용이 저장되지 않습니다. 주문 조회 페이지로 이동하시겠습니까?')) {
-									navigateToOrders();
-								}
-							} else {
-								navigateToOrders();
-							}
-						}
-
-						// 주문 조회 페이지로 이동
-						function navigateToOrders() {
-							window.location.href = '${pageContext.request.contextPath}/order/list.do';
-						}
-
-						// 폼 수정 여부 확인
-						function isFormModified() {
-							return $('form input, form select').filter(function() {
-								return $(this).val() !== '';
-							}).length > 0;
-						}
-
-						// 입력값 검증
-						document.getElementById("price").addEventListener("input", function() {
-							if (this.value < 0) this.value = 0;
-						});
-
-						document.getElementById("quantity").addEventListener("input", function() {
-							if (this.value < 1) this.value = 1;
-						});
-					</script>
 				</div>
 			</div>
-			<!-- Order Registration End -->
+			<!-- Order Update End -->
 
 			<!-- Footer Start -->
 			<jsp:include page="../common/footer.jsp" />
@@ -276,11 +234,169 @@
 	<script src="${pageContext.request.contextPath}/resources/lib/tempusdominus/js/moment.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/lib/tempusdominus/js/moment-timezone.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-	<!-- Template Javascript -->
 	<script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+
+	<!-- Custom JavaScript -->
+	<script>
+	$(document).ready(function() {
+		// 거래처 목록 로딩
+		function loadPartnerList(partnerType) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/partner/list",
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					var html = '<option value="">거래처 선택</option>';
+					$.each(data, function(i, partner) {
+						if (!partnerType || partner.partnerType === partnerType) {
+							html += '<option value="' + partner.partnerId + '">' + partner.partnerName + '</option>';
+						}
+					});
+					$('#partnerId').html(html);
+				}
+			});
+		}
+
+		// 주문 유형 변경 시 거래처 목록 필터링 및 드롭다운 활성화
+		$('#orderType').on('change', function() {
+			var orderType = $(this).val();
+			var partnerType = '';
+			if (orderType === '발주') {
+				partnerType = '공급처';
+			} else if (orderType === '수주') {
+				partnerType = '판매처';
+			}
+			loadPartnerList(partnerType);
+			$('#partnerId').prop('disabled', false);
+		});
+
+		// 상품 코드 입력 후 포커스 아웃 시 상품 정보 조회
+		$(document).on('blur', '.product-code', function() {
+			getProductInfo(this);
+		});
+
+		// 상품 코드 입력 후 엔터 시 상품 정보 조회
+		$(document).on('keypress', '.product-code', function(e) {
+			if (e.which === 13) {
+				e.preventDefault();
+				getProductInfo(this);
+			}
+		});
+	});
+
+	function addProductRow() {
+		var row = `
+			<tr>
+				<td><input type="text" class="form-control product-code" required></td>
+				<td><input type="text" class="form-control product-name" readonly></td>
+				<td><input type="text" class="form-control product-option" readonly></td>
+				<td><input type="number" class="form-control product-cost" readonly></td>
+				<td><input type="number" class="form-control product-price" readonly></td>
+				<td><input type="number" class="form-control product-quantity" min="1" value="1" required></td>
+				<td><button type="button" class="btn btn-danger btn-sm" onclick="removeProductRow(this)"><i class="fa fa-trash"></i></button></td>
+			</tr>
+		`;
+		$('#productTable tbody').append(row);
+	}
+
+	function getProductInfo(input) {
+		const productId = input.value;
+		if (!productId) return;
+		$.ajax({
+			url: '${pageContext.request.contextPath}/order/product-info.do',
+			type: 'GET',
+			data: { productId: productId },
+			success: function(response) {
+				if (response.status === 'success') {
+					const row = $(input).closest('tr');
+					row.find('.product-name').val(response.productName);
+					row.find('.product-option').val(response.optionValue);
+					row.find('.product-cost').val(response.costPrice);
+					row.find('.product-price').val(response.sellingPrice);
+					row.find('.product-quantity').val('1');
+				} else {
+					alert(response.message || '상품 정보를 찾을 수 없습니다.');
+					input.value = '';
+				}
+			},
+			error: function() {
+				alert('상품 정보 조회 중 오류가 발생했습니다.');
+				input.value = '';
+			}
+		});
+	}
+
+	function removeProductRow(button) {
+		$(button).closest('tr').remove();
+	}
+
+	$('#orderForm').on('submit', function(e) {
+		e.preventDefault();
+		
+		// 주문 유형 체크
+		var orderType = $('#orderType').val();
+		if (!orderType) {
+			alert('주문 유형을 선택해주세요.');
+			$('#orderType').focus();
+			return false;
+		}
+
+		// 거래처 체크
+		var partnerId = $('#partnerId').val();
+		if (!partnerId) {
+			alert('거래처를 선택해주세요.');
+			$('#partnerId').focus();
+			return false;
+		}
+
+		var formData = {
+			orderType: orderType,
+			partnerId: partnerId,
+			items: []
+		};
+
+		var hasItems = false;
+		$('#productTable tbody tr').each(function() {
+			var row = $(this);
+			var productCode = row.find('.product-code').val();
+			var quantity = row.find('.product-quantity').val();
+			if (productCode && quantity) {
+				hasItems = true;
+				formData.items.push({
+					productId: productCode,
+					quantity: parseInt(quantity)
+				});
+			}
+		});
+
+		if (!hasItems) {
+			alert('최소 하나 이상의 상품을 등록해주세요.');
+			return false;
+		}
+
+		$.ajax({
+			url: '${pageContext.request.contextPath}/order/registerOrder.do',
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(formData),
+			success: function(response) {
+				if (response.status === 'success') {
+					alert('주문이 등록되었습니다.');
+					window.location.href = '${pageContext.request.contextPath}/order/list.do';
+				} else {
+					alert(response.message || '주문 등록에 실패했습니다.');
+				}
+			},
+			error: function() {
+				alert('주문 등록 중 오류가 발생했습니다.');
+			}
+		});
+	});
+
+	function cancelUpdate() {
+		history.back();
+	}
+	</script>
 </body>
 
 </html>
-
-<%-- <%@ include file="../include/footer.jsp" %>  --%>

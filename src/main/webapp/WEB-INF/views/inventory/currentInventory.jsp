@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -53,16 +54,20 @@
                             <!-- Search Filters -->
                             <form class="row g-3 mb-4" action="${pageContext.request.contextPath}/inventory/search.do" method="post">
                                 <div class="col-md-4">
-                                    <label for="supplier" class="form-label">공급처</label>
-                                    <input type="text" class="form-control" id="supplier" name="supplier" placeholder="전체그룹" value="${param.supplier}">
+                                    <label for="productType" class="form-label">상품 유형</label>
+                                    <select id="productType" name="productType" class="form-select">
+                                        <option value="">전체</option>
+                                        <option value="부품" ${param.productType eq '부품' ? 'selected' : ''}>부품</option>
+                                        <option value="완제품" ${param.productType eq '완제품' ? 'selected' : ''}>완제품</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="productTag" class="form-label">상품태그</label>
-                                    <select id="productTag" name="productTag" class="form-select">
-                                        <option value="">상품태그</option>
-                                        <c:if test="${not empty productTags}">
-                                            <c:forEach items="${productTags}" var="tag">
-                                                <option value="${tag.code}" ${param.productTag eq tag.code ? 'selected' : ''}>${tag.name}</option>
+                                    <label for="supplier" class="form-label">공급처</label>
+                                    <select id="supplier" name="partnerId" class="form-select">
+                                        <option value="">전체</option>
+                                        <c:if test="${not empty suppliers}">
+                                            <c:forEach items="${suppliers}" var="supplier">
+                                                <option value="${supplier.partnerId}" ${param.partnerId eq supplier.partnerId ? 'selected' : ''}>${supplier.partnerName}</option>
                                             </c:forEach>
                                         </c:if>
                                     </select>
@@ -72,72 +77,53 @@
                                     <select id="searchCondition" name="searchCondition" class="form-select">
                                         <option value="productName" ${param.searchCondition eq 'productName' ? 'selected' : ''}>상품명</option>
                                         <option value="productCode" ${param.searchCondition eq 'productCode' ? 'selected' : ''}>상품코드</option>
-                                        <option value="barcode" ${param.searchCondition eq 'barcode' ? 'selected' : ''}>바코드</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="inventoryQuantity" class="form-label">재고수량</label>
-                                    <select id="inventoryQuantity" name="inventoryQuantity" class="form-select">
-                                        <option value="">전체</option>
-                                        <option value="0" ${param.inventoryQuantity eq '0' ? 'selected' : ''}>0개</option>
-                                        <option value="1-10" ${param.inventoryQuantity eq '1-10' ? 'selected' : ''}>1-10개</option>
-                                        <option value="11-50" ${param.inventoryQuantity eq '11-50' ? 'selected' : ''}>11-50개</option>
-                                        <option value="51-100" ${param.inventoryQuantity eq '51-100' ? 'selected' : ''}>51-100개</option>
-                                        <option value="101" ${param.inventoryQuantity eq '101' ? 'selected' : ''}>101개 이상</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="category" class="form-label">카테고리</label>
-                                    <select id="category" name="category" class="form-select">
-                                        <option value="">전체</option>
-                                        <c:if test="${not empty categories}">
-                                            <c:forEach items="${categories}" var="category">
-                                                <option value="${category.code}" ${param.category eq category.code ? 'selected' : ''}>${category.name}</option>
-                                            </c:forEach>
-                                        </c:if>
-                                    </select>
+                                    <label for="searchKeyword" class="form-label">검색어</label>
+                                    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword" value="${param.searchKeyword}">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="inventoryStatus" class="form-label">재고상태</label>
                                     <select id="inventoryStatus" name="inventoryStatus" class="form-select">
                                         <option value="">전체</option>
                                         <option value="NORMAL" ${param.inventoryStatus eq 'NORMAL' ? 'selected' : ''}>정상</option>
-                                        <option value="DEFECTIVE" ${param.inventoryStatus eq 'DEFECTIVE' ? 'selected' : ''}>불량</option>
-                                        <option value="TRANSIT" ${param.inventoryStatus eq 'TRANSIT' ? 'selected' : ''}>경유창고</option>
+                                        <option value="LOW" ${param.inventoryStatus eq 'LOW' ? 'selected' : ''}>부족</option>
+                                        <option value="ZERO" ${param.inventoryStatus eq 'ZERO' ? 'selected' : ''}>품절</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="workPeriod" class="form-label">작업기간</label>
+                                    <label for="dateRange" class="form-label">기간</label>
                                     <div class="input-group">
-                                        <input type="date" class="form-control" name="workStartDate" value="${param.workStartDate}">
+                                        <input type="date" class="form-control" name="startDate" value="${param.startDate}">
                                         <span class="input-group-text">~</span>
-                                        <input type="date" class="form-control" name="workEndDate" value="${param.workEndDate}">
+                                        <input type="date" class="form-control" name="endDate" value="${param.endDate}">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="productPeriod" class="form-label">상품기간</label>
-                                    <div class="input-group">
-                                        <input type="date" class="form-control" name="productStartDate" value="${param.productStartDate}">
-                                        <span class="input-group-text">~</span>
-                                        <input type="date" class="form-control" name="productEndDate" value="${param.productEndDate}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="quality" class="form-label">품질</label>
-                                    <select id="quality" name="quality" class="form-select">
-                                        <option value="">전체</option>
-                                        <option value="A" ${param.quality eq 'A' ? 'selected' : ''}>A급</option>
-                                        <option value="B" ${param.quality eq 'B' ? 'selected' : ''}>B급</option>
-                                        <option value="C" ${param.quality eq 'C' ? 'selected' : ''}>C급</option>
-                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="sortOrder" class="form-label">정렬</label>
                                     <select id="sortOrder" name="sortOrder" class="form-select">
+                                        <option value="productId" ${param.sortOrder eq 'productId' ? 'selected' : ''}>상품코드</option>
                                         <option value="productName" ${param.sortOrder eq 'productName' ? 'selected' : ''}>상품명</option>
-                                        <option value="inventoryQuantity" ${param.sortOrder eq 'inventoryQuantity' ? 'selected' : ''}>재고수량</option>
-                                        <option value="costPrice" ${param.sortOrder eq 'costPrice' ? 'selected' : ''}>원가</option>
-                                        <option value="sellingPrice" ${param.sortOrder eq 'sellingPrice' ? 'selected' : ''}>판매가</option>
+                                        <option value="partnerName" ${param.sortOrder eq 'partnerName' ? 'selected' : ''}>공급처</option>
+                                        <option value="productType" ${param.sortOrder eq 'productType' ? 'selected' : ''}>상품유형</option>
+                                        <option value="totalStock" ${param.sortOrder eq 'totalStock' ? 'selected' : ''}>전체재고</option>
+                                        <option value="availableStock" ${param.sortOrder eq 'availableStock' ? 'selected' : ''}>가용재고</option>
+                                        <option value="headOfficeStock" ${param.sortOrder eq 'headOfficeStock' ? 'selected' : ''}>본사창고</option>
+                                        <option value="busanStock" ${param.sortOrder eq 'busanStock' ? 'selected' : ''}>부산창고</option>
+                                        <option value="incheonStock" ${param.sortOrder eq 'incheonStock' ? 'selected' : ''}>인천창고</option>
+                                        <option value="daeguStock" ${param.sortOrder eq 'daeguStock' ? 'selected' : ''}>대구창고</option>
+                                        <option value="gwangjuStock" ${param.sortOrder eq 'gwangjuStock' ? 'selected' : ''}>광주창고</option>
+                                        <option value="transitStock" ${param.sortOrder eq 'transitStock' ? 'selected' : ''}>경유창고</option>
+                                        <option value="defectiveStock" ${param.sortOrder eq 'defectiveStock' ? 'selected' : ''}>불량창고</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="pageSize" class="form-label">페이지당 개수</label>
+                                    <select id="pageSize" name="pageSize" class="form-select" onchange="this.form.submit()">
+                                        <option value="20" ${param.pageSize eq '20' ? 'selected' : ''}>20개씩 보기</option>
+                                        <option value="50" ${param.pageSize eq '50' ? 'selected' : ''}>50개씩 보기</option>
+                                        <option value="100" ${param.pageSize eq '100' ? 'selected' : ''}>100개씩 보기</option>
                                     </select>
                                 </div>
                                 <div class="col-12 text-end">
@@ -150,54 +136,57 @@
                                 <table class="table table-bordered text-center">
                                     <thead>
                                         <tr class="table-secondary">
-                                            <th></th>
-                                            <th>정상</th>
-                                            <th>불량</th>
+                                            <th rowspan="2" style="vertical-align: middle;">구분</th>
+                                            <th colspan="7">창고별 재고</th>
+                                            <th rowspan="2" style="vertical-align: middle;">가용재고</th>
+                                            <th rowspan="2" style="vertical-align: middle;">전체재고</th>
+                                        </tr>
+                                        <tr class="table-secondary">
+                                            <th>본사창고</th>
+                                            <th>부산창고</th>
+                                            <th>인천창고</th>
+                                            <th>대구창고</th>
+                                            <th>광주창고</th>
                                             <th>경유창고</th>
-                                            <th>애플 물류</th>
-                                            <th>삼성 물류</th>
-                                            <th>SK 물류</th>
-                                            <th>LG 물류</th>
-                                            <th>ICT 물류</th>
-                                            <th>정상+창고</th>
+                                            <th>불량창고</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <th scope="row">수량 (개)</th>
-                                            <td>${inventorySummary.normalQuantity != null ? inventorySummary.normalQuantity : 0}</td>
-                                            <td>${inventorySummary.defectiveQuantity != null ? inventorySummary.defectiveQuantity : 0}</td>
-                                            <td>${inventorySummary.transitQuantity != null ? inventorySummary.transitQuantity : 0}</td>
-                                            <td>${inventorySummary.appleQuantity != null ? inventorySummary.appleQuantity : 0}</td>
-                                            <td>${inventorySummary.samsungQuantity != null ? inventorySummary.samsungQuantity : 0}</td>
-                                            <td>${inventorySummary.skQuantity != null ? inventorySummary.skQuantity : 0}</td>
-                                            <td>${inventorySummary.lgQuantity != null ? inventorySummary.lgQuantity : 0}</td>
-                                            <td>${inventorySummary.ictQuantity != null ? inventorySummary.ictQuantity : 0}</td>
-                                            <td>${inventorySummary.totalQuantity != null ? inventorySummary.totalQuantity : 0}</td>
+                                            <td class="table-light"><strong>수량 (개)</strong></td>
+                                            <td><fmt:formatNumber value="${headOfficeSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${busanSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${incheonSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${daeguSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${gwangjuSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${transitSum}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${defectiveSum}" pattern="#,#00" /></td>
+                                            <td><strong><fmt:formatNumber value="${availableSum}" pattern="#,#00" /></strong></td>
+                                            <td><strong><fmt:formatNumber value="${totalSum}" pattern="#,#00" /></strong></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">원가 (원)</th>
-                                            <td>${inventorySummary.normalCostPrice != null ? inventorySummary.normalCostPrice : 0}</td>
-                                            <td>${inventorySummary.defectiveCostPrice != null ? inventorySummary.defectiveCostPrice : 0}</td>
-                                            <td>${inventorySummary.transitCostPrice != null ? inventorySummary.transitCostPrice : 0}</td>
-                                            <td>${inventorySummary.appleCostPrice != null ? inventorySummary.appleCostPrice : 0}</td>
-                                            <td>${inventorySummary.samsungCostPrice != null ? inventorySummary.samsungCostPrice : 0}</td>
-                                            <td>${inventorySummary.skCostPrice != null ? inventorySummary.skCostPrice : 0}</td>
-                                            <td>${inventorySummary.lgCostPrice != null ? inventorySummary.lgCostPrice : 0}</td>
-                                            <td>${inventorySummary.ictCostPrice != null ? inventorySummary.ictCostPrice : 0}</td>
-                                            <td>${inventorySummary.totalCostPrice != null ? inventorySummary.totalCostPrice : 0}</td>
+                                            <td class="table-light"><strong>원가 (원)</strong></td>
+                                            <td><fmt:formatNumber value="${headOfficeCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${busanCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${incheonCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${daeguCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${gwangjuCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${transitCost}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${defectiveCost}" pattern="#,#00" /></td>
+                                            <td><strong><fmt:formatNumber value="${availableCost}" pattern="#,#00" /></strong></td>
+                                            <td><strong><fmt:formatNumber value="${totalCost}" pattern="#,#00" /></strong></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">판매가 (원)</th>
-                                            <td>${inventorySummary.normalSellingPrice != null ? inventorySummary.normalSellingPrice : 0}</td>
-                                            <td>${inventorySummary.defectiveSellingPrice != null ? inventorySummary.defectiveSellingPrice : 0}</td>
-                                            <td>${inventorySummary.transitSellingPrice != null ? inventorySummary.transitSellingPrice : 0}</td>
-                                            <td>${inventorySummary.appleSellingPrice != null ? inventorySummary.appleSellingPrice : 0}</td>
-                                            <td>${inventorySummary.samsungSellingPrice != null ? inventorySummary.samsungSellingPrice : 0}</td>
-                                            <td>${inventorySummary.skSellingPrice != null ? inventorySummary.skSellingPrice : 0}</td>
-                                            <td>${inventorySummary.lgSellingPrice != null ? inventorySummary.lgSellingPrice : 0}</td>
-                                            <td>${inventorySummary.ictSellingPrice != null ? inventorySummary.ictSellingPrice : 0}</td>
-                                            <td>${inventorySummary.totalSellingPrice != null ? inventorySummary.totalSellingPrice : 0}</td>
+                                            <td class="table-light"><strong>판매가 (원)</strong></td>
+                                            <td><fmt:formatNumber value="${headOfficeSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${busanSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${incheonSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${daeguSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${gwangjuSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${transitSell}" pattern="#,#00" /></td>
+                                            <td><fmt:formatNumber value="${defectiveSell}" pattern="#,#00" /></td>
+                                            <td><strong><fmt:formatNumber value="${availableSell}" pattern="#,#00" /></strong></td>
+                                            <td><strong><fmt:formatNumber value="${totalSell}" pattern="#,#00" /></strong></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -216,21 +205,21 @@
                                             <th scope="col">No</th>
                                             <th scope="col">공급처</th>
                                             <th scope="col">상품코드</th>
+                                            <th scope="col">상품유형</th>
                                             <th scope="col">이미지</th>
-                                            <th scope="col">바코드</th>
                                             <th scope="col">상품명</th>
                                             <th scope="col">옵션</th>
-                                            <th scope="col">정상재고</th>
-                                            <th scope="col">불량재고</th>
+                                            <th scope="col">본사창고</th>
+                                            <th scope="col">부산창고</th>
+                                            <th scope="col">인천창고</th>
+                                            <th scope="col">대구창고</th>
+                                            <th scope="col">광주창고</th>
                                             <th scope="col">경유창고</th>
-                                            <th scope="col">애플 물류</th>
-                                            <th scope="col">삼성 물류</th>
-                                            <th scope="col">SK 물류</th>
-                                            <th scope="col">LG 물류</th>
-                                            <th scope="col">ICT 물류</th>
+                                            <th scope="col">불량창고</th>
                                             <th scope="col">가용재고</th>
-                                            <th scope="col">점유수</th>
-                                            <th scope="col">출고</th>
+                                            <th scope="col">전체재고</th>
+                                            <th scope="col">안전재고</th>
+                                            <th scope="col">재고상태</th>
                                             <th scope="col">원가</th>
                                             <th scope="col">판매가</th>
                                         </tr>
@@ -239,27 +228,39 @@
                                         <c:if test="${not empty inventoryList}">
                                             <c:forEach items="${inventoryList}" var="item" varStatus="status">
                                                 <tr>
-                                                    <td><input class="form-check-input" type="checkbox" name="selectedItems" value="${item.productCode}"></td>
+                                                    <td><input class="form-check-input" type="checkbox" name="selectedItems" value="${item.productId}"></td>
                                                     <td>${status.count}</td>
-                                                    <td>${item.supplier}</td>
-                                                    <td>${item.productCode}</td>
-                                                    <td><img src="${pageContext.request.contextPath}/resources/img/product/${item.imagePath}" alt="img" style="width: 30px; height: 30px;"></td>
-                                                    <td>${item.barcode}</td>
+                                                    <td>${item.partnerName}</td>
+                                                    <td>${item.productId}</td>
+                                                    <td>${item.productType}</td>
+                                                    <td><img src="${pageContext.request.contextPath}/product/image/${item.productId}" alt="img" style="width: 30px; height: 30px;"></td>
                                                     <td>${item.productName}</td>
-                                                    <td>${item.option}</td>
-                                                    <td>${item.normalQuantity}</td>
-                                                    <td>${item.defectiveQuantity}</td>
-                                                    <td>${item.transitQuantity}</td>
-                                                    <td>${item.appleQuantity}</td>
-                                                    <td>${item.samsungQuantity}</td>
-                                                    <td>${item.skQuantity}</td>
-                                                    <td>${item.lgQuantity}</td>
-                                                    <td>${item.ictQuantity}</td>
-                                                    <td>${item.availableQuantity}</td>
-                                                    <td>${item.occupiedQuantity}</td>
-                                                    <td>${item.outboundQuantity}</td>
-                                                    <td>${item.costPrice}</td>
-                                                    <td>${item.sellingPrice}</td>
+                                                    <td>${item.optionValue}</td>
+                                                    <td>${item.headOfficeStock}</td>
+                                                    <td>${item.busanStock}</td>
+                                                    <td>${item.incheonStock}</td>
+                                                    <td>${item.daeguStock}</td>
+                                                    <td>${item.gwangjuStock}</td>
+                                                    <td>${item.transitStock}</td>
+                                                    <td>${item.defectiveStock}</td>
+                                                    <td>${item.availableStock}</td>
+                                                    <td>${item.totalStock}</td>
+                                                    <td>${item.safeStock}</td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${item.availableStock == 0}">
+                                                                <span class="badge bg-secondary">품절</span>
+                                                            </c:when>
+                                                            <c:when test="${item.availableStock lt item.safeStock}">
+                                                                <span class="badge bg-danger">부족</span>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="badge bg-success">정상</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td><fmt:formatNumber value="${item.costPrice}" pattern="#,###" /></td>
+                                                    <td><fmt:formatNumber value="${item.sellingPrice}" pattern="#,###" /></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:if>
@@ -271,6 +272,33 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <!-- Pagination -->
+                            <c:if test="${totalPages > 1}">
+                                <nav aria-label="Page navigation" class="mt-3">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>'">
+                                            <form method="post" action="${pageContext.request.contextPath}/inventory/search.do" style="display:inline;">
+                                                <input type="hidden" name="page" value="${currentPage - 1}" />
+                                                <button class="page-link" type="submit" tabindex="-1">이전</button>
+                                            </form>
+                                        </li>
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <li class="page-item <c:if test='${i == currentPage}'>active</c:if>'">
+                                                <form method="post" action="${pageContext.request.contextPath}/inventory/search.do" style="display:inline;">
+                                                    <input type="hidden" name="page" value="${i}" />
+                                                    <button class="page-link" type="submit">${i}</button>
+                                                </form>
+                                            </li>
+                                        </c:forEach>
+                                        <li class="page-item <c:if test='${currentPage == totalPages}'>disabled</c:if>'">
+                                            <form method="post" action="${pageContext.request.contextPath}/inventory/search.do" style="display:inline;">
+                                                <input type="hidden" name="page" value="${currentPage + 1}" />
+                                                <button class="page-link" type="submit">다음</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </c:if>
                         </div>
                     </div>
                 </div>

@@ -137,86 +137,83 @@ let productInoutChart = null;
 let warehouseStockChart = null;
 
 function clearTableAndCharts() {
-    // 표
     document.getElementById('inoutTableBody').innerHTML = '<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>';
-    // 차트
     if (productInoutChart) { productInoutChart.destroy(); productInoutChart = null; }
     if (warehouseStockChart) { warehouseStockChart.destroy(); warehouseStockChart = null; }
     document.getElementById('productInoutNoData').style.display = '';
     document.getElementById('warehouseStockNoData').style.display = '';
 }
 
-function renderTableAndCharts(data) {
-    // 표
-    const tbody = document.getElementById('inoutTableBody');
-    tbody.innerHTML = '';
-    if (!data.table || data.table.length === 0) {
-        tbody.innerHTML = '<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>';
-    } else {
-        data.table.forEach(row => {
-            tbody.innerHTML += `<tr>
-                <td>${row.date}</td>
-                <td class="in">${row.in}</td>
-                <td class="out">${row.out}</td>
-                <td>${row.stock}</td>
-                <td class="${row.rateClass}">${row.rate}</td>
-            </tr>`;
-        });
-    }
-    // 차트
-    if (productInoutChart) productInoutChart.destroy();
-    if (warehouseStockChart) warehouseStockChart.destroy();
-    if (data.productChart && data.productChart.labels.length > 0) {
-        document.getElementById('productInoutNoData').style.display = 'none';
-        const ctx1 = document.getElementById('productInoutChart').getContext('2d');
-        productInoutChart = new Chart(ctx1, {
-            type: 'bar',
-            data: data.productChart,
-            options: { responsive: true, plugins: { legend: { position: 'top' } } }
-        });
-    } else {
-        document.getElementById('productInoutNoData').style.display = '';
-    }
-    if (data.warehouseChart && data.warehouseChart.labels.length > 0) {
-        document.getElementById('warehouseStockNoData').style.display = 'none';
-        const ctx2 = document.getElementById('warehouseStockChart').getContext('2d');
-        warehouseStockChart = new Chart(ctx2, {
-            type: 'pie',
-            data: data.warehouseChart,
-            options: { responsive: true, plugins: { legend: { position: 'right' } } }
-        });
-    } else {
-        document.getElementById('warehouseStockNoData').style.display = '';
-    }
-}
-
-// 검색 버튼 클릭 시 샘플 데이터로 표/차트 갱신
 $(function() {
     clearTableAndCharts();
+    const ctx = "${pageContext.request.contextPath}";
     $('#searchForm button[type="button"]').on('click', function() {
-        // 실제로는 Ajax로 데이터 받아오면 됨
-        const sample = {
-            table: [
-                {date:'2024-02-03', in:'1,200 개', out:'900 개', stock:'2,000 개', rate:'10 %', rateClass:'plus'},
-                {date:'2024-02-02', in:'900 개', out:'1,000 개', stock:'1,700 개', rate:'-5 %', rateClass:'minus'},
-                {date:'2024-02-01', in:'800 개', out:'700 개', stock:'1,800 개', rate:'3 %', rateClass:'plus'}
-            ],
-            productChart: {
-                labels: ['스마트폰', '태블릿', '스마트워치'],
-                datasets: [
-                    { label: '입고량', data: [1200, 900, 700], backgroundColor: '#27ae60' },
-                    { label: '출고량', data: [900, 800, 600], backgroundColor: '#e74c3c' }
-                ]
-            },
-            warehouseChart: {
-                labels: ['서울 창고', '부산 창고', '대구 창고', '인천 창고', '광주 창고'],
-                datasets: [{
-                    data: [400, 300, 250, 200, 150],
-                    backgroundColor: ['#3b5998', '#27ae60', '#f1c40f', '#e74c3c', '#5dade2']
-                }]
-            }
+        // 1. 폼 데이터 수집
+        const params = {
+            startDate: $('input[name="startDate"]').val(),
+            endDate: $('input[name="endDate"]').val(),
+            warehouse: $('select[name="warehouse"]').val(),
+            category: $('select[name="category"]').val(),
+            productName: $('input[name="productName"]').val()
         };
-        renderTableAndCharts(sample);
+
+        // 2. 표 데이터
+        $.getJSON(ctx + '/report/inout/data', params, function(tableData) {
+            const tbody = $('#inoutTableBody').empty();
+            if (!tableData || tableData.length === 0) {
+                tbody.append('<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>');
+            } else {
+                tableData.forEach(row => {
+                    tbody.append(
+                        `<tr>
+                            <td>${'$'}{row.date}</td>
+                            <td class="in">${'$'}{row.inAmount.toLocaleString()} 개</td>
+                            <td class="out">${'$'}{row.outAmount.toLocaleString()} 개</td>
+                            <td>${'$'}{row.stockAmount.toLocaleString()} 개</td>
+                            <td class="${'$'}{parseFloat(row.rate) >= 0 ? 'plus' : 'minus'}">${'$'}{row.rate}</td>
+                        </tr>`
+                    );
+                });
+            }
+        });
+
+        // 3. 상품별 차트 데이터
+        $.getJSON(ctx + '/report/inout/product-chart', params, function(productData) {
+            const labels = productData.map(d => d.productName);
+            const inData = productData.map(d => d.inAmount);
+            const outData = productData.map(d => d.outAmount);
+            if (productInoutChart) productInoutChart.destroy();
+            const ctx1 = document.getElementById('productInoutChart').getContext('2d');
+            productInoutChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: '입고', data: inData, backgroundColor: '#27ae60' },
+                        { label: '출고', data: outData, backgroundColor: '#e74c3c' }
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            });
+            $('#productInoutNoData').toggle(labels.length === 0);
+        });
+
+        // 4. 창고별 차트 데이터
+        $.getJSON(ctx + '/report/inout/warehouse-chart', { date: params.endDate }, function(warehouseData) {
+            const labels = warehouseData.map(d => d.warehouseName);
+            const stockData = warehouseData.map(d => d.stockAmount);
+            if (warehouseStockChart) warehouseStockChart.destroy();
+            const ctx2 = document.getElementById('warehouseStockChart').getContext('2d');
+            warehouseStockChart = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: '재고', data: stockData, backgroundColor: ['#09f','#2ecc71','#f39c12','#e74c3c','#8e44ad'] }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'right' } } }
+            });
+            $('#warehouseStockNoData').toggle(labels.length === 0);
+        });
     });
 });
 </script>

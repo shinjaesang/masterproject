@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.myweb.first.inout.model.dto.InOutVoice;
+import org.myweb.first.inout.model.dto.InOutVoiceProductDetail;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -68,5 +69,45 @@ public class InOutVoiceDao {
      */
     public int selectInOutVoiceTotalCount(Map<String, Object> params) {
         return sqlSession.selectOne("inOutVoiceMapper.selectInOutVoiceTotalCount", params);
+    }
+    
+    /**
+     * 전표별 상품목록 조회
+     * @param inoutvoiceId 전표 ID
+     * @return 상품 상세 목록
+     */
+    public List<InOutVoiceProductDetail> selectInOutVoiceProductList(String inoutvoiceId) {
+        return sqlSession.selectList("inOutVoiceMapper.selectInOutVoiceProductList", inoutvoiceId);
+    }
+
+    /**
+     * 전표별 상품 추가 (처리)
+     */
+    public int insertInOutVoiceProduct(String inoutvoiceId, String productId, int quantity, String workerId) {
+        java.util.Map<String, Object> param = new java.util.HashMap<>();
+        param.put("inoutvoiceId", inoutvoiceId);
+        param.put("productId", productId);
+        param.put("quantity", quantity);
+        param.put("workerId", workerId);
+        return sqlSession.insert("inOutVoiceMapper.insertInOutVoiceProduct", param);
+    }
+
+    public int processInOutVoiceProducts(java.util.List<String> ids) {
+        return sqlSession.update("inOutVoiceMapper.processInOutVoiceProducts", ids);
+    }
+
+    public int deleteInOutVoiceProducts(java.util.List<String> ids) {
+        return sqlSession.delete("inOutVoiceMapper.deleteInOutVoiceProducts", ids);
+    }
+
+    public List<InOutVoiceProductDetail> selectProductsByIds(List<String> ids) {
+        return sqlSession.selectList("inOutVoiceMapper.selectProductsByIds", ids);
+    }
+
+    public int updateProductAsProcessed(List<String> ids, String workerId) {
+        java.util.Map<String, Object> param = new java.util.HashMap<>();
+        param.put("ids", ids);
+        param.put("workerId", workerId);
+        return sqlSession.update("inOutVoiceMapper.updateProductAsProcessed", param);
     }
 } 

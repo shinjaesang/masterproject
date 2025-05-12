@@ -127,8 +127,10 @@ $(function() {
         success: function(data) {
             var html = '<option value="">선택하세요</option>';
             $.each(data, function(i, partner) {
-                html += '<option value="' + partner.partnerId + '">' + 
-                       partner.partnerId + ' - ' + partner.partnerName + '</option>';
+                if (partner.partnerType === '공급처') {
+                    html += '<option value="' + partner.partnerId + '">' + 
+                           partner.partnerId + ' - ' + partner.partnerName + '</option>';
+                }
             });
             $('select[name=partnerId]').html(html);
         }

@@ -43,4 +43,9 @@ public class PartnerServiceImpl implements PartnerService {
     public List<Partner> searchPartners(PartnerSearchCondition cond) {
         return partnerDao.searchPartners(cond);
     }
+
+    @Override
+    public List<Partner> selectSuppliersOnly() {
+        return partnerDao.selectSuppliersOnly();
+    }
 } 

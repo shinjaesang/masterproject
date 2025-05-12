@@ -26,4 +26,17 @@ public class TransactionDao {
     public int insertTransaction(Transaction transaction) {
         return sqlSession.insert("org.myweb.first.transaction.model.dao.TransactionDao.insertTransaction", transaction);
     }
+
+    public int updateTransaction(Transaction transaction) {
+        return sqlSession.update("org.myweb.first.transaction.model.dao.TransactionDao.updateTransaction", transaction);
+    }
+
+    public int deleteTransaction(String tdocId) {
+        return sqlSession.delete("org.myweb.first.transaction.model.dao.TransactionDao.deleteTransaction", tdocId);
+    }
+
+    // 거래문서 일괄 삭제
+    public int deleteTransactions(List<String> tdocIdList) {
+        return sqlSession.delete("org.myweb.first.transaction.model.dao.TransactionDao.deleteTransactions", tdocIdList);
+    }
 }

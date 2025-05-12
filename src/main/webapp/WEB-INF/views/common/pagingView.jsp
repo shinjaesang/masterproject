@@ -3,9 +3,20 @@
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
  
  <c:set var="paging" value="${ requestScope.paging }" />
- <%-- url 뒤에 추가할 쿼리스트링으로 사용할 변수로 저장함 --%>
- <c:set var="queryParams" 
- value="action=${ requestScope.action }&keyword=${ requestScope.keyword }&begin=${ requestScope.begin }&end=${ end }" />
+ <%-- 검색 조건이 있을 때 쿼리스트링에 추가 --%>
+ <c:set var="queryParams" value="" />
+ <c:if test="${not empty startDate}">
+     <c:set var="queryParams" value="${queryParams}&startDate=${startDate}" />
+ </c:if>
+ <c:if test="${not empty endDate}">
+     <c:set var="queryParams" value="${queryParams}&endDate=${endDate}" />
+ </c:if>
+ <c:if test="${not empty documentTitle}">
+     <c:set var="queryParams" value="${queryParams}&documentTitle=${documentTitle}" />
+ </c:if>
+ <c:if test="${not empty documentType}">
+     <c:set var="queryParams" value="${queryParams}&documentType=${documentType}" />
+ </c:if>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,52 +25,69 @@
 <title></title>
 </head>
 <body>
-<div style="text-align: center;">
-	<%-- 1페이지로 이동 --%>
-	<c:if test="${ paging.currentPage eq 1 }">
-		[맨처음] &nbsp;
-	</c:if>
-	<c:if test="${ paging.currentPage gt 1 }"> <%-- gt : greater than, > 연산자를 의미함 --%>
-		<a href="${ paging.urlMapping }?page=1&${ queryParams }">[맨처음]</a> &nbsp;
-	</c:if>
-	
-	<%-- 이전 페이지 그룹으로 이동 --%>
-	<%-- 이전 그룹이 있다면 --%>
-	<c:if test="${ (paging.currentPage - 10) lt paging.startPage and (paging.currentPage - 10) gt 1 }">
-		<a href="${ paging.urlMapping }?page=${paging.startPage - 10}&${ queryParams }">[이전그룹]</a> &nbsp;
-	</c:if>
-	<%-- 이전 그룹이 없다면 --%>
-	<c:if test="${ !((paging.currentPage - 10) lt paging.startPage and (paging.currentPage - 10) gt 1) }">
-		[이전그룹] &nbsp;
-	</c:if>
-	
-	<%-- 현재 출력할 페이지가 속한 페이지 그룹의 페이지 숫자 출력 : 10개 --%>
-	<c:forEach begin="${ paging.startPage }" end="${ paging.endPage }" step="1" var="p">
-		<c:if test="${ p eq paging.currentPage }">
-			<font color="blue" size="4"><b>${ p }</b></font>
-		</c:if>
-		<c:if test="${ p ne paging.currentPage }">
-			<a href="${ paging.urlMapping }?page=${ p }&${ queryParams }">${ p }</a>
-		</c:if>
-	</c:forEach>
-	
-	<%-- 다음 페이지 그룹으로 이동 --%>
-	<%-- 다음 그룹이 있다면 --%>
-	<c:if test="${ (paging.currentPage + 10) gt paging.startPage and (paging.currentPage + 10) lt paging.maxPage }">
-		<a href="${ paging.urlMapping }?page=${paging.startPage + 10}&${ queryParams }">[다음그룹]</a> &nbsp;
-	</c:if>
-	<%-- 다음 그룹이 없다면 --%>
-	<c:if test="${ !((paging.currentPage + 10) gt paging.startPage and (paging.currentPage + 10) lt paging.maxPage) }">
-		[다음그룹] &nbsp;
-	</c:if>
-	
-	<%-- 마지막 페이지로 이동 --%>
-	<c:if test="${ paging.currentPage ge paging.maxPage }"> <%-- ge : greater equal, >= 연산자임 --%>
-		[맨끝] &nbsp;
-	</c:if>
-	<c:if test="${ !(paging.currentPage ge paging.maxPage) }"> 
-		<a href="${ paging.urlMapping }?page=${ paging.maxPage }&${ queryParams }">[맨끝]</a> &nbsp;
-	</c:if>
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <!-- 맨 처음 페이지 -->
+            <li class="page-item <c:if test='${paging.currentPage == 1}'>disabled</c:if>'">
+                <a class="page-link" href="${paging.urlMapping}?page=1${queryParams}" tabindex="-1">
+                    &laquo;
+                </a>
+            </li>
+            <!-- 이전 페이지 -->
+            <li class="page-item <c:if test='${paging.currentPage == 1}'>disabled</c:if>'">
+                <a class="page-link" href="${paging.urlMapping}?page=${paging.currentPage-1}${queryParams}" tabindex="-1">
+                    &lt;
+                </a>
+            </li>
+            <!-- 페이지 번호 -->
+            <c:forEach begin="${paging.startPage}" end="${paging.endPage}" var="p">
+                <c:choose>
+                    <c:when test="${p == paging.currentPage}">
+                        <li class="page-item active">
+                            <a class="page-link" href="#">${p}</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item">
+                            <a class="page-link" href="${paging.urlMapping}?page=${p}${queryParams}">${p}</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            <!-- 다음 페이지 -->
+            <li class="page-item <c:if test='${paging.currentPage == paging.maxPage}'>disabled</c:if>'">
+                <a class="page-link" href="${paging.urlMapping}?page=${paging.currentPage+1}${queryParams}">
+                    &gt;
+                </a>
+            </li>
+            <!-- 맨 끝 페이지 -->
+            <li class="page-item <c:if test='${paging.currentPage == paging.maxPage}'>disabled</c:if>'">
+                <a class="page-link" href="${paging.urlMapping}?page=${paging.maxPage}${queryParams}">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
+<style>
+.pagination .page-item.active .page-link {
+    background-color: #09f;
+    color: #fff;
+    border-color: #09f;
+    font-weight: bold;
+}
+.pagination .page-link {
+    color: #09f;
+    border: 1px solid #09f;
+    background: #fff;
+}
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    border-color: #eee;
+    background: #fff;
+}
+</style>
 </body>
 </html>

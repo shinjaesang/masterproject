@@ -17,6 +17,7 @@ public class Transaction {
     private String status;
     private String content;
     private byte[] attachedFile;
+    private String attachedFileName;
     
     public Transaction() {}
 
@@ -132,11 +133,19 @@ public class Transaction {
         this.uploaderName = uploaderName;
     }
 
+    public String getAttachedFileName() {
+        return attachedFileName;
+    }
+
+    public void setAttachedFileName(String attachedFileName) {
+        this.attachedFileName = attachedFileName;
+    }
+
     @Override
     public String toString() {
         return "Transaction [tdocId=" + tdocId + ", docName=" + docName + ", docType=" + docType
                 + ", relatedPartyType=" + relatedPartyType + ", relatedPartyId=" + relatedPartyId
                 + ", uploadedAt=" + uploadedAt + ", uploadedBy=" + uploadedBy + ", validUntil="
-                + validUntil + ", status=" + status + "]";
+                + validUntil + ", status=" + status + ", attachedFileName=" + attachedFileName + "]";
     }
 }

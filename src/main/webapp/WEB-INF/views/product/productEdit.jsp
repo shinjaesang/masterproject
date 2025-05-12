@@ -138,9 +138,11 @@ $(function() {
         success: function(data) {
             var html = '<option value="">선택하세요</option>';
             $.each(data, function(i, partner) {
-                var selected = partner.partnerId === '${product.partnerId}' ? 'selected' : '';
-                html += '<option value="' + partner.partnerId + '" ' + selected + '>' + 
-                       partner.partnerId + ' - ' + partner.partnerName + '</option>';
+                if (partner.partnerType === '공급처') {
+                    var selected = partner.partnerId === '${product.partnerId}' ? 'selected' : '';
+                    html += '<option value="' + partner.partnerId + '" ' + selected + '>' + 
+                           partner.partnerId + ' - ' + partner.partnerName + '</option>';
+                }
             });
             $('select[name=partnerId]').html(html);
         }

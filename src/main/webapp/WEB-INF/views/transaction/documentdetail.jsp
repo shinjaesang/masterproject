@@ -86,75 +86,73 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">거래문서 상세</h6>
+                        <h4 class="mb-0" style="font-size: 24px; font-weight: 600;">거래문서 상세</h4>
                     </div>
 
-                    <form id="documentForm">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="tdocId" class="form-label">문서번호</label>
-                                <input type="text" class="form-control" id="tdocId" value="${transaction.tdocId}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="docName" class="form-label">문서이름</label>
-                                <input type="text" class="form-control" id="docName" value="${transaction.docName}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="docType" class="form-label">문서유형</label>
-                                <input type="text" class="form-control" id="docType" value="${transaction.docType}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="partnerName" class="form-label">거래처</label>
-                                <input type="text" class="form-control" id="partnerName" value="${transaction.partnerName}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="uploaderName" class="form-label">작성자</label>
-                                <input type="text" class="form-control" id="uploaderName" value="${transaction.uploaderName}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="status" class="form-label">문서상태</label>
-                                <input type="text" class="form-control" id="status" value="${transaction.status}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="validUntil" class="form-label">유효기간</label>
-                                <input type="text" class="form-control" id="validUntil" value="<fmt:formatDate value="${transaction.validUntil}" pattern="yyyy-MM-dd" />" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="uploadedAt" class="form-label">작성일</label>
-                                <input type="text" class="form-control" id="uploadedAt" value="<fmt:formatDate value="${transaction.uploadedAt}" pattern="yyyy-MM-dd" />" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label for="content" class="form-label">문서 내용</label>
-                                <textarea class="form-control" id="content" rows="5" readonly>${transaction.content}</textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">첨부파일</label>
-                                <div class="form-control" style="height: auto;">
-                                    <c:choose>
-                                        <c:when test="${not empty transaction.attachedFile}">
-                                            <a href="${pageContext.request.contextPath}/transaction/download.do?tdocId=${transaction.tdocId}" 
-                                               class="text-decoration-none" 
-                                               style="color: #0d6efd;">
-                                                <i class="fa fa-file me-2"></i>첨부파일 다운로드
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="text-muted">첨부된 파일이 없습니다.</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="tdocId" class="form-label">문서번호</label>
+                            <input type="text" class="form-control" id="tdocId" value="${transaction.tdocId}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="docName" class="form-label">문서이름</label>
+                            <input type="text" class="form-control" id="docName" value="${transaction.docName}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="docType" class="form-label">문서유형</label>
+                            <input type="text" class="form-control" id="docType" value="${transaction.docType}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="partnerName" class="form-label">거래처</label>
+                            <input type="text" class="form-control" id="partnerName" value="${transaction.partnerName}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="uploaderName" class="form-label">작성자</label>
+                            <input type="text" class="form-control" id="uploaderName" value="${transaction.uploaderName}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">문서상태</label>
+                            <input type="text" class="form-control" id="status" value="${transaction.status}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="validUntil" class="form-label">유효기간</label>
+                            <input type="text" class="form-control" id="validUntil" value="<fmt:formatDate value="${transaction.validUntil}" pattern="yyyy-MM-dd" />" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="uploadedAt" class="form-label">작성일</label>
+                            <input type="text" class="form-control" id="uploadedAt" value="<fmt:formatDate value="${transaction.uploadedAt}" pattern="yyyy-MM-dd" />" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label for="content" class="form-label">비고</label>
+                            <textarea class="form-control" id="content" rows="5" readonly>${transaction.content}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">첨부파일</label>
+                            <div class="form-control" style="height: auto;">
+                                <c:choose>
+                                    <c:when test="${not empty transaction.attachedFile}">
+                                        <a href="${pageContext.request.contextPath}/transaction/download.do?tdocId=${transaction.tdocId}" 
+                                           class="text-decoration-none" 
+                                           style="color: #0d6efd;">
+                                            <i class="fa fa-file me-2"></i>첨부파일 다운로드
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="text-muted">첨부된 파일이 없습니다.</span>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="button" class="btn btn-secondary me-2" onclick="history.back()">
-                                <i class="fa fa-times me-2"></i>닫기
-                            </button>
-                            <button type="button" class="btn btn-warning" onclick="location.href='${pageContext.request.contextPath}/transaction/update.do?tdocId=${transaction.tdocId}'">
-                                <i class="fa fa-edit me-2"></i>수정
-                            </button>
-                        </div>
-                    </form>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="btn btn-secondary me-2" onclick="location.href='list.do'">
+                            <i class="fa fa-times me-2"></i>닫기
+                        </button>
+                        <button type="button" class="btn btn-warning" id="updateBtn">
+                            <i class="fa fa-edit me-2"></i>수정
+                        </button>
+                    </div>
                 </div>
             </div>
             <!-- 거래문서 상세보기 끝 -->
@@ -187,12 +185,23 @@
     <script>
     $(document).ready(function() {
         // 페이지 로드 시 스피너 숨기기
-        setTimeout(function() {
-            hideSpinner();
-        }, 500);
-
-        // 창 크기 조정
-        window.resizeTo(900, 800);
+        hideSpinner();
+        
+        // 수정 버튼 클릭 이벤트
+        $('#updateBtn').on('click', function() {
+            var tdocId = '${transaction.tdocId}';
+            console.log('수정 버튼 클릭 - 문서번호:', tdocId);
+            
+            // 스피너 표시
+            $('#spinner').addClass('show');
+            
+            // 페이지 이동
+            var updateUrl = '${pageContext.request.contextPath}/transaction/update.do?tdocId=' + tdocId;
+            console.log('이동할 URL:', updateUrl);
+            
+            // 직접 location.href 사용
+            document.location.href = updateUrl;
+        });
     });
 
     // 스피너 제어 함수

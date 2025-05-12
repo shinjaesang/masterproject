@@ -113,4 +113,13 @@
         ORDER BY p.partner_id
     </select>
 
+    <select id="selectSuppliersOnly" resultType="org.myweb.first.partner.model.dto.Partner">
+        SELECT partner_id AS partnerId,
+               partner_type AS partnerType,
+               partner_name AS partnerName
+        FROM TB_PARTNER
+        WHERE partner_type = '공급처'
+        ORDER BY partner_id
+    </select>
+
 </mapper> 

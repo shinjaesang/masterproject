@@ -74,6 +74,7 @@
                                         <option value="all" ${param.documentType == 'all' ? 'selected' : ''}>전체</option>
                                         <option value="입고" ${param.documentType == '입고' ? 'selected' : ''}>입고</option>
                                         <option value="출고" ${param.documentType == '출고' ? 'selected' : ''}>출고</option>
+                                        <option value="이동" ${param.documentType == '이동' ? 'selected' : ''}>이동</option>
                                     </select>
                                 </div>
                                 
@@ -84,7 +85,8 @@
                             </form>
                             
                             <div class="mb-3">
-                                <a href="${pageContext.request.contextPath}/inout/register.do" class="btn btn-sm btn-secondary">전표생성</a>
+                                <a href="${pageContext.request.contextPath}/inout/inregister.do" class="btn btn-sm btn-secondary">입고 전표생성</a>
+                                <a href="${pageContext.request.contextPath}/inout/outregister.do" class="btn btn-sm btn-secondary">출고 전표생성</a>
                             </div>
                             
                             <!-- InOutVoice List Table -->
@@ -98,7 +100,8 @@
                                             <th scope="col">전표유형</th>
                                             <th scope="col">주문번호</th>
                                             <th scope="col">작업자</th>
-                                            <th scope="col">창고</th>
+                                            <th scope="col">입고창고</th>
+                                            <th scope="col">출고창고</th>
                                             <th scope="col">등록일</th>
                                             <th scope="col">상세</th>
                                         </tr>
@@ -113,7 +116,8 @@
                                                     <td>${item.inoutvoiceType}</td>
                                                     <td>${item.orderId}</td>
                                                     <td>${item.workerId}</td>
-                                                    <td>${item.warehouseId}</td>
+                                                    <td>${item.inWarehouseName}</td>
+                                                    <td>${item.outWarehouseName}</td>
                                                     <td><fmt:formatDate value="${item.createdAt}" pattern="yyyy-MM-dd"/></td>
                                                     <td>
                                                         <a href="${pageContext.request.contextPath}/inout/detail.do?inoutvoiceId=${item.inoutvoiceId}" class="btn btn-sm btn-primary">상세</a>
@@ -132,32 +136,7 @@
                             
                             <!-- Pagination -->
                             <div class="d-flex justify-content-center mt-4">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination">
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="First">
-                                                <span aria-hidden="true">&laquo;&laquo;</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Last">
-                                                <span aria-hidden="true">&raquo;&raquo;</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                <jsp:include page="/WEB-INF/views/common/pagingView.jsp"/>
                             </div>
                         </div>
                     </div>
