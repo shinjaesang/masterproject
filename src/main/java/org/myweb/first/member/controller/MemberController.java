@@ -62,29 +62,66 @@ public class MemberController {
 
 	@RequestMapping(value = "login.do", method = RequestMethod.POST)
 	public String loginMethod(Member member, HttpSession session, SessionStatus status, Model model) {
-		logger.info("login.do : " + member);
+		logger.info("login.do 시작 - 입력된 사원번호: {}", member.getEmpId());
 
 		Member loginUser = memberService.selectMember(member.getEmpId());
+		logger.info("DB에서 조회된 사용자 정보: {}", loginUser);
 
-		// 임시 비밀번호 처리: 'hashed_pwd1'인 경우 BCrypt로 암호화하여 업데이트
-		if (loginUser != null && "hashed_pwd1".equals(loginUser.getEmpPwd())) {
-			String encryptedPwd = bcryptPasswordEncoder.encode("hashed_pwd1");
-			loginUser.setEmpPwd(encryptedPwd);
-			memberService.updateMemberPassword(loginUser);
-			logger.info("Password updated to BCrypt format for user: " + loginUser.getEmpId());
+		if (loginUser == null) {
+			logger.info("사용자를 찾을 수 없음");
+			model.addAttribute("message", "로그인 실패! 사원번호나 비밀번호를 다시 확인하세요.");
+			return "common/error";
 		}
 
-		if (loginUser != null && 
-			((member.getEmpPwd().equals(loginUser.getEmpPwd())) || // 평문 비밀번호 비교
-			 bcryptPasswordEncoder.matches(member.getEmpPwd(), loginUser.getEmpPwd())) && // BCrypt 비밀번호 비교
-			"Y".equals(loginUser.getIsActive())) {
+		// 비밀번호 비교 전 로깅
+		logger.info("DB에 저장된 비밀번호 형식: {}", loginUser.getEmpPwd().startsWith("$2a$") ? "BCrypt 암호화됨" : "평문");
+		logger.info("입력된 비밀번호 형식: {}", member.getEmpPwd().startsWith("$2a$") ? "BCrypt 암호화됨" : "평문");
+		logger.info("비밀번호 비교 시작");
+		
+		boolean passwordMatches = false;
+		
+		// DB에 저장된 비밀번호가 평문인 경우
+		if (!loginUser.getEmpPwd().startsWith("$2a$")) {
+			logger.info("DB에 저장된 비밀번호가 평문임 - 직접 비교 수행");
+			passwordMatches = member.getEmpPwd().equals(loginUser.getEmpPwd());
+		} else {
+			// DB에 저장된 비밀번호가 BCrypt인 경우
+			if (member.getEmpPwd().startsWith("$2a$") && member.getEmpPwd().length() == 60) {
+				// 입력된 비밀번호도 BCrypt 해시인 경우
+				logger.info("입력된 비밀번호가 BCrypt 해시 형태임 - 해시 직접 비교");
+				passwordMatches = member.getEmpPwd().equals(loginUser.getEmpPwd());
+			} else {
+				// 입력된 비밀번호가 평문인 경우
+				logger.info("입력된 비밀번호가 평문임 - BCrypt 비교 수행");
+				passwordMatches = bcryptPasswordEncoder.matches(member.getEmpPwd(), loginUser.getEmpPwd());
+			}
+		}
+		
+		logger.info("비밀번호 일치 여부: {}", passwordMatches);
+		
+		if (passwordMatches && "Y".equals(loginUser.getIsActive())) {
+			logger.info("로그인 성공 - 사용자: {}", loginUser.getEmpId());
+			
+			// 비밀번호가 평문으로 저장되어 있다면 BCrypt로 암호화하여 업데이트
+			if (!loginUser.getEmpPwd().startsWith("$2a$")) {
+				logger.info("평문 비밀번호를 BCrypt로 암호화하여 업데이트");
+				String encryptedPwd = bcryptPasswordEncoder.encode(loginUser.getEmpPwd());
+				loginUser.setEmpPwd(encryptedPwd);
+				memberService.updateMemberPassword(loginUser);
+				logger.info("비밀번호가 BCrypt 형식으로 업데이트됨");
+			}
 			
 			session.setAttribute("loginUser", loginUser);
 			status.setComplete();
-			// 로그인 성공시 마지막 로그인 시간 업데이트
 			memberService.updateLastLoginDate(member.getEmpId());
 			return "common/main";
 		} else {
+			if (!passwordMatches) {
+				logger.info("비밀번호가 일치하지 않음 - 입력된 비밀번호의 길이: {}", member.getEmpPwd().length());
+			}
+			if (!"Y".equals(loginUser.getIsActive())) {
+				logger.info("비활성화된 계정");
+			}
 			model.addAttribute("message", "로그인 실패! 사원번호나 비밀번호를 다시 확인하세요. 또는 비활성화된 계정입니다. 관리자에게 문의하세요.");
 			return "common/error";
 		}
@@ -364,18 +401,30 @@ public class MemberController {
 			if (loginUser == null) {
 				return "fail:로그인이 필요합니다.";
 			}
+			
 			Member member = memberService.selectMember(loginUser.getEmpId());
+			
+			// 현재 비밀번호가 평문으로 저장되어 있는 경우 처리
+			if (member.getEmpPwd().equals(currentPwd)) {
+				// 평문 비밀번호를 BCrypt로 암호화하여 저장
+				String encryptedPwd = bcryptPasswordEncoder.encode(currentPwd);
+				member.setEmpPwd(encryptedPwd);
+				memberService.updateMemberPassword(member);
+			}
+			
 			// 현재 비밀번호 확인 (BCrypt)
 			if (!bcryptPasswordEncoder.matches(currentPwd, member.getEmpPwd())) {
 				return "fail:현재 비밀번호가 일치하지 않습니다.";
 			}
+			
 			// 새 비밀번호 암호화 및 저장
-			String encryptedPwd = bcryptPasswordEncoder.encode(newPwd);
-			member.setEmpPwd(encryptedPwd);
+			String encryptedNewPwd = bcryptPasswordEncoder.encode(newPwd);
+			member.setEmpPwd(encryptedNewPwd);
 			int result = memberService.updateMemberPassword(member);
+			
 			if (result > 0) {
 				// 세션 정보도 갱신
-				loginUser.setEmpPwd(encryptedPwd);
+				loginUser.setEmpPwd(encryptedNewPwd);
 				session.setAttribute("loginUser", loginUser);
 				return "success";
 			} else {

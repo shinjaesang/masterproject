@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -49,14 +50,33 @@
             background-color: #007bff;
             color: #ffffff;
         }
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-group input {
             width: 100%;
             padding: 12px 16px;
-            margin: 8px 0 20px 0;
+            padding-right: 40px; /* 아이콘을 위한 공간 */
             border: 1px solid #ccc;
             border-radius: 8px;
             box-sizing: border-box;
+            font-size: 14px;
+        }
+        .input-group .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            padding: 4px;
+            background: none;
+            border: none;
+            outline: none;
+        }
+        .input-group .toggle-password:hover {
+            color: #007bff;
         }
         .login-container button[type="submit"] {
             width: 100%;
@@ -67,6 +87,7 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
         }
         .login-container button[type="submit"]:hover {
             background-color: #0056b3;
@@ -99,6 +120,21 @@
                 document.getElementById('employeeBtn').classList.add('active');
             }
         }
+
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </head>
 <body>
@@ -110,12 +146,17 @@
         </div>
         <form action="login.do" method="post">
             <input type="hidden" id="userRole" name="userRole" value="employee">
-            <input type="text" name="empId" placeholder="아이디" required>
-            <input type="password" name="empPwd" placeholder="비밀번호" required>
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary w-100">로그인</button>
+            <div class="input-group">
+                <input type="text" name="empId" placeholder="아이디" required>
             </div>
-            <div class="form-text">
+            <div class="input-group">
+                <input type="password" name="empPwd" id="empPwd" placeholder="비밀번호" required>
+                <button type="button" class="toggle-password" onclick="togglePassword('empPwd', this)">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
+            <button type="submit">로그인</button>
+            <div class="bottom-link">
                 <a href="${pageContext.request.contextPath}/member/findPassword.do">비밀번호를 잊으셨나요?</a>
             </div>
         </form>
