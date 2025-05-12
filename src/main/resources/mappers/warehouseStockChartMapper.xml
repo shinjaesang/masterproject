@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="warehouseStockChartMapper">
+
+    <!-- 창고별 재고 현황 차트 데이터 조회 -->
+    <select id="selectWarehouseStockChart" parameterType="map" resultType="org.myweb.first.report.model.dto.WarehouseStockChartDto">
+        SELECT
+            w.warehouse_name AS warehouseName,
+            NVL(SUM(ws.quantity), 0) AS stockAmount
+        FROM TB_WAREHOUSE w
+        LEFT JOIN TB_WAREHOUSE_STOCK ws ON w.warehouse_id = ws.warehouse_id
+        <if test="date != null and date != ''">
+            WHERE ws.stock_date = TO_DATE(#{date}, 'YYYY-MM-DD')
+        </if>
+        GROUP BY w.warehouse_name
+        ORDER BY w.warehouse_name
+    </select>
+
+</mapper> 

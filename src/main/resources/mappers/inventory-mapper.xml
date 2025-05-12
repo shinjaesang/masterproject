@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inventoryMapper">
+
+    <!-- 상품별 현재 재고 목록 조회 -->
+    <select id="selectCurrentInventoryList" resultType="org.myweb.first.inventory.model.dto.Inventory">
+        SELECT
+            p.product_id AS productId,
+            p.product_name AS productName,
+            p.product_type AS productType,
+            pt.partner_name AS partnerName,
+            p.partner_id AS partnerId,
+            p.option_value AS optionValue,
+            NULL AS imagePath, -- 이미지 경로는 별도 처리(필요시 BLOB 변환)
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) AS headOfficeStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) AS busanStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) AS incheonStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) AS daeguStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0) AS gwangjuStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH002'), 0) AS transitStock,
+            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH003'), 0) AS defectiveStock,
+            (
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH002'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH003'), 0)
+            ) AS totalStock,
+            (
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+            ) AS availableStock,
+            p.safe_stock AS safeStock,
+            p.cost_price AS costPrice,
+            p.selling_price AS sellingPrice
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PARTNER pt ON p.partner_id = pt.partner_id
+        ORDER BY p.product_id
+    </select>
+
+    <!-- 검색 조건에 따른 재고 목록 조회 -->
+    <select id="searchInventory" parameterType="org.myweb.first.inventory.model.dto.InventorySearchCondition" resultType="org.myweb.first.inventory.model.dto.Inventory">
+        SELECT * FROM (
+            SELECT inner_table.*, ROWNUM rnum FROM (
+                SELECT
+                    p.product_id AS productId,
+                    p.product_name AS productName,
+                    p.product_type AS productType,
+                    pt.partner_name AS partnerName,
+                    p.partner_id AS partnerId,
+                    p.option_value AS optionValue,
+                    NULL AS imagePath,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) AS headOfficeStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) AS busanStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) AS incheonStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) AS daeguStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0) AS gwangjuStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH002'), 0) AS transitStock,
+                    NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH003'), 0) AS defectiveStock,
+                    (
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH002'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH003'), 0)
+                    ) AS totalStock,
+                    (
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                        NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+                    ) AS availableStock,
+                    p.safe_stock AS safeStock,
+                    p.cost_price AS costPrice,
+                    p.selling_price AS sellingPrice
+                FROM TB_PRODUCT p
+                LEFT JOIN TB_PARTNER pt ON p.partner_id = pt.partner_id
+                <where>
+                    <if test="productName != null and productName != ''">
+                        AND p.product_name LIKE '%' || #{productName} || '%'
+                    </if>
+                    <if test="productCode != null and productCode != ''">
+                        AND p.product_id LIKE '%' || #{productCode} || '%'
+                    </if>
+                    <if test="productType != null and productType != ''">
+                        AND p.product_type = #{productType}
+                    </if>
+                    <if test="partnerId != null and partnerId != ''">
+                        AND p.partner_id = #{partnerId}
+                    </if>
+                    <if test="inventoryStatus == 'NORMAL'">
+                        AND (
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+                        ) >= p.safe_stock
+                    </if>
+                    <if test="inventoryStatus == 'LOW'">
+                        AND (
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+                        ) &lt; p.safe_stock
+                        AND (
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+                        ) &gt; 0
+                    </if>
+                    <if test="inventoryStatus == 'ZERO'">
+                        AND (
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH001'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH004'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH005'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH006'), 0) +
+                            NVL((SELECT ws.stock FROM TB_WAREHOUSE_STOCK ws WHERE ws.product_id = p.product_id AND ws.warehouse_id = 'WH007'), 0)
+                        ) = 0
+                    </if>
+                </where>
+                <choose>
+                    <when test="sortOrder == 'productId'">ORDER BY p.product_id</when>
+                    <when test="sortOrder == 'productName'">ORDER BY p.product_name</when>
+                    <when test="sortOrder == 'partnerName'">ORDER BY pt.partner_name</when>
+                    <when test="sortOrder == 'productType'">ORDER BY p.product_type</when>
+                    <when test="sortOrder == 'totalStock'">ORDER BY totalStock DESC</when>
+                    <when test="sortOrder == 'availableStock'">ORDER BY availableStock DESC</when>
+                    <when test="sortOrder == 'headOfficeStock'">ORDER BY headOfficeStock DESC</when>
+                    <when test="sortOrder == 'busanStock'">ORDER BY busanStock DESC</when>
+                    <when test="sortOrder == 'incheonStock'">ORDER BY incheonStock DESC</when>
+                    <when test="sortOrder == 'daeguStock'">ORDER BY daeguStock DESC</when>
+                    <when test="sortOrder == 'gwangjuStock'">ORDER BY gwangjuStock DESC</when>
+                    <when test="sortOrder == 'transitStock'">ORDER BY transitStock DESC</when>
+                    <when test="sortOrder == 'defectiveStock'">ORDER BY defectiveStock DESC</when>
+                    <otherwise>ORDER BY p.product_id</otherwise>
+                </choose>
+            ) inner_table
+            WHERE ROWNUM &lt;= #{endRow}
+        )
+        WHERE rnum &gt; #{startRow}
+    </select>
+
+    <select id="countInventory" parameterType="org.myweb.first.inventory.model.dto.InventorySearchCondition" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PARTNER pt ON p.partner_id = pt.partner_id
+        <where>
+            <if test="productName != null and productName != ''">
+                AND p.product_name LIKE '%' || #{productName} || '%'
+            </if>
+            <if test="productCode != null and productCode != ''">
+                AND p.product_id LIKE '%' || #{productCode} || '%'
+            </if>
+            <if test="productType != null and productType != ''">
+                AND p.product_type = #{productType}
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                AND p.partner_id = #{partnerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectStock" parameterType="map" resultType="org.myweb.first.inventory.model.dto.WarehouseStock">
+        SELECT 
+            warehouse_id as warehouseId,
+            product_id as productId,
+            stock as stockQuantity
+        FROM TB_WAREHOUSE_STOCK
+        WHERE warehouse_id = #{warehouseId}
+        AND product_id = #{productId}
+    </select>
+
+    <insert id="insertStock" parameterType="org.myweb.first.inventory.model.dto.WarehouseStock">
+        INSERT INTO TB_WAREHOUSE_STOCK (
+            warehouse_id,
+            product_id,
+            stock
+        ) VALUES (
+            #{warehouseId},
+            #{productId},
+            #{stockQuantity}
+        )
+    </insert>
+
+    <update id="updateStock" parameterType="org.myweb.first.inventory.model.dto.WarehouseStock">
+        UPDATE TB_WAREHOUSE_STOCK
+        SET 
+            stock = #{stockQuantity}
+        WHERE warehouse_id = #{warehouseId}
+        AND product_id = #{productId}
+    </update>
+
+    <insert id="insertStockHistory" parameterType="map">
+        INSERT INTO TB_STOCK_HISTORY (
+            stock_history_id,
+            in_warehouse_id,
+            out_warehouse_id,
+            product_id,
+            in_stock_quantity,
+            out_stock_quantity,
+            change_quantity,
+            change_type,
+            change_date,
+            inoutvoice_id,
+            inoutvoice_product_id,
+            created_by
+        ) VALUES (
+            'HIS' || LPAD(seq_stock_history.NEXTVAL, 5, '0'),
+            #{inWarehouseId},
+            #{outWarehouseId},
+            #{productId},
+            #{inStockQuantity},
+            #{outStockQuantity},
+            #{changeQuantity},
+            #{changeType},
+            SYSDATE,
+            #{inoutvoiceId},
+            #{inoutvoiceProductId},
+            #{createdBy}
+        )
+    </insert>
+
+</mapper> 

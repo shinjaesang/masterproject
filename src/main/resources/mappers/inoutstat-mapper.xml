@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inOutStatMapper">
+
+    <!-- 날짜별 입출고/재고 집계 리스트 조회 -->
+    <select id="selectDailyInOutStat" parameterType="map" resultType="org.myweb.first.report.model.dto.InOutStatDto">
+        SELECT 
+            date,
+            inAmount,
+            outAmount,
+            stockAmount,
+            CASE 
+                WHEN prevStockAmount IS NULL OR prevStockAmount = 0 
+                THEN '0%'
+                ELSE TO_CHAR(ROUND((stockAmount - prevStockAmount) / prevStockAmount * 100, 1)) || '%' 
+            END AS rate
+        FROM (
+            SELECT
+                date,
+                inAmount,
+                outAmount,
+                stockAmount,
+                LAG(stockAmount) OVER (ORDER BY date) AS prevStockAmount
+            FROM (
+                SELECT
+                    TO_CHAR(iv.created_at, 'YYYY-MM-DD') AS date,
+                    SUM(CASE WHEN iv.inoutvoice_type = '입고' THEN ivp.quantity ELSE 0 END) AS inAmount,
+                    SUM(CASE WHEN iv.inoutvoice_type = '출고' THEN ivp.quantity ELSE 0 END) AS outAmount,
+                    SUM(CASE 
+                        WHEN iv.inoutvoice_type = '입고' THEN ivp.quantity 
+                        WHEN iv.inoutvoice_type = '출고' THEN -ivp.quantity 
+                        ELSE 0 
+                    END) OVER (ORDER BY TO_CHAR(iv.created_at, 'YYYY-MM-DD')) AS stockAmount
+                FROM TB_INOUTVOICE iv
+                JOIN TB_INOUTVOICE_PRODUCT ivp ON iv.inoutvoice_id = ivp.inoutvoice_id
+                <where>
+                    <if test="startDate != null and startDate != ''">
+                        AND iv.created_at &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+                    </if>
+                    <if test="endDate != null and endDate != ''">
+                        AND iv.created_at &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+                    </if>
+                    <if test="warehouse != null and warehouse != ''">
+                        AND (
+                            (iv.inoutvoice_type = '입고' AND iv.in_warehouse_id = #{warehouse})
+                            OR (iv.inoutvoice_type = '출고' AND iv.out_warehouse_id = #{warehouse})
+                        )
+                    </if>
+                    <if test="category != null and category != ''">
+                        AND ivp.product_id IN (
+                            SELECT product_id FROM TB_PRODUCT WHERE category = #{category}
+                        )
+                    </if>
+                    <if test="productName != null and productName != ''">
+                        AND ivp.product_id IN (
+                            SELECT product_id FROM TB_PRODUCT WHERE product_name LIKE '%' || #{productName} || '%'
+                        )
+                    </if>
+                </where>
+                GROUP BY TO_CHAR(iv.created_at, 'YYYY-MM-DD')
+            )
+        )
+        ORDER BY date
+    </select>
+
+</mapper> 

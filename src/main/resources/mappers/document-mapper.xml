@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="documentMapper">
+
+	<!-- 결재문서 목록 조회 -->
+	<select id="selectDocumentList" parameterType="java.util.Map"
+		resultType="org.myweb.first.document.model.dto.Document">
+		SELECT
+			d.doc_id as docId,
+			d.title as title,
+			d.content as content,
+			d.emp_id as empId,
+			u.empname as empName,
+			d.draft_date as draftDate,
+			d.approval_status as approvalStatus,
+			d.document_format as documentFormat,
+			d.review_date as reviewDate,
+			d.approval_date as approvalDate,
+			-- 대표 결재자/검토자/참조자 이름(여러 명일 경우 MIN 사용)
+			(SELECT MIN(u2.empname) FROM TB_APPROVAL_PARTICIPANTS p2 JOIN TB_USER u2 ON p2.emp_id = u2.empid WHERE p2.doc_id = d.doc_id AND p2.role = '결재자') as approverName,
+			(SELECT MIN(u2.empname) FROM TB_APPROVAL_PARTICIPANTS p2 JOIN TB_USER u2 ON p2.emp_id = u2.empid WHERE p2.doc_id = d.doc_id AND p2.role = '검토자') as reviewerName,
+			(SELECT MIN(u2.empname) FROM TB_APPROVAL_PARTICIPANTS p2 JOIN TB_USER u2 ON p2.emp_id = u2.empid WHERE p2.doc_id = d.doc_id AND p2.role = '참조자') as referencerName,
+			u.department as department,
+			u.job as job
+		FROM
+			TB_APPROVAL_DOCUMENTS d
+			LEFT JOIN TB_USER u ON d.emp_id = u.empid
+		<where>
+			<if test="docId != null and docId != ''">
+				AND d.doc_id LIKE '%' || #{docId} || '%'
+			</if>
+			<if test="title != null and title != ''">
+				AND d.title LIKE '%' || #{title} || '%'
+			</if>
+			<if test="documentFormat != null and documentFormat != ''">
+				AND d.document_format = #{documentFormat}
+			</if>
+			<if test="empId != null and empId != ''">
+				AND d.emp_id LIKE '%' || #{empId} || '%'
+			</if>
+			<if test="empName != null and empName != ''">
+				AND UPPER(u.empname) LIKE '%' || UPPER(#{empName}) || '%'
+			</if>
+			<if test="department != null and department != ''">
+				AND u.department LIKE '%' || #{department} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND d.draft_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND d.draft_date &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+			</if>
+			<if test="approvalStatus != null and approvalStatus != ''">
+				AND d.approval_status = #{approvalStatus}
+			</if>
+		</where>
+		ORDER BY d.draft_date DESC
+	</select>
+
+	<!-- 결재문서 총 건수 조회 -->
+	<select id="selectTotalDocumentCount"
+		parameterType="java.util.Map" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		TB_APPROVAL_DOCUMENTS d
+		LEFT JOIN
+		TB_USER u ON d.emp_id = u.empid
+		<where>
+			<if test="docId != null and docId != ''">
+				AND d.doc_id LIKE '%' || #{docId} || '%'
+			</if>
+			<if test="title != null and title != ''">
+				AND d.title LIKE '%' || #{title} || '%'
+			</if>
+			<if test="documentFormat != null and documentFormat != ''">
+				AND d.document_format = #{documentFormat}
+			</if>
+			<if test="empId != null and empId != ''">
+				AND d.emp_id LIKE '%' || #{empId} || '%'
+			</if>
+			<if test="empName != null and empName != ''">
+				AND UPPER(u.empname) LIKE '%' || UPPER(#{empName}) || '%'
+			</if>
+			<if test="department != null and department != ''">
+				AND u.department LIKE '%' || #{department} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND d.draft_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND d.draft_date &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+			</if>
+			<if test="approvalStatus != null and approvalStatus != ''">
+				AND d.approval_status = #{approvalStatus}
+			</if>
+		</where>
+	</select>
+
+	<!-- 결재문서 상세 조회 -->
+	<select id="selectDocumentDetail" parameterType="string"
+		resultType="org.myweb.first.document.model.dto.Document">
+		SELECT
+			d.doc_id as docId,
+			d.title as title,
+			d.content as content,
+			d.emp_id as empId,
+			u.empname as empName,
+			d.draft_date as draftDate,
+			d.approval_status as approvalStatus,
+			d.document_format as documentFormat,
+			d.review_date as reviewDate,
+			d.approval_date as approvalDate,
+			u.department as department,
+			u.job as job
+		FROM
+			TB_APPROVAL_DOCUMENTS d
+			LEFT JOIN TB_USER u ON d.emp_id = u.empid
+		WHERE
+			d.doc_id = #{docId}
+	</select>
+
+	<!-- 문서 상태 업데이트 -->
+	<update id="updateDocumentStatus" parameterType="map">
+		UPDATE TB_APPROVAL_DOCUMENTS
+		SET approval_status = #{status}
+		WHERE doc_id = #{docId}
+	</update>
+
+	<!-- 참조자 -->
+	<select id="selectDocumentReferences" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_APPROVAL_PARTICIPANTS p
+		JOIN TB_USER u ON p.emp_id = u.empid
+		WHERE p.doc_id = #{docId}
+		AND p.role = '참조자'
+	</select>
+
+	<!-- 검토자 -->
+	<select id="selectDocumentReviewers" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_APPROVAL_PARTICIPANTS p
+		JOIN TB_USER u ON p.emp_id = u.empid
+		WHERE p.doc_id = #{docId}
+		AND p.role = '검토자'
+	</select>
+
+	<!-- 결재자 -->
+	<select id="selectDocumentApprovers" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_APPROVAL_PARTICIPANTS p
+		JOIN TB_USER u ON p.emp_id = u.empid
+		WHERE p.doc_id = #{docId}
+		AND p.role = '결재자'
+	</select>
+
+	<!-- 결재선 지정을 위한 직원 목록 조회 (부장 직급만) -->
+	<select id="selectApprovalLineEmployees" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_USER u
+		WHERE u.job = '부장'
+		ORDER BY u.department, u.empname
+	</select>
+
+	<!-- 검토선 지정을 위한 직원 목록 조회 (과장, 부장만) -->
+	<select id="selectReviewerLineEmployees" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_USER u
+		WHERE u.job IN ('과장', '부장')
+		ORDER BY u.department, u.empname
+	</select>
+
+	<!-- 모든 직원 조회 (참조자용) -->
+	<select id="selectAllEmployees" resultType="org.myweb.first.document.model.dto.Document">
+		SELECT 
+			u.department as department,
+			u.job as job,
+			u.empname as empName,
+			u.empid as empId
+		FROM TB_USER u
+		ORDER BY u.department, u.job, u.empname
+	</select>
+
+	<!-- 문서 등록 -->
+	<insert id="insertDocument" parameterType="org.myweb.first.document.model.dto.Document">
+		<selectKey keyProperty="docId" resultType="string" order="BEFORE">
+			SELECT 'DOC' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(seq_approval_documents.NEXTVAL, 4, '0') FROM dual
+		</selectKey>
+		INSERT INTO TB_APPROVAL_DOCUMENTS (
+			doc_id,
+			title,
+			content,
+			emp_id,
+			draft_date,
+			approval_status,
+			document_format,
+			attach_file
+		) VALUES (
+			#{docId},
+			#{title},
+			#{content},
+			#{empId},
+			#{draftDate},
+			#{approvalStatus},
+			#{documentFormat},
+			#{attachFile, jdbcType=BLOB}
+		)
+	</insert>
+
+	<!-- 결재선 등록 -->
+	<insert id="insertApprovalLine" parameterType="map">
+		INSERT INTO TB_APPROVAL_PARTICIPANTS (
+			doc_id,
+			emp_id,
+			role,
+			approval_order
+		) VALUES (
+			#{docId},
+			#{empId},
+			#{role},
+			(SELECT NVL(MAX(approval_order), 0) + 1 
+			 FROM TB_APPROVAL_PARTICIPANTS 
+			 WHERE doc_id = #{docId})
+		)
+	</insert>
+
+	<!-- 첨부파일 등록 -->
+	<insert id="insertAttachment" parameterType="map">
+		INSERT INTO TB_ATTACHMENTS (
+			file_id,
+			doc_id,
+			original_filename,
+			file_path,
+			file_size,
+			upload_date
+		) VALUES (
+			'FILE' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(seq_attachments.NEXTVAL, 4, '0'),
+			#{docId},
+			#{originalFilename},
+			#{filePath},
+			#{fileSize},
+			SYSDATE
+		)
+	</insert>
+
+</mapper>

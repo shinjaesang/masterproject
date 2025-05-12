@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="productInOutChartMapper">
+
+    <!-- 상품별 입출고 현황 차트 데이터 조회 -->
+    <select id="selectProductInOutChart" parameterType="map" resultType="org.myweb.first.report.model.dto.ProductInOutChartDto">
+        SELECT
+            p.product_name AS productName,
+            NVL(SUM(CASE WHEN iv.inoutvoice_type = '입고' THEN ivp.quantity ELSE 0 END), 0) AS inAmount,
+            NVL(SUM(CASE WHEN iv.inoutvoice_type = '출고' THEN ivp.quantity ELSE 0 END), 0) AS outAmount
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_INOUTVOICE_PRODUCT ivp ON p.product_id = ivp.product_id
+        LEFT JOIN TB_INOUTVOICE iv ON ivp.inoutvoice_id = iv.inoutvoice_id
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND iv.created_at &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND iv.created_at &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+            </if>
+            <if test="warehouse != null and warehouse != ''">
+                AND (iv.in_warehouse_id = #{warehouse} OR iv.out_warehouse_id = #{warehouse})
+            </if>
+            <if test="category != null and category != ''">
+                AND p.category = #{category}
+            </if>
+        </where>
+        GROUP BY p.product_name
+        ORDER BY p.product_name
+    </select>
+
+</mapper> 
