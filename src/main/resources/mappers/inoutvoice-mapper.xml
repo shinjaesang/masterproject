@@ -4,27 +4,34 @@
 
     <!-- 입출고 전표 목록 조회 -->
     <select id="selectInOutVoiceList" parameterType="map" resultType="org.myweb.first.inout.model.dto.InOutVoice">
-        SELECT 
-            Inoutvoice_id as inoutvoiceId,
-           	Inoutvoice_name as inoutvoiceName,
-            Inoutvoice_type as inoutvoiceType,
-            order_id as orderId,
-            worker_id as workerId,
-            warehouse_id as warehouseId,
-            created_at as createdAt
-        FROM TB_INOUTVOICE 
-        <trim prefix="WHERE" prefixOverrides="AND |OR ">
-            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
-                created_at BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-            </if>
-            <if test="documentTitle != null and documentTitle != ''">
-                AND Inoutvoice_name LIKE '%' || #{documentTitle} || '%'
-            </if>
-            <if test="documentType != null and documentType != '' and documentType != 'all'">
-                AND Inoutvoice_type = #{documentType}
-            </if>
-        </trim>
-        ORDER BY created_at DESC
+        SELECT * FROM (
+            SELECT ROWNUM rnum, A.* FROM (
+                SELECT 
+                    Inoutvoice_id as inoutvoiceId,
+                    Inoutvoice_name as inoutvoiceName,
+                    Inoutvoice_type as inoutvoiceType,
+                    order_id as orderId,
+                    worker_id as workerId,
+                    in_warehouse_id as inWarehouseId,
+                    out_warehouse_id as outWarehouseId,
+                    created_at as createdAt
+                FROM TB_INOUTVOICE 
+                <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                        created_at BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+                    </if>
+                    <if test="documentTitle != null and documentTitle != ''">
+                        AND Inoutvoice_name LIKE '%' || #{documentTitle} || '%'
+                    </if>
+                    <if test="documentType != null and documentType != '' and documentType != 'all'">
+                        AND Inoutvoice_type = #{documentType}
+                    </if>
+                </trim>
+                ORDER BY created_at DESC
+            ) A
+            WHERE ROWNUM &lt;= #{endRow}
+        )
+        WHERE rnum &gt;= #{startRow}
     </select>
 
     <!-- 입출고 전표 상세 조회 -->
@@ -35,7 +42,8 @@
             Inoutvoice_type as inoutvoiceType,
             order_id as orderId,
             worker_id as workerId,
-            warehouse_id as warehouseId,
+            in_warehouse_id as inWarehouseId,
+            out_warehouse_id as outWarehouseId,
             created_at as createdAt
         FROM TB_INOUTVOICE 
         WHERE Inoutvoice_id = #{inoutvoiceId}
@@ -47,13 +55,14 @@
             SELECT 'INV' || LPAD(seq_inoutvoice.NEXTVAL, 3, '0')
             FROM DUAL
         </selectKey>
-        INSERT INTO TB_INOUTVOICE (
+         INSERT INTO TB_INOUTVOICE (
             Inoutvoice_id,
             Inoutvoice_name,
             Inoutvoice_type,
             order_id,
             worker_id,
-            warehouse_id,
+            in_warehouse_id,
+            out_warehouse_id,
             created_at
         ) VALUES (
             #{inoutvoiceId},
@@ -61,7 +70,8 @@
             #{inoutvoiceType},
             #{orderId},
             #{workerId},
-            #{warehouseId},
+            #{inWarehouseId},
+            #{outWarehouseId},
             #{createdAt}
         )
     </insert>
@@ -74,7 +84,8 @@
             Inoutvoice_type = #{inoutvoiceType},
             order_id = #{orderId},
             worker_id = #{workerId},
-            warehouse_id = #{warehouseId}
+            in_warehouse_id = #{inWarehouseId},
+            out_warehouse_id = #{outWarehouseId}
         WHERE Inoutvoice_id = #{inoutvoiceId}
     </update>
 
@@ -100,5 +111,107 @@
             </if>
         </where>
     </select>
+    
+    <!-- 전표별 상품목록 조회 (상세) -->
+    <resultMap id="inOutVoiceProductDetailMap" type="org.myweb.first.inout.model.dto.InOutVoiceProductDetail">
+        <id property="inoutvoiceProductId" column="inoutvoice_product_id"/>
+        <result property="inoutvoiceId" column="inoutvoice_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="status" column="status"/>
+        <result property="productName" column="product_name"/>
+        <result property="optionValue" column="option_value"/>
+        <result property="quantity" column="quantity"/>
+        <result property="costPrice" column="cost_price"/>
+        <result property="sellingPrice" column="selling_price"/>
+        <result property="inoutvoiceType" column="inoutvoice_type"/>
+        <result property="inWarehouseId" column="in_warehouse_id"/>
+        <result property="outWarehouseId" column="out_warehouse_id"/>
+        <result property="workerId" column="worker_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectInOutVoiceProductList" parameterType="string" resultMap="inOutVoiceProductDetailMap">
+        SELECT
+            ip.inoutvoice_product_id,
+            ip.inoutvoice_id,
+            ip.product_id,
+            ip.quantity,
+            ip.status,
+            ip.worker_id,
+            ip.created_at,
+            p.product_name,
+            p.option_value,
+            p.cost_price,
+            p.selling_price
+        FROM TB_INOUTVOICE_PRODUCT ip
+        JOIN TB_PRODUCT p ON ip.product_id = p.product_id
+        WHERE ip.inoutvoice_id = #{inoutvoiceId}
+        ORDER BY ip.inoutvoice_product_id
+    </select>
+
+    <insert id="insertInOutVoiceProduct" parameterType="map">
+        <selectKey keyProperty="inoutvoiceProductId" resultType="string" order="BEFORE">
+            SELECT 'IVP' || LPAD(seq_inoutvoice_product.NEXTVAL, 5, '0') FROM DUAL
+        </selectKey>
+        INSERT INTO TB_INOUTVOICE_PRODUCT (
+            inoutvoice_product_id, inoutvoice_id, product_id, quantity, worker_id, status
+        ) VALUES (
+            #{inoutvoiceProductId}, #{inoutvoiceId}, #{productId}, #{quantity}, #{workerId}, '처리대기'
+        )
+    </insert>
+
+    <update id="processInOutVoiceProducts" parameterType="list">
+        UPDATE TB_INOUTVOICE_PRODUCT
+        SET status = '처리완료'
+        WHERE inoutvoice_product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteInOutVoiceProducts" parameterType="list">
+        DELETE FROM TB_INOUTVOICE_PRODUCT
+        WHERE inoutvoice_product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectProductsByIds" parameterType="list" resultMap="inOutVoiceProductDetailMap">
+        SELECT
+            ip.inoutvoice_product_id,
+            ip.inoutvoice_id,
+            ip.product_id,
+            ip.quantity,
+            ip.status,
+            ip.worker_id,
+            ip.created_at,
+            p.product_name,
+            p.option_value,
+            p.cost_price,
+            p.selling_price,
+            v.Inoutvoice_type,
+            v.in_warehouse_id,
+            v.out_warehouse_id
+        FROM TB_INOUTVOICE_PRODUCT ip
+        JOIN TB_PRODUCT p ON ip.product_id = p.product_id
+        JOIN TB_INOUTVOICE v ON ip.inoutvoice_id = v.inoutvoice_id
+        WHERE ip.inoutvoice_product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="updateProductAsProcessed" parameterType="map">
+        UPDATE TB_INOUTVOICE_PRODUCT
+        SET
+            status = '처리완료',
+            worker_id = #{workerId},
+            created_at = SYSDATE
+        WHERE inoutvoice_product_id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 
 </mapper> 

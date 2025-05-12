@@ -57,7 +57,13 @@
             margin-bottom: 20px;
         }
         .search-box input {
-            flex: 1;
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 200px;
+        }
+        .search-box select {
+            width: 120px;
+            flex: none;
         }
         .table {
             font-size: 0.9rem;
@@ -79,7 +85,7 @@
 
 <body>
     <div class="container">
-        <div class="approval-title">결재선 지정</div>
+        <div class="approval-title">결재자 지정</div>
         
         <div class="row">
             <!-- 왼쪽 테이블 -->
@@ -87,6 +93,14 @@
                 <div class="search-box">
                     <input type="text" class="form-control" id="leftSearch" placeholder="이름 검색">
                     <input type="text" class="form-control" id="leftDeptSearch" placeholder="부서 검색">
+                    <select class="form-control" id="jobFilter">
+                        <option value="">직급 선택</option>
+                        <option value="부장">부장</option>
+                        <!-- <option value="차장">차장</option>
+                        <option value="과장">과장</option>
+                        <option value="대리">대리</option>
+                        <option value="사원">사원</option> -->
+                    </select>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="leftTable">
@@ -99,30 +113,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="form-check-input"></td>
-                                <td>개발팀</td>
-                                <td>김영수</td>
-                                <td>팀장</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="form-check-input"></td>
-                                <td>인사팀</td>
-                                <td>이민희</td>
-                                <td>부장</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="form-check-input"></td>
-                                <td>영업팀</td>
-                                <td>박민준</td>
-                                <td>과장</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="form-check-input"></td>
-                                <td>총무팀</td>
-                                <td>홍길동</td>
-                                <td>부장</td>
-                            </tr>
+                            <c:forEach items="${employees}" var="emp">
+                                <tr 
+                                    data-emp-id="${emp.empId}" 
+                                    data-emp-name="${emp.empName}" 
+                                    data-emp-dept="${emp.department}" 
+                                    data-emp-job="${emp.job}">
+                                    <td><input type="checkbox" class="form-check-input"></td>
+                                    <td>${emp.department}</td>
+                                    <td>${emp.empName}</td>
+                                    <td>${emp.job}</td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -183,16 +185,19 @@
             });
 
             // 검색 기능
-            $('#leftSearch, #leftDeptSearch').on('keyup', function() {
+            $('#leftSearch, #leftDeptSearch, #jobFilter').on('change keyup', function() {
                 const nameSearch = $('#leftSearch').val().toLowerCase();
                 const deptSearch = $('#leftDeptSearch').val().toLowerCase();
+                const jobFilter = $('#jobFilter').val();
 
                 $('#leftTable tbody tr').each(function() {
                     const name = $(this).find('td:eq(2)').text().toLowerCase();
                     const dept = $(this).find('td:eq(1)').text().toLowerCase();
+                    const job = $(this).find('td:eq(3)').text();
                     const matchName = name.includes(nameSearch);
                     const matchDept = dept.includes(deptSearch);
-                    $(this).toggle(matchName && matchDept);
+                    const matchJob = jobFilter === '' || job === jobFilter;
+                    $(this).toggle(matchName && matchDept && matchJob);
                 });
             });
 
@@ -208,20 +213,28 @@
                 }
 
                 checkedRows.each(function() {
-                    const dept = $(this).find('td:eq(1)').text();
-                    const name = $(this).find('td:eq(2)').text();
-                    const position = $(this).find('td:eq(3)').text();
+                    // <tr>의 data 속성에서 값 추출
+                    const empId = $(this).data('emp-id');
+                    const name = $(this).data('emp-name');
+                    const dept = $(this).data('emp-dept');
+                    const position = $(this).data('emp-job');
                     const order = $('#rightTable tbody tr').length + 1;
 
-                    const newRow = $('<tr>');
-                    newRow.append($('<td>').append($('<input>').attr({
-                        type: 'checkbox',
-                        class: 'form-check-input'
-                    })));
-                    newRow.append($('<td>').text(order));
-                    newRow.append($('<td>').text(dept));
-                    newRow.append($('<td>').text(name));
-                    newRow.append($('<td>').text(position));
+                    console.log('추가되는 값:', {empId, name, dept, position, order});
+
+                    const newRow = $('<tr>')
+                        .attr('data-emp-id', empId)
+                        .attr('data-emp-name', name)
+                        .attr('data-emp-dept', dept)
+                        .attr('data-emp-job', position)
+                        .append($('<td>').append($('<input>').attr({
+                            type: 'checkbox',
+                            class: 'form-check-input'
+                        })))
+                        .append($('<td>').text(order))
+                        .append($('<td>').text(dept))
+                        .append($('<td>').text(name))
+                        .append($('<td>').text(position));
 
                     $('#rightTable tbody').append(newRow);
                     $(this).remove();
@@ -294,25 +307,59 @@
 
         // 저장 버튼
         function saveApprovalLine() {
-            const selectedUsers = [];
-            $('#rightTable tbody tr').each(function() {
-                selectedUsers.push({
-                    order: $(this).find('td:eq(1)').text(),
-                    department: $(this).find('td:eq(2)').text(),
-                    name: $(this).find('td:eq(3)').text(),
-                    position: $(this).find('td:eq(4)').text()
+            try {
+                // URL 파라미터에서 type 가져오기
+                const urlParams = new URLSearchParams(window.location.search);
+                let type = urlParams.get('type');
+                console.log('Initial type from URL:', type);
+
+                // type 값 검증 및 기본값 설정
+                if (!type || typeof type !== 'string') {
+                    console.warn('Invalid type value:', type);
+                    type = 'approver';
+                }
+                
+                // type 값 정규화 (소문자로 변환)
+                type = type.toLowerCase();
+                console.log('Normalized type:', type);
+
+                // 선택된 사용자 정보 수집
+                const selectedUsers = [];
+                $('#rightTable tbody tr').each(function() {
+                    const empId = $(this).attr('data-emp-id');
+                    const name = $(this).attr('data-emp-name');
+                    const department = $(this).attr('data-emp-dept');
+                    const position = $(this).attr('data-emp-job');
+                    const order = $(this).find('td:eq(1)').text();
+                    console.log('저장되는 값:', {empId, name, department, position, order});
+                    selectedUsers.push({
+                        empId,
+                        name,
+                        department,
+                        position,
+                        order
+                    });
                 });
-            });
 
-            // URL 파라미터에서 type 가져오기
-            const urlParams = new URLSearchParams(window.location.search);
-            const type = urlParams.get('type');
+                console.log('Selected users:', selectedUsers);
+                console.log('Final type value:', type);
 
-            // 부모 창의 함수 호출
-            if (window.parent && typeof window.parent.handleApprovalLineSelection === 'function') {
-                window.parent.handleApprovalLineSelection(type, selectedUsers);
-            } else {
-                alert('결재선 정보를 전달할 수 없습니다.');
+                // 부모 창의 함수 호출
+                if (window.parent && typeof window.parent.handleApprovalLineSelection === 'function') {
+                    // type 값이 유효한지 한 번 더 확인
+                    if (!['approver', 'reviewer', 'referrer'].includes(type)) {
+                        throw new Error('올바르지 않은 결재선 유형입니다: ' + type);
+                    }
+
+                    // 부모 창의 함수 호출
+                    window.parent.handleApprovalLineSelection(type, selectedUsers);
+                    window.parent.$('#approvalLineModal').modal('hide');
+                } else {
+                    throw new Error('결재선 정보를 전달할 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('Error in saveApprovalLine:', error);
+                alert(error.message || '결재선 정보 저장 중 오류가 발생했습니다.');
             }
         }
 

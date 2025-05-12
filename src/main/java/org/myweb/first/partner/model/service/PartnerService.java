@@ -12,4 +12,5 @@ public interface PartnerService {
     int updatePartner(Partner partner);
     int deletePartner(String partnerId);
     List<Partner> searchPartners(PartnerSearchCondition cond);
+    List<Partner> selectSuppliersOnly();
 } 

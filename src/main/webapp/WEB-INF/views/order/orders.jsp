@@ -77,6 +77,15 @@
 		.content.show {
 			opacity: 1;
 		}
+
+		.table-responsive {
+			overflow-x: auto;
+			overflow-y: visible !important;
+		}
+		.dropdown-menu {
+			z-index: 9999 !important;
+			position: absolute !important;
+		}
 	</style>
 
 	<!-- Initial Scripts -->
@@ -140,23 +149,35 @@
 							<input type="text" class="form-control" id="orderId" name="orderId" placeholder="주문번호" value="${param.orderId}">
 						</div>
 						<div class="col-md-6">
-							<label for="partnerName" class="form-label">거래처</label>
-							<input type="text" class="form-control" id="partnerName" name="partnerName" placeholder="거래처" value="${param.partnerName}">
-						</div>
-						<div class="col-md-6">
-							<label for="partnerType" class="form-label">거래처 유형</label>
-							<select class="form-select" id="partnerType" name="partnerType">
+							<label for="partnerId" class="form-label">거래처</label>
+							<select class="form-select" id="partnerId" name="partnerId">
 								<option value="">전체</option>
-								<option value="판매처" ${param.partnerType == '판매처' ? 'selected' : ''}>판매처</option>
-								<option value="공급처" ${param.partnerType == '공급처' ? 'selected' : ''}>공급처</option>
 							</select>
 						</div>
 						<div class="col-md-6">
-							<label for="startDate" class="form-label">시작일</label>
-							<input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate}">
+							<label for="orderType" class="form-label">주문 유형</label>
+							<select class="form-select" id="orderType" name="orderType">
+								<option value="">전체</option>
+								<option value="발주" ${param.orderType == '발주' ? 'selected' : ''}>발주</option>
+								<option value="수주" ${param.orderType == '수주' ? 'selected' : ''}>수주</option>
+							</select>
 						</div>
 						<div class="col-md-6">
-							<label for="endDate" class="form-label">종료일</label>
+							<label for="orderStatus" class="form-label">주문 상태</label>
+							<select class="form-select" id="orderStatus" name="orderStatus">
+								<option value="">전체</option>
+								<option value="접수" ${param.orderStatus == '접수' ? 'selected' : ''}>접수</option>
+								<option value="처리중" ${param.orderStatus == '처리중' ? 'selected' : ''}>처리중</option>
+								<option value="완료" ${param.orderStatus == '완료' ? 'selected' : ''}>완료</option>
+								<option value="취소" ${param.orderStatus == '취소' ? 'selected' : ''}>취소</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label for="startDate" class="form-label">등록일 시작</label>
+							<input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate}">
+						</div>
+						<div class="col-md-3">
+							<label for="endDate" class="form-label">등록일 종료</label>
 							<input type="date" class="form-control" id="endDate" name="endDate" value="${param.endDate}">
 						</div>
 						<div class="col-md-6">
@@ -164,12 +185,12 @@
 							<input type="text" class="form-control" id="productName" name="productName" placeholder="상품명" value="${param.productName}">
 						</div>
 						<div class="col-md-3">
-							<label for="minPrice" class="form-label">최소 판매가</label>
-							<input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="최소 판매가" value="${param.minPrice}">
-						</div>
-						<div class="col-md-3">
-							<label for="maxPrice" class="form-label">최대 판매가</label>
-							<input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="최대 판매가" value="${param.maxPrice}">
+							<label for="minPrice" class="form-label">총액 범위</label>
+							<div class="input-group">
+								<input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="최소" value="${param.minPrice}">
+								<span class="input-group-text">~</span>
+								<input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="최대" value="${param.maxPrice}">
+							</div>
 						</div>
 						<div class="col-12 d-flex justify-content-end mt-3">
 							<button type="submit" class="btn btn-primary me-2">
@@ -189,61 +210,80 @@
 						</c:if>
 					</div>
 
-					<form action="deleteSelectedOrders.do" method="post">
-						<div class="d-flex justify-content-start mb-2">
-							<button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('선택한 주문을 삭제하시겠습니까?')">
-								<i class="fa fa-trash me-2"></i>일괄삭제
-							</button>
-						</div>
-
-						<div class="table-responsive">
-							<table class="table text-start align-middle table-bordered table-hover mb-0">
-								<thead>
-									<tr class="text-dark">
-										<th scope="col"><input class="form-check-input" type="checkbox" id="selectAll"></th>
-										<th scope="col">주문번호</th>
-										<th scope="col">판매처</th>
-										<th scope="col">공급처</th>
-										<th scope="col">상품코드</th>
-										<th scope="col">상품명</th>
-										<th scope="col">옵션</th>
-										<th scope="col">수량</th>
-										<th scope="col">판매가</th>
-										<th scope="col">주문상태</th>
-										<th scope="col">등록일</th>
-										<th scope="col">관리</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:forEach var="order" items="${orderList}">
+					<div class="table-responsive">
+						<table class="table text-start align-middle table-bordered table-hover mb-0" style="table-layout: fixed;">
+							<thead>
+								<tr class="text-dark">
+									<th scope="col" style="width: 100px; white-space: nowrap;">주문번호</th>
+									<th scope="col" style="width: 80px; white-space: nowrap;">주문유형</th>
+									<th scope="col" style="width: 120px; white-space: nowrap;">거래처</th>
+									<th scope="col" style="width: 150px; white-space: nowrap;">상품명</th>
+									<th scope="col" style="width: 80px; white-space: nowrap;">총 수량</th>
+									<th scope="col" style="width: 100px; white-space: nowrap;">총액</th>
+									<th scope="col" style="width: 80px; white-space: nowrap;">주문상태</th>
+									<th scope="col" style="width: 100px; white-space: nowrap;">등록일</th>
+									<th scope="col" style="width: 150px; white-space: nowrap;">관리</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="order" items="${orderList}" varStatus="status">
+									<c:if test="${status.index == 0 || order.orderId != orderList[status.index-1].orderId}">
 										<tr>
-											<td><input class="form-check-input order-checkbox" type="checkbox" name="orderIds" value="${order.orderId}"></td>
-											<td>${order.orderId}</td>
-											<td>${order.partnerType == '판매처' ? order.partnerName : ''}</td>
-											<td>${order.partnerType == '공급처' ? order.partnerName : ''}</td>
-											<td>${order.productId}</td>
-											<td>${order.productName}</td>
-											<td>${order.optionValue}</td>
-											<td>${order.quantity}</td>
-											<td><fmt:formatNumber value="${order.sellingPrice}" pattern="#,###" /></td>
-											<td>${order.stockStatus}</td>
-											<td><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd" /></td>
 											<td>
-												<div class="d-flex justify-content-center gap-2">
-													<button type="button" class="btn btn-sm btn-warning" onclick="location.href='${pageContext.request.contextPath}/update.do?orderId=${order.orderId}'">
-														<i class="fa fa-edit me-1"></i>수정
+												<a href="${pageContext.request.contextPath}/order/detail.do?orderId=${order.orderId}" style="font-weight: bold; text-decoration: underline; color: inherit;">
+													${order.orderId}
+												</a>
+											</td>
+											<td>${order.orderType}</td>
+											<td>${order.partnerName}</td>
+											<td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+												<c:if test="${not empty order.items}">
+													${order.items[0].productName}
+													<c:set var="itemCount" value="${order.items.size()}"/>
+													<c:if test="${itemCount > 1}">
+														외 ${itemCount - 1}건
+													</c:if>
+												</c:if>
+											</td>
+											<td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+												<c:if test="${not empty order.items}">
+													<c:set var="totalQuantity" value="0"/>
+													<c:forEach items="${order.items}" var="item">
+														<c:set var="totalQuantity" value="${totalQuantity + item.quantity}"/>
+													</c:forEach>
+													${totalQuantity}
+												</c:if>
+											</td>
+											<td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+												<c:if test="${not empty order.items}">
+													<c:set var="totalAmount" value="0"/>
+													<c:forEach items="${order.items}" var="item">
+														<c:set var="totalAmount" value="${totalAmount + (item.sellingPrice * item.quantity)}"/>
+													</c:forEach>
+													<fmt:formatNumber value="${totalAmount}" pattern="#,###" />
+												</c:if>
+											</td>
+											<td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${order.orderStatus}</td>
+											<td><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd"/></td>
+											<td>
+												<div class="dropdown">
+													<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+														<i class="fa fa-cog me-1"></i>주문처리
 													</button>
-													<button type="button" class="btn btn-sm btn-danger" onclick="deleteOrder('${order.orderId}')">
-														<i class="fa fa-trash me-1"></i>삭제
-													</button>
+													<ul class="dropdown-menu">
+														<li><a class="dropdown-item" href="#" onclick="changeOrderStatus('${order.orderId}', '접수')">접수</a></li>
+														<li><a class="dropdown-item" href="#" onclick="changeOrderStatus('${order.orderId}', '처리중')">처리중</a></li>
+														<li><a class="dropdown-item" href="#" onclick="changeOrderStatus('${order.orderId}', '완료')">완료</a></li>
+														<li><a class="dropdown-item" href="#" onclick="changeOrderStatus('${order.orderId}', '취소')">취소</a></li>
+													</ul>
 												</div>
 											</td>
 										</tr>
-									</c:forEach>
-								</tbody>
-							</table>
-						</div>
-					</form>
+									</c:if>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 			<!-- Orders Management End -->
@@ -282,26 +322,103 @@
 		$("#minPrice, #maxPrice").on("input", function() {
 			if (this.value < 0) this.value = 0;
 		});
+
+		// 거래처 목록 로딩 함수
+		function loadPartnerList(selectedId) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/partner/list",
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					var html = '<option value="">전체</option>';
+					$.each(data, function(i, partner) {
+						var selected = (partner.partnerId == selectedId) ? 'selected' : '';
+						html += '<option value="' + partner.partnerId + '" ' + selected + '>' + partner.partnerName + '</option>';
+					});
+					$('#partnerId').html(html);
+				}
+			});
+		}
+		// 페이지 로드시, 기존 선택값 유지
+		loadPartnerList('${param.partnerId}');
+
+		// 드롭다운이 열릴 때 body로 이동
+		$(document).on('show.bs.dropdown', '.dropdown', function () {
+			var $dropdownMenu = $(this).find('.dropdown-menu');
+			$('body').append($dropdownMenu.detach());
+			var e = $(this).find('[data-bs-toggle="dropdown"]');
+			var offset = e.offset();
+			$dropdownMenu.css({
+				'display': 'block',
+				'top': offset.top + e.outerHeight(),
+				'left': offset.left,
+				'position': 'absolute',
+				'z-index': 99999
+			});
+		});
+
+		// 드롭다운이 닫힐 때 원래 위치로 복귀
+		$(document).on('hide.bs.dropdown', '.dropdown', function () {
+			var $dropdownMenu = $('body > .dropdown-menu');
+			$(this).append($dropdownMenu.detach());
+			$dropdownMenu.hide();
+		});
 	});
 
-	// 주문 삭제 함수
-	function deleteOrder(orderId) {
-		if (confirm('선택한 주문을 삭제하시겠습니까?')) {
-			fetch('${pageContext.request.contextPath}/deleteOrder.do?orderId=' + orderId, {
-				method: 'POST'
-			})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					alert('주문이 성공적으로 삭제되었습니다.');
-					location.reload();
-				} else {
-					alert(data.message || '주문 삭제에 실패했습니다.');
+	// 선택된 주문 일괄 삭제
+	function deleteSelectedOrders() {
+		var selectedOrders = [];
+		$(".order-checkbox:checked").each(function() {
+			selectedOrders.push($(this).val());
+		});
+
+		if (selectedOrders.length === 0) {
+			alert('삭제할 주문을 선택해주세요.');
+			return;
+		}
+
+		if (confirm('선택한 ' + selectedOrders.length + '개의 주문을 삭제하시겠습니까?')) {
+			$.ajax({
+				url: '${pageContext.request.contextPath}/order/deleteSelectedOrders.do',
+				type: 'POST',
+				traditional: true,
+				data: { orderIds: selectedOrders },
+				success: function(response) {
+					if (response.success) {
+						alert(response.message);
+						location.reload();
+					} else {
+						alert(response.message || '주문 삭제에 실패했습니다.');
+					}
+				},
+				error: function() {
+					alert('주문 삭제 중 오류가 발생했습니다.');
 				}
-			})
-			.catch(error => {
-				console.error('Error:', error);
-				alert('주문 삭제 중 오류가 발생했습니다.');
+			});
+		}
+	}
+
+	// 주문 상태 변경 함수
+	function changeOrderStatus(orderId, status) {
+		if (confirm('주문 상태를 ' + status + '로 변경하시겠습니까?')) {
+			$.ajax({
+				url: '${pageContext.request.contextPath}/order/changeStatus.do',
+				type: 'POST',
+				data: {
+					orderId: orderId,
+					stockStatus: status
+				},
+				success: function(response) {
+					if (response.success) {
+						alert('주문 상태가 변경되었습니다.');
+						location.reload();
+					} else {
+						alert(response.message || '주문 상태 변경에 실패했습니다.');
+					}
+				},
+				error: function() {
+					alert('주문 상태 변경 중 오류가 발생했습니다.');
+				}
 			});
 		}
 	}

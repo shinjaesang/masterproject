@@ -10,22 +10,26 @@ public class InOutVoice implements java.io.Serializable {
 	private String inoutvoiceType;
 	private String orderId;
 	private String workerId;
-	private String warehouseId;
+	private String inWarehouseId;
+	private String outWarehouseId;
 	private Date createdAt;
+	private String inWarehouseName;
+	private String outWarehouseName;
 	
 	public InOutVoice() {
 		super();
 	}
 
 	public InOutVoice(String inoutvoiceId, String inoutvoiceName, String inoutvoiceType, String orderId,
-			String workerId, String warehouseId, Date createdAt) {
+			String workerId, String inWarehouseId, String outWarehouseId, Date createdAt) {
 		super();
 		this.inoutvoiceId = inoutvoiceId;
 		this.inoutvoiceName = inoutvoiceName;
 		this.inoutvoiceType = inoutvoiceType;
 		this.orderId = orderId;
 		this.workerId = workerId;
-		this.warehouseId = warehouseId;
+		this.inWarehouseId = inWarehouseId;
+		this.outWarehouseId = outWarehouseId;
 		this.createdAt = createdAt;
 	}
 
@@ -69,12 +73,20 @@ public class InOutVoice implements java.io.Serializable {
 		this.workerId = workerId;
 	}
 
-	public String getWarehouseId() {
-		return warehouseId;
+	public String getInWarehouseId() {
+		return inWarehouseId;
 	}
 
-	public void setWarehouseId(String warehouseId) {
-		this.warehouseId = warehouseId;
+	public void setInWarehouseId(String inWarehouseId) {
+		this.inWarehouseId = inWarehouseId;
+	}
+
+	public String getOutWarehouseId() {
+		return outWarehouseId;
+	}
+
+	public void setOutWarehouseId(String outWarehouseId) {
+		this.outWarehouseId = outWarehouseId;
 	}
 
 	public Date getCreatedAt() {
@@ -85,6 +97,22 @@ public class InOutVoice implements java.io.Serializable {
 		this.createdAt = createdAt;
 	}
 
+	public String getInWarehouseName() {
+		return inWarehouseName;
+	}
+
+	public void setInWarehouseName(String inWarehouseName) {
+		this.inWarehouseName = inWarehouseName;
+	}
+
+	public String getOutWarehouseName() {
+		return outWarehouseName;
+	}
+
+	public void setOutWarehouseName(String outWarehouseName) {
+		this.outWarehouseName = outWarehouseName;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -92,8 +120,8 @@ public class InOutVoice implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "InOutVoice [inoutvoiceId=" + inoutvoiceId + ", inoutvoiceName=" + inoutvoiceName + ", inoutvoiceType="
-				+ inoutvoiceType + ", orderId=" + orderId + ", workerId=" + workerId + ", warehouseId=" + warehouseId
-				+ ", createdAt=" + createdAt + "]";
+				+ inoutvoiceType + ", orderId=" + orderId + ", workerId=" + workerId + ", inWarehouseId=" + inWarehouseId
+				+ ", outWarehouseId=" + outWarehouseId + ", createdAt=" + createdAt + "]";
 	}
 	
 	

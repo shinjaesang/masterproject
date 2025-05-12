@@ -14,4 +14,13 @@ public interface TransactionService {
     
     // 거래문서 등록
     int insertTransaction(Transaction transaction);
+    
+    // 거래문서 수정
+    int updateTransaction(Transaction transaction);
+    
+    // 거래문서 삭제
+    int deleteTransaction(String tdocId);
+    
+    // 거래문서 일괄 삭제
+    int deleteTransactions(List<String> tdocIdList);
 }

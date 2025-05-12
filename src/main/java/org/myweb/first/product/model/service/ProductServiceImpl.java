@@ -43,4 +43,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> searchProducts(ProductSearchCondition cond) {
         return productDao.searchProducts(cond);
     }
+
+    @Override
+    public byte[] getProductImage(String productId) {
+        return productDao.selectProductImage(productId);
+    }
 } 

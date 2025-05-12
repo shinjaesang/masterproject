@@ -111,9 +111,9 @@
                     <form class="row g-3 align-items-center mb-3" action="${pageContext.request.contextPath}/document/list.do" method="get">
                         <!-- 문서번호 입력 -->
                         <div class="col-auto">
-                            <label for="documentNo" class="visually-hidden">문서번호</label>
-                            <input type="text" class="form-control" id="documentNo" name="documentNo" 
-                                placeholder="문서번호" value="${param.documentNo}">
+                            <label for="docId" class="visually-hidden">문서번호</label>
+                            <input type="text" class="form-control" id="docId" name="docId" 
+                                placeholder="문서번호" value="${param.docId}">
                         </div>
                         <!-- 제목 입력 -->
                         <div class="col-auto">
@@ -121,11 +121,23 @@
                             <input type="text" class="form-control" id="title" name="title" 
                                 placeholder="제목" value="${param.title}">
                         </div>
+                        <!-- 문서유형 선택 -->
+                        <div class="col-auto">
+                            <label for="documentFormat" class="visually-hidden">문서유형</label>
+                            <select class="form-select" id="documentFormat" name="documentFormat">
+                                <option value="">문서유형 선택</option>
+                                <option value="입고요청서" ${param.documentFormat == '입고요청서' ? 'selected' : ''}>입고요청서</option>
+                                <option value="출고요청서" ${param.documentFormat == '출고요청서' ? 'selected' : ''}>출고요청서</option>
+                                <option value="기안서" ${param.documentFormat == '기안서' ? 'selected' : ''}>기안서</option>
+                                <option value="보고서" ${param.documentFormat == '보고서' ? 'selected' : ''}>보고서</option>
+                                <option value="계약서" ${param.documentFormat == '계약서' ? 'selected' : ''}>계약서</option>
+                            </select>
+                        </div>
                         <!-- 기안자 입력 -->
                         <div class="col-auto">
-                            <label for="writer" class="visually-hidden">기안자</label>
-                            <input type="text" class="form-control" id="writer" name="writer" 
-                                placeholder="기안자" value="${param.writer}">
+                            <label for="empName" class="visually-hidden">기안자</label>
+                            <input type="text" class="form-control" id="empName" name="empName" 
+                                placeholder="기안자" value="${param.empName}">
                         </div>
                         <!-- 부서 입력 -->
                         <div class="col-auto">
@@ -133,45 +145,30 @@
                             <input type="text" class="form-control" id="department" name="department" 
                                 placeholder="부서" value="${param.department}">
                         </div>
-                        <!-- 문서유형 선택 -->
-                        <div class="col-auto">
-                            <label for="documentType" class="visually-hidden">문서유형</label>
-                            <select class="form-select" id="documentType" name="documentType">
-                                <option value="">문서유형 선택</option>
-                                <option value="EXPENSE" ${param.documentType == 'EXPENSE' ? 'selected' : ''}>지출결의서</option>
-                                <option value="DRAFT" ${param.documentType == 'DRAFT' ? 'selected' : ''}>품의서</option>
-                                <option value="REPORT" ${param.documentType == 'REPORT' ? 'selected' : ''}>보고서</option>
-                                <option value="CONTRACT" ${param.documentType == 'CONTRACT' ? 'selected' : ''}>계약서</option>
-                                <option value="PROPOSAL" ${param.documentType == 'PROPOSAL' ? 'selected' : ''}>기안서</option>
-                                <option value="INBOUND" ${param.documentType == 'INBOUND' ? 'selected' : ''}>입고요청서</option>
-                                <option value="OUTBOUND" ${param.documentType == 'OUTBOUND' ? 'selected' : ''}>출고요청서</option>
-                            </select>
-                        </div>
-                        <!-- 기안일자 범위: 시작 날짜 -->
+                        <!-- 기안일자 범위 -->
                         <div class="col-auto">
                             <label for="startDate" class="visually-hidden">기안일자 (시작)</label>
                             <input type="date" class="form-control" id="startDate" name="startDate" 
                                 value="${param.startDate}">
                         </div>
-                        <!-- 기안일자 범위 표시: ~ -->
                         <div class="col-auto d-flex align-items-center">
                             <span>~</span>
                         </div>
-                        <!-- 기안일자 범위: 종료 날짜 -->
                         <div class="col-auto">
                             <label for="endDate" class="visually-hidden">기안일자 (종료)</label>
                             <input type="date" class="form-control" id="endDate" name="endDate" 
                                 value="${param.endDate}">
                         </div>
-                        <!-- 문서상태 선택 -->
+                        <!-- 결재상태 선택 -->
                         <div class="col-auto">
-                            <label for="status" class="visually-hidden">상태</label>
-                            <select class="form-select" id="status" name="status">
+                            <label for="approvalStatus" class="visually-hidden">상태</label>
+                            <select class="form-select" id="approvalStatus" name="approvalStatus">
                                 <option value="">전체 상태</option>
-                                <option value="PENDING" ${param.status == 'PENDING' ? 'selected' : ''}>결재 대기</option>
-                                <option value="COMPLETED" ${param.status == 'COMPLETED' ? 'selected' : ''}>결재 완료</option>
-                                <option value="REJECTED" ${param.status == 'REJECTED' ? 'selected' : ''}>반려</option>
-                                <option value="TEMP" ${param.status == 'TEMP' ? 'selected' : ''}>임시 저장</option>
+                                <option value="발송" ${param.approvalStatus == '발송' ? 'selected' : ''}>발송</option>
+                                <option value="결재대기" ${param.approvalStatus == '결재대기' ? 'selected' : ''}>결재대기</option>
+                                <option value="승인" ${param.approvalStatus == '승인' ? 'selected' : ''}>승인</option>
+                                <option value="반려" ${param.approvalStatus == '반려' ? 'selected' : ''}>반려</option>
+                                <option value="회수" ${param.approvalStatus == '회수' ? 'selected' : ''}>회수</option>
                             </select>
                         </div>
                         <!-- 검색 버튼 -->
@@ -192,41 +189,49 @@
                                     <th scope="col">문서유형</th>
                                     <th scope="col">기안자</th>
                                     <th scope="col">부서</th>
-                                    <th scope="col">기안일</th>
-                                    <th scope="col">결재기한</th>
+                                    <th scope="col">기안일자</th>
+                                    <th scope="col">검토일자</th>
+                                    <th scope="col">결재일자</th>
+                                    <th scope="col">검토자</th>
+                                    <th scope="col">결재자</th>
+                                    <th scope="col">참조자</th>
                                     <th scope="col">상태</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${documents}" var="doc">
                                     <tr>
-                                        <td>${doc.documentNo}</td>
+                                        <td>${doc.docId}</td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/document/view/${doc.id}" class="text-dark">
+                                            <a href="javascript:void(0);" onclick="openDocumentDetail('${doc.docId}')" class="text-dark">
                                                 ${doc.title}
-                                                <c:if test="${doc.attachmentCount > 0}">
-                                                    <i class="fas fa-paperclip text-secondary"></i>
-                                                </c:if>
                                             </a>
                                         </td>
-                                        <td>${doc.documentType}</td>
-                                        <td>${doc.writerName}</td>
+                                        <td>${doc.documentFormat}</td>
+                                        <td>${doc.empName}</td>
                                         <td>${doc.department}</td>
-                                        <td><fmt:formatDate value="${doc.createdDate}" pattern="yyyy-MM-dd"/></td>
-                                        <td><fmt:formatDate value="${doc.dueDate}" pattern="yyyy-MM-dd"/></td>
+                                        <td><fmt:formatDate value="${doc.draftDate}" pattern="yyyy-MM-dd"/></td>
+                                        <td><fmt:formatDate value="${doc.reviewDate}" pattern="yyyy-MM-dd"/></td>
+                                        <td><fmt:formatDate value="${doc.approvalDate}" pattern="yyyy-MM-dd"/></td>
+                                        <td>${doc.reviewerName}</td>
+                                        <td>${doc.approverName}</td>
+                                        <td>${doc.referencerName}</td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${doc.status eq 'PENDING'}">
-                                                    <span class="badge bg-warning">대기</span>
+                                                <c:when test="${doc.approvalStatus eq '발송'}">
+                                                    <span class="badge bg-warning">발송</span>
                                                 </c:when>
-                                                <c:when test="${doc.status eq 'COMPLETED'}">
-                                                    <span class="badge bg-success">완료</span>
+                                                <c:when test="${doc.approvalStatus eq '결재대기'}">
+                                                    <span class="badge bg-warning">결재대기</span>
                                                 </c:when>
-                                                <c:when test="${doc.status eq 'REJECTED'}">
+                                                <c:when test="${doc.approvalStatus eq '승인'}">
+                                                    <span class="badge bg-success">승인</span>
+                                                </c:when>
+                                                <c:when test="${doc.approvalStatus eq '반려'}">
                                                     <span class="badge bg-danger">반려</span>
                                                 </c:when>
-                                                <c:when test="${doc.status eq 'TEMP'}">
-                                                    <span class="badge bg-secondary">임시</span>
+                                                <c:when test="${doc.approvalStatus eq '회수'}">
+                                                    <span class="badge bg-secondary">회수</span>
                                                 </c:when>
                                             </c:choose>
                                         </td>
@@ -236,25 +241,9 @@
                         </table>
                     </div>
 
-                    <!-- 페이지네이션 -->
-                    <div class="d-flex justify-content-center mt-4">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                    <!-- 총 건수 표시 -->
+                    <div class="mt-3">
+                        <p>총 <strong>${totalCount}</strong>건의 문서가 있습니다.</p>
                     </div>
                 </div>
             </div>
@@ -346,6 +335,11 @@
                 $('.content').addClass('show');
             }
         });
+
+        function openDocumentDetail(docId) {
+            var url = '${pageContext.request.contextPath}/document/view/' + docId;
+            window.open(url, 'documentDetail', 'width=1200,height=800,scrollbars=yes');
+        }
     </script>
 </body>
 </html>

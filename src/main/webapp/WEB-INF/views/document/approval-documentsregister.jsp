@@ -133,7 +133,7 @@
                         <h5 class="mb-0">전자문서 등록</h5>
                     </div>
                     
-                    <form action="${pageContext.request.contextPath}/document/register.do" method="post" enctype="multipart/form-data">
+                    <form id="documentForm" action="${pageContext.request.contextPath}/document/register.do" method="post" enctype="multipart/form-data">
                         <!-- 문서 기본 정보 -->
                         <div class="row mb-3">
                             <!-- 문서 제목 -->
@@ -176,12 +176,12 @@
                             <!-- 결재선 표시 영역 -->
                             <div class="bg-white rounded p-3 border">
                                 <div class="row">
-                                    <!-- 참조 -->
+                                    <!-- 결재 -->
                                     <div class="col-md-4">
-                                        <h6 class="text-center mb-2">참조</h6>
+                                        <h6 class="text-center mb-2">결재</h6>
                                         <div class="border rounded p-2" style="min-height: 100px">
-                                            <div id="referrerList" class="approval-list" data-type="참조자">
-                                                <!-- 참조자가 추가되면 여기에 표시 -->
+                                            <div id="approverList" class="approval-list" data-type="approver">
+                                                <!-- 결재자가 추가되면 여기에 표시 -->
                                             </div>
                                         </div>
                                     </div>
@@ -190,18 +190,18 @@
                                     <div class="col-md-4">
                                         <h6 class="text-center mb-2">검토</h6>
                                         <div class="border rounded p-2" style="min-height: 100px">
-                                            <div id="reviewerList" class="approval-list" data-type="검토자">
+                                            <div id="reviewerList" class="approval-list" data-type="reviewer">
                                                 <!-- 검토자가 추가되면 여기에 표시 -->
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <!-- 승인 -->
+                                    <!-- 참조 -->
                                     <div class="col-md-4">
-                                        <h6 class="text-center mb-2">승인</h6>
+                                        <h6 class="text-center mb-2">참조</h6>
                                         <div class="border rounded p-2" style="min-height: 100px">
-                                            <div id="approverList" class="approval-list" data-type="결재자">
-                                                <!-- 승인자가 추가되면 여기에 표시 -->
+                                            <div id="referrerList" class="approval-list" data-type="referrer">
+                                                <!-- 참조자가 추가되면 여기에 표시 -->
                                             </div>
                                         </div>
                                     </div>
@@ -252,9 +252,7 @@
                             <button type="button" class="btn btn-outline-primary" onclick="saveTemp()">
                                 임시저장
                             </button>
-                            <button type="submit" class="btn btn-dark">
-                                결재상신
-                            </button>
+                            <button type="button" class="btn btn-dark" onclick="submitDocument()">결재상신</button>
                         </div>
                     </form>
                 </div>
@@ -338,51 +336,16 @@
                 .create(document.querySelector('#content'), {
                     language: 'ko',
                     toolbar: [
-                        'heading',
-                        '|',
-                        'bold',
-                        'italic',
-                        'link',
-                        'bulletedList',
-                        'numberedList',
-                        '|',
-                        'outdent',
-                        'indent',
-                        '|',
-                        'imageUpload',
-                        'blockQuote',
-                        'insertTable',
-                        'undo',
-                        'redo'
+                        'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
                     ]
+                })
+                .then(editor => {
+                    window.editor = editor;
                 })
                 .catch(error => {
                     console.error(error);
                 });
-
-            // 모달이 열릴 때 결재선 선택 페이지 로드
-            $('#approvalLineModal').on('show.bs.modal', function () {
-                console.log('Modal opening...');
-                const url = `${pageContext.request.contextPath}/document/approval-line.do?type=` + currentApprovalType;
-                console.log('Loading URL:', url);
-                
-                // iframe으로 페이지 로드
-                const iframe = document.createElement('iframe');
-                iframe.style.width = '100%';
-                iframe.style.height = '600px';
-                iframe.style.border = 'none';
-                iframe.src = url;
-                
-                $('#approvalLineContent').html('').append(iframe);
-
-                // iframe이 로드된 후 선택된 사용자 정보 전달
-                iframe.onload = function() {
-                    const iframeWindow = iframe.contentWindow;
-                    if (typeof iframeWindow.initializeSelectedUsers === 'function') {
-                        iframeWindow.initializeSelectedUsers(selectedUsers[currentApprovalType]);
-                    }
-                };
-            });
 
             // 모달이 닫힐 때 내용 초기화
             $('#approvalLineModal').on('hidden.bs.modal', function () {
@@ -430,9 +393,9 @@
             
             // 타입별 URL 매핑
             const urlMapping = {
-                approver: '${pageContext.request.contextPath}/document/select-approval-line.do',
-                reviewer: '${pageContext.request.contextPath}/document/select-reviewer-line.do',
-                referrer: '${pageContext.request.contextPath}/document/select-referrer-line.do'
+                approver: '${pageContext.request.contextPath}/document/approval-line.do',
+                reviewer: '${pageContext.request.contextPath}/document/reviewer-line.do',
+                referrer: '${pageContext.request.contextPath}/document/reference-line.do'
             };
 
             const url = urlMapping[type] + '?type=' + type;
@@ -478,63 +441,86 @@
         function handleApprovalLineSelection(type, users) {
             console.log('Starting handleApprovalLineSelection with:', { type, users });
             
-            // 파라미터 검증
-            if (!type) {
-                console.error('Type parameter is missing');
-                alert('결재선 유형이 지정되지 않았습니다.');
-                return;
+            // type 값 검증 및 기본값 설정
+            if (!type || typeof type !== 'string') {
+                console.warn('Invalid type value:', type);
+                type = 'approver';
             }
-
-            // 타입 정규화
-            type = type.toLowerCase().trim();
-
-            if (!users || !Array.isArray(users)) {
-                console.error('Users parameter is invalid:', users);
-                alert('선택된 사용자 정보가 올바르지 않습니다.');
-                return;
-            }
-
-            // 타입 검증
+            
+            // type 값 정규화 (소문자로 변환)
+            type = type.toLowerCase();
+            
             if (!['approver', 'reviewer', 'referrer'].includes(type)) {
                 console.error('Invalid approval type:', type);
-                alert('올바르지 않은 결재선 유형입니다: ' + type);
+                alert('올바르지 않은 결재선 유형입니다.');
                 return;
             }
 
             try {
-                console.log('Updating selectedUsers for type:', type);
                 // 결재선 정보 업데이트
-                selectedUsers[type] = [...users];
+                selectedUsers[type] = users;
 
-                console.log('Finding target area for type:', type);
                 // DOM 업데이트
                 const targetId = `${type}List`;
                 console.log('Looking for element with ID:', targetId);
                 
-                const targetArea = document.getElementById(targetId);
+                // 모든 approval-list 요소 확인
+                const allApprovalLists = document.querySelectorAll('.approval-list');
+                console.log('All approval lists:', allApprovalLists);
+                
+                // ID로 요소 찾기 시도
+                let targetArea = document.getElementById(targetId);
+                
+                // ID로 찾지 못한 경우 data-type 속성으로 시도
                 if (!targetArea) {
-                    console.error('Available elements:', 
-                        Array.from(document.getElementsByTagName('*'))
-                            .filter(el => el.id)
-                            .map(el => el.id)
-                    );
-                    throw new Error(`결재선 영역을 찾을 수 없습니다. (${targetId})`);
+                    targetArea = document.querySelector(`.approval-list[data-type="${type}"]`);
+                }
+                
+                // 여전히 찾지 못한 경우 클래스와 data-type으로 시도
+                if (!targetArea) {
+                    const elements = document.getElementsByClassName('approval-list');
+                    for (let element of elements) {
+                        if (element.getAttribute('data-type') === type) {
+                            targetArea = element;
+                            break;
+                        }
+                    }
                 }
 
-                console.log('Found target area:', targetArea);
+                if (!targetArea) {
+                    console.error('Target area not found for type:', type);
+                    console.log('Available elements:', allApprovalLists);
+                    throw new Error(`결재선 영역을 찾을 수 없습니다. (${type})`);
+                }
 
                 // 기존 내용 초기화
                 targetArea.innerHTML = '';
                 
                 // 폼에서 기존 hidden input 제거
                 const form = document.querySelector('form');
-                if (!form) {
-                    throw new Error('폼 엘리먼트를 찾을 수 없습니다.');
-                }
+                const existingInputs = form.querySelectorAll(`input[name="${type}List"]`);
+                existingInputs.forEach(input => input.remove());
 
-                // 새로운 결재선 정보 표시
+                // 새로운 결재선 정보 표시 및 hidden input 추가
                 users.forEach((user, index) => {
-                    if (!user || !user.name || !user.department || !user.position) {
+                    console.log('user raw:', user, typeof user);
+                    if (typeof user === 'string') {
+                        try {
+                            user = JSON.parse(user);
+                        } catch (e) {
+                            console.error('user 파싱 실패:', user);
+                            return;
+                        }
+                    }
+                    console.log('user after parse:', user);
+                    
+                    // TB_USER 테이블의 컬럼명에 맞게 수정
+                    const empName = user.empName || user.name || '';
+                    const department = user.deptName || user.department || '';
+                    const position = user.jobTitle || user.position || '';
+                    
+                    console.log('결재선 표시 값:', empName, department, position);
+                    if (!empName && !department && !position) {
                         console.error('Invalid user data:', user);
                         return;
                     }
@@ -542,15 +528,14 @@
                     // 결재선 항목 생성
                     const approvalItem = document.createElement('div');
                     approvalItem.className = 'approval-item';
-                    approvalItem.innerHTML = `
-                        <div class="approval-info d-flex justify-content-between align-items-center">
-                            <span class="approval-text">${user.name}/${user.department}/${user.position}</span>
-                            <button type="button" class="btn btn-link text-danger p-0" 
-                                    onclick="clearApprovalLine('${type}', '${user.name}')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
+                    approvalItem.innerHTML = 
+                        '<div class="approval-info d-flex justify-content-between align-items-center">' +
+                        '<span class="approval-text">' + empName + '/' + department + '/' + position + '</span>' +
+                        '<button type="button" class="btn btn-link text-danger p-0" ' +
+                        'onclick="clearApprovalLine(\'' + type + '\', \'' + empName + '\')">' +
+                        '<i class="fas fa-times"></i>' +
+                        '</button>' +
+                        '</div>';
                     targetArea.appendChild(approvalItem);
 
                     // hidden input 추가
@@ -558,16 +543,16 @@
                     input.type = 'hidden';
                     input.name = `${type}List`;
                     input.value = JSON.stringify({
-                        name: user.name,
-                        department: user.department,
-                        position: user.position,
+                        empId: user.empId,
+                        empName: empName,
+                        department: department,
+                        position: position,
                         order: index + 1
                     });
                     form.appendChild(input);
                 });
 
-                console.log('Successfully updated approval line');
-                
+                console.log('Successfully updated approval line for type:', type);
                 // 모달 닫기
                 $('#approvalLineModal').modal('hide');
             } catch (error) {
@@ -577,24 +562,64 @@
         }
 
         // 결재선 삭제 함수
-        function clearApprovalLine(type, userName) {
-            console.log('Clearing approval line:', { type, userName });
-
+        function clearApprovalLine(type, empName) {
+            console.log('Starting clearApprovalLine with:', { type, empName });
+            
             try {
-                const targetArea = document.getElementById(`${type}List`);
-                if (!targetArea) {
-                    throw new Error('Target area not found: ' + type);
+                // type 값 검증 및 기본값 설정
+                if (!type || typeof type !== 'string') {
+                    console.warn('Invalid type value:', type);
+                    type = 'approver';
+                }
+                
+                // type 값 정규화 (소문자로 변환)
+                type = type.toLowerCase();
+                
+                if (!['approver', 'reviewer', 'referrer'].includes(type)) {
+                    throw new Error('올바르지 않은 결재선 유형입니다: ' + type);
                 }
 
-                const typeText = targetArea.getAttribute('data-type');
-                if (confirm(`${userName}님의 ${typeText} 지정을 취소하시겠습니까?`)) {
+                // DOM 업데이트
+                const targetId = `${type}List`;
+                console.log('Looking for element with ID:', targetId);
+                
+                // 여러 방법으로 요소 찾기 시도
+                let targetArea = document.getElementById(targetId);
+                
+                if (!targetArea) {
+                    targetArea = document.querySelector(`.approval-list[data-type="${type}"]`);
+                }
+                
+                if (!targetArea) {
+                    const elements = document.getElementsByClassName('approval-list');
+                    for (let element of elements) {
+                        if (element.getAttribute('data-type') === type) {
+                            targetArea = element;
+                            break;
+                        }
+                    }
+                }
+
+                if (!targetArea) {
+                    console.error('Target area not found for type:', type);
+                    throw new Error(`결재선 영역을 찾을 수 없습니다. (${type})`);
+                }
+
+                // typeText 설정
+                const typeText = {
+                    'approver': '결재',
+                    'reviewer': '검토',
+                    'referrer': '참조'
+                }[type] || type;
+
+                if (confirm('취소하시겠습니까?')) {
                     // 선택된 사용자 목록에서 제거
-                    selectedUsers[type] = selectedUsers[type].filter(user => user.name !== userName);
+                    selectedUsers[type] = selectedUsers[type].filter(user => user.empName !== empName);
                     
                     // DOM 업데이트
                     const items = targetArea.getElementsByClassName('approval-item');
                     Array.from(items).forEach(item => {
-                        if (item.textContent.includes(userName)) {
+                        if (item.textContent.includes(empName)) {
                             item.remove();
                         }
                     });
@@ -603,13 +628,17 @@
                     const form = document.querySelector('form');
                     const inputs = form.querySelectorAll(`input[name="${type}List"]`);
                     inputs.forEach(input => {
-                        const data = JSON.parse(input.value);
-                        if (data.name === userName) {
-                            input.remove();
+                        try {
+                            const data = JSON.parse(input.value);
+                            if (data.empName === empName) {
+                                input.remove();
+                            }
+                        } catch (error) {
+                            console.error('Error parsing input value:', error);
                         }
                     });
 
-                    console.log('Successfully cleared approval line');
+                    console.log('Successfully removed approval line for:', empName);
                 }
             } catch (error) {
                 console.error('Error in clearApprovalLine:', error);
@@ -727,7 +756,7 @@
                     <div class="approval-preview-item mb-2">
                         <div class="d-flex align-items-center">
                             <div>
-                                <span class="fw-bold">${userData.name}</span>
+                                <span class="fw-bold">${userData.empName}</span>
                                 <span class="text-muted">(${userData.position})</span>
                                 <br>
                                 <small class="text-muted">${userData.department}</small>
@@ -746,6 +775,70 @@
         function hideSpinner() {
             $('#spinner').removeClass('show');
             $('.content').addClass('show');
+        }
+
+        function submitDocument() {
+            const title = document.getElementById('title').value.trim();
+            const content = window.editor ? window.editor.getData().trim() : '';
+            const documentType = document.getElementById('documentType').value;
+
+            if (!title) {
+                alert('제목을 입력해주세요.');
+                document.getElementById('title').focus();
+                return;
+            }
+            if (!content) {
+                alert('내용을 입력해주세요.');
+                return;
+            }
+            if (!documentType) {
+                alert('문서 유형을 선택해주세요.');
+                document.getElementById('documentType').focus();
+                return;
+            }
+            if (!selectedUsers.approver || selectedUsers.approver.length === 0) {
+                alert('최소 1명 이상의 결재자를 지정해야 합니다.');
+                return;
+            }
+
+            const form = document.getElementById('documentForm');
+            const formData = new FormData(form);
+
+            Object.keys(selectedUsers).forEach(type => {
+                selectedUsers[type].forEach(user => {
+                    formData.append(`${type}List`, JSON.stringify({
+                        empId: user.empId,
+                        empName: user.empName || user.name,
+                        department: user.department,
+                        position: user.position || user.job,
+                        order: user.order
+                    }));
+                });
+            });
+
+            formData.append('draftDate', new Date().toISOString().split('T')[0]);
+            formData.append('approvalStatus', '발송');
+
+            $.ajax({
+                url: form.action,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert('문서가 성공적으로 등록되었습니다.');
+                        localStorage.removeItem('tempDocument');
+                        location.href = '${pageContext.request.contextPath}/document/list.do';
+                    } else {
+                        alert('문서 등록 중 오류가 발생했습니다: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('문서 등록 중 오류가 발생했습니다.');
+                    console.error(error);
+                }
+            });
         }
     </script>
 </body>

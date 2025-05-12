@@ -58,17 +58,17 @@
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <h3 class="mb-4">입출고전표생성</h3>
+                            <h3 class="mb-4">입고전표생성</h3>
                             
                             <div class="form-container">
-                                <form id="inoutForm" action="${pageContext.request.contextPath}/inout/register.do" method="post">
+                                <form id="inoutForm" action="${pageContext.request.contextPath}/inout/inregister.do" method="post">
                                     <div class="row mb-4">
                                         <div class="col-md-3">
-                                            <label for="warehouseId" class="form-label">창고 선택</label>
+                                            <label for="warehouseId" class="form-label">입고 창고 선택</label>
                                         </div>
                                         <div class="col-md-9">
                                             <select id="warehouseId" name="warehouseId" class="form-select" required>
-                                                <option value="">창고를 선택하세요</option>
+                                                <option value="">입고 창고를 선택하세요</option>
                                                 <c:forEach items="${warehouseList}" var="warehouse">
                                                     <option value="${warehouse.warehouseId}">${warehouse.warehouseName}</option>
                                                 </c:forEach>
@@ -82,9 +82,9 @@
                                         </div>
                                         <div class="col-md-9">
                                             <select id="inoutvoiceType" name="inoutvoiceType" class="form-select" required>
-                                                <option value="">전표유형을 선택하세요</option>
                                                 <option value="입고">입고</option>
-                                                <option value="출고">출고</option>
+                                                <!-- <option value="입고">입고</option>
+                                                <option value="출고">출고</option> -->
                                             </select>
                                         </div>
                                     </div>
@@ -97,6 +97,15 @@
                                             <input type="text" class="form-control" id="inoutvoiceName" name="inoutvoiceName" placeholder="전표제목을 입력하세요" required>
                                         </div>
                                     </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <label for="workerId" class="form-label">작업자 ID</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="workerId" name="workerId" placeholder="작업자 ID를 입력하세요" required>
+                                        </div>
+                                    </div>
                                     
                                     <div class="row mb-4">
                                         <div class="col-md-3">
@@ -104,15 +113,6 @@
                                         </div>
                                         <div class="col-md-9">
                                             <input type="text" class="form-control" id="orderId" name="orderId" placeholder="주문번호를 입력하세요" required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mb-4">
-                                        <div class="col-md-3">
-                                            <label for="workerId" class="form-label">작업자 ID</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" id="workerId" name="workerId" placeholder="작업자 ID를 입력하세요" required>
                                         </div>
                                     </div>
                                     

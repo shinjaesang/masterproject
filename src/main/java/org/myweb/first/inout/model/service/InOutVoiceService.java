@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.myweb.first.inout.model.dto.InOutVoice;
+import org.myweb.first.inout.model.dto.InOutVoiceProductDetail;
 
 public interface InOutVoiceService {
 
@@ -48,4 +49,20 @@ public interface InOutVoiceService {
      * @return 총 개수
      */
     int selectInOutVoiceTotalCount(Map<String, Object> params);
+    
+    /**
+     * 전표별 상품목록 조회
+     * @param inoutvoiceId 전표 ID
+     * @return 상품 상세 목록
+     */
+    List<InOutVoiceProductDetail> selectInOutVoiceProductList(String inoutvoiceId);
+
+    /**
+     * 전표별 상품 추가 (처리)
+     */
+    int insertInOutVoiceProduct(String inoutvoiceId, String productId, int quantity, String workerId);
+
+    // 상품 처리/삭제 추가
+    int processInOutVoiceProducts(java.util.List<String> ids, String workerId);
+    int deleteInOutVoiceProducts(java.util.List<String> ids);
 } 

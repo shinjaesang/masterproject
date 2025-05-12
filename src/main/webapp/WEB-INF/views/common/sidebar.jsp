@@ -59,8 +59,11 @@
 						<div class="dropdown-menu bg-transparent border-0">
 							<a href="${pageContext.request.contextPath}/inout/list.do"
 								class="dropdown-item">입출고 조회</a> <a
-								href="${pageContext.request.contextPath}/inout/register.do"
-								class="dropdown-item">전표 등록</a>
+								href="${pageContext.request.contextPath}/inout/inregister.do"
+								class="dropdown-item">입고 전표 등록</a> <a
+								href="${pageContext.request.contextPath}/inout/outregister.do"
+								class="dropdown-item">출고 전표 등록</a>
+								
 						</div>
 					</div>
 					<div class="nav-item dropdown">

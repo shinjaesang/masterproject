@@ -44,4 +44,8 @@ public class ProductDao {
     public List<Product> searchProducts(ProductSearchCondition cond) {
         return sqlSession.selectList(NAMESPACE + "searchProducts", cond);
     }
+
+    public byte[] selectProductImage(String productId) {
+        return sqlSession.selectOne(NAMESPACE + "selectProductImage", productId);
+    }
 } 

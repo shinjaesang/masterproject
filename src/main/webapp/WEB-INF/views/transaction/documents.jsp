@@ -58,7 +58,7 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">거래문서함</h6>
+                        <h4 class="mb-0" style="font-size: 24px; font-weight: 600;">거래문서함</h4>
                     </div>
 
                     <!-- 검색 조건 입력 폼 -->
@@ -218,7 +218,7 @@
         if (confirm('선택한 ' + selectedDocuments.length + '개의 문서를 삭제하시겠습니까?')) {
             const documentIds = selectedDocuments.join(',');
             
-            fetch('${pageContext.request.contextPath}/document/transaction/delete.do', {
+            fetch('${pageContext.request.contextPath}/transaction/delete.do', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -244,7 +244,7 @@
     // 단일 문서 삭제 함수
     function deleteDocument(documentId) {
         if (confirm('선택한 문서를 삭제하시겠습니까?')) {
-            fetch('${pageContext.request.contextPath}/document/transaction/delete.do', {
+            fetch('${pageContext.request.contextPath}/transaction/delete.do', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

@@ -50,7 +50,7 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">거래문서 등록</h6>
+                        <h4 class="mb-0" style="font-size: 24px; font-weight: 600;">거래문서 등록</h4>
                     </div>
 
                     <form id="registerForm" action="${pageContext.request.contextPath}/transaction/register.do" method="post" enctype="multipart/form-data">
@@ -66,12 +66,30 @@
                                     <option value="입고계약서">입고계약서</option>
                                     <option value="출고계약서">출고계약서</option>
                                     <option value="납품확인서">납품확인서</option>
-                                    <option value="일반영수증">일반영수증</option>
+                                    <option value="영수증">일반영수증</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="relatedPartyId" class="form-label">거래처</label>
-                                <input type="text" class="form-control" id="relatedPartyId" name="relatedPartyId" required>
+                                <select class="form-select" id="relatedPartyId" name="relatedPartyId" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="PART001">ABC물산</option>
+                                    <option value="PART002">XYZ상사</option>
+                                    <option value="PART003">DEF산업</option>
+                                    <option value="PART004">GHI무역</option>
+                                    <option value="PART005">JKL상사</option>
+                                    <option value="PART006">MNO물류</option>
+                                    <option value="PART007">PQR전자</option>
+                                    <option value="PART008">STU무역</option>
+                                    <option value="PART009">VWX산업</option>
+                                    <option value="PART010">YZA물산</option>
+                                    <option value="PART011">BCD전자</option>
+                                    <option value="PART012">EFG무역</option>
+                                    <option value="PART013">HIJ물류</option>
+                                    <option value="PART014">KLM전자</option>
+                                    <option value="PART015">NOP산업</option>
+                                    <option value="PART016">XYZ테크</option>
+                                </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="validUntil" class="form-label">유효기간</label>
@@ -83,7 +101,7 @@
                                 <input type="hidden" name="uploadedBy" value="${sessionScope.loginUser.empId}">
                             </div>
                             <div class="col-12">
-                                <label for="content" class="form-label">문서 내용</label>
+                                <label for="content" class="form-label">비고</label>
                                 <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
                             </div>
                             <div class="col-12">
@@ -137,25 +155,30 @@
             e.preventDefault();
             
             const formData = new FormData(this);
+            const fileInput = document.getElementById('attachedFile');
             
-            $.ajax({
-                url: '${pageContext.request.contextPath}/transaction/register.do',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        alert('문서가 성공적으로 등록되었습니다.');
-                        location.href = '${pageContext.request.contextPath}/transaction/list.do';
-                    } else {
-                        alert('문서 등록 중 오류가 발생했습니다: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('문서 등록 중 오류가 발생했습니다.');
-                    console.error(error);
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                formData.append('attachedFile', file);
+                formData.append('attachedFileName', file.name); // 첨부파일명 추가
+            }
+            
+            fetch('${pageContext.request.contextPath}/transaction/register.do', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('거래문서가 등록되었습니다.');
+                    window.location.href = '${pageContext.request.contextPath}/transaction/list.do';
+                } else {
+                    alert('거래문서 등록에 실패했습니다: ' + data.message);
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('거래문서 등록 중 오류가 발생했습니다.');
             });
         });
     });

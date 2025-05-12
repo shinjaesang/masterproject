@@ -61,10 +61,8 @@
                             <label class="form-label">창고유형</label>
                             <select class="form-select" name="type">
                                 <option value="">선택</option>
-                                <option>일반창고</option>
-                                <option>냉장창고</option>
-                                <option>위탁창고</option>
-                                <option>기타</option>
+                                <option value="OWN">일반창고</option>
+                                <option value="3PL">위탁창고</option>
                             </select>
                         </div>
                         <div class="col-md-6">

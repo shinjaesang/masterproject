@@ -16,6 +16,7 @@
         <result property="attachedFile" column="ATTACHED_FILE" />
         <result property="partnerName" column="PARTNER_NAME" />
         <result property="uploaderName" column="UPLOADER_NAME" />
+        <result property="attachedFileName" column="ATTACHED_FILE_NAME" />
     </resultMap>
     
     <!-- 거래문서 목록 조회 -->
@@ -33,7 +34,8 @@
             t.VALID_UNTIL,
             t.STATUS,
             t.CONTENT,
-            t.ATTACHED_FILE
+            t.ATTACHED_FILE,
+            t.ATTACHED_FILE_NAME
         FROM TB_TRANSACTION_DOCUMENTS t
         LEFT JOIN TB_PARTNER p ON t.RELATED_PARTY_ID = p.PARTNER_ID
         LEFT JOIN TB_USER u ON t.UPLOADED_BY = u.EMPID
@@ -78,7 +80,8 @@
             t.VALID_UNTIL,
             t.STATUS,
             t.CONTENT,
-            t.ATTACHED_FILE
+            t.ATTACHED_FILE,
+            t.ATTACHED_FILE_NAME
         FROM TB_TRANSACTION_DOCUMENTS t
         LEFT JOIN TB_PARTNER p ON t.RELATED_PARTY_ID = p.PARTNER_ID
         LEFT JOIN TB_USER u ON t.UPLOADED_BY = u.EMPID
@@ -98,19 +101,46 @@
             VALID_UNTIL,
             STATUS,
             CONTENT,
-            ATTACHED_FILE
+            ATTACHED_FILE,
+            ATTACHED_FILE_NAME
         ) VALUES (
-            'TD' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(SEQ_TRANSACTION_DOC.NEXTVAL, 4, '0'),
+            'TD' || TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(SEQ_TRANSACTION_DOCUMENTS.NEXTVAL, 4, '0'),
             #{docName},
             #{docType},
-            'PARTNER',
+            '판매처',
             #{relatedPartyId},
             SYSDATE,
             #{uploadedBy},
             #{validUntil},
             #{status},
             #{content},
-            #{attachedFile}
+            #{attachedFile},
+            #{attachedFileName}
         )
     </insert>
+
+    <!-- 거래문서 일괄 삭제 -->
+    <delete id="deleteTransactions" parameterType="list">
+        DELETE FROM TB_TRANSACTION_DOCUMENTS
+        WHERE TDOC_ID IN
+        <foreach item="tdocId" collection="list" open="(" separator="," close=")">
+            #{tdocId}
+        </foreach>
+    </delete>
+
+    <update id="updateTransaction" parameterType="org.myweb.first.transaction.model.dto.Transaction">
+        UPDATE TB_TRANSACTION_DOCUMENTS
+        SET 
+            DOC_NAME = #{docName},
+            DOC_TYPE = #{docType},
+            RELATED_PARTY_ID = #{relatedPartyId},
+            VALID_UNTIL = #{validUntil},
+            STATUS = #{status},
+            CONTENT = #{content},
+            ATTACHED_FILE = #{attachedFile},
+            ATTACHED_FILE_NAME = #{attachedFileName},
+            UPLOADED_BY = #{uploadedBy},
+            UPLOADED_AT = SYSDATE
+        WHERE TDOC_ID = #{tdocId}
+    </update>
 </mapper>
