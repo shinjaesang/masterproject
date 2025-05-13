@@ -7,6 +7,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.io.IOException;
 import java.net.URLEncoder;
 import jakarta.servlet.ServletOutputStream;
@@ -14,7 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.myweb.first.transaction.model.dto.Transaction;
+import org.myweb.first.transaction.model.dto.TransactionInvoice;
 import org.myweb.first.transaction.model.service.TransactionService;
+import org.myweb.first.transaction.model.service.TransactionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +107,7 @@ public class TransactionController {
 	public String taxDomesticList(Model model) {
 		try {
 			logger.info("세금계산서 목록 페이지 접근");
+//			List<Transaction> invoiceList = transactionService.getInvoice(); // 데이터 조회
 			model.addAttribute("pageTitle", "세금계산서 목록");
 			return "transaction/tax-domestic";
 		} catch (Exception e) {
@@ -422,5 +426,46 @@ public class TransactionController {
 		}
 		return response;
 	}
+	
+	
+	@GetMapping("/taxdomesticapilist.do")
+    @ResponseBody
+    public ResponseEntity<List<TransactionInvoice>> getInvoiceList() {
+		try {
+            logger.info("세금계산서 데이터 API 요청");
+            List<TransactionInvoice> invoices = transactionService.getInvoiceList();
+            if (invoices == null || invoices.isEmpty()) {
+                logger.warn("세금계산서 데이터가 없습니다.");
+                return ResponseEntity.status(404).body(Collections.emptyList());
+            }
+            logger.info("세금계산서 데이터 조회 성공, 건수: {}", invoices.size());
+            return ResponseEntity.ok(invoices);
+        } catch (Exception e) {
+            logger.error("세금계산서 데이터 조회 중 오류 발생: {}", e.getMessage());
+            return ResponseEntity.status(500).body(Collections.emptyList());
+        }
+    }
+
+
+
+    @GetMapping
+    public String showInvoicePage() {
+        return "invoices"; // invoices.jsp 렌더링
+    }
+
+	
+//    설명:
+//    	* @ResponseBody: 메서드가 JSON 문자열을 직접 반환하도록 설정.
+//    	* 
+//    	* /invoices/list: Ajax 요청을 처리하여 JSON 응답 반환.
+//    	* /invoices: JSP 페이지를 렌더링.
+
+	
+	
+	
+	
+	
 }
+
+
 

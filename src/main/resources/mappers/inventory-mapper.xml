@@ -233,4 +233,246 @@
         )
     </insert>
 
+    <!-- 일자별 재고 조회 -->
+    <select id="searchDailyInventory" parameterType="org.myweb.first.inventory.model.dto.DailyInventorySearchCondition" resultType="org.myweb.first.inventory.model.dto.DailyInventory">
+        <![CDATA[
+        WITH daily_data AS (
+            SELECT
+                TO_CHAR(sh.change_date, 'YYYY-MM-DD') AS change_date,
+                p.partner_name,
+                sh.product_id,
+                pd.product_name,
+                pd.product_type,
+                pd.category,
+                SUM(CASE WHEN sh.change_type = '입고' THEN sh.change_quantity ELSE 0 END) AS inbound,
+                SUM(CASE WHEN sh.change_type = '출고' THEN sh.change_quantity ELSE 0 END) AS outbound,
+                SUM(CASE WHEN sh.change_type = '입고' THEN sh.change_quantity
+                   WHEN sh.change_type = '출고' THEN -sh.change_quantity
+                   ELSE 0 END) AS stock_change
+            FROM TB_STOCK_HISTORY sh
+            JOIN TB_PRODUCT pd ON sh.product_id = pd.product_id
+            JOIN TB_PARTNER p ON pd.partner_id = p.partner_id
+            WHERE 1=1
+        ]]>
+                <if test="startDate != null and startDate != ''">AND sh.change_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD')</if>
+                <if test="endDate != null and endDate != ''">AND sh.change_date &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999</if>
+                <if test="inventoryType != null and inventoryType != ''">
+                    <choose>
+                        <when test="inventoryType == 'NORMAL'">AND (sh.in_warehouse_id IN ('WH001', 'WH004', 'WH005', 'WH006', 'WH007') OR sh.out_warehouse_id IN ('WH001', 'WH004', 'WH005', 'WH006', 'WH007'))</when>
+                        <when test="inventoryType == 'DEFECTIVE'">AND (sh.in_warehouse_id = 'WH003' OR sh.out_warehouse_id = 'WH003')</when>
+                        <when test="inventoryType == 'TRANSIT'">AND (sh.in_warehouse_id = 'WH002' OR sh.out_warehouse_id = 'WH002')</when>
+                    </choose>
+                </if>
+                <if test="vendor != null and vendor != ''">AND EXISTS (SELECT 1 FROM TB_ORDERS o JOIN TB_ORDER_ITEMS oi ON o.order_id = oi.order_id WHERE o.partner_id = #{vendor} AND oi.product_id = sh.product_id AND o.order_type = '수주')</if>
+                <if test="supplier != null and supplier != ''">AND p.partner_id = #{supplier}</if>
+                <if test="workType != null and workType != ''">
+                    <choose>
+                        <when test="workType == 'INBOUND'">AND sh.change_type = '입고'</when>
+                        <when test="workType == 'OUTBOUND'">AND sh.change_type = '출고'</when>
+                    </choose>
+                </if>
+                <if test="productType != null and productType != ''">AND pd.product_type = #{productType}</if>
+                <if test="category != null and category != ''">AND pd.category = #{category}</if>
+                <if test="productName != null and productName != ''">AND pd.product_name LIKE '%' || #{productName} || '%'</if>
+                <if test="productCode != null and productCode != ''">AND sh.product_id LIKE '%' || #{productCode} || '%'</if>
+                <if test="productPeriodType != null and productPeriodType != '' and productStartDate != null and productStartDate != ''">
+                    <choose>
+                        <when test="productPeriodType == 'REGISTER'">
+                            AND pd.created_at >= TO_DATE(#{productStartDate}, 'YYYY-MM-DD')
+                            <if test="productEndDate != null and productEndDate != ''">AND pd.created_at &lt;= TO_DATE(#{productEndDate}, 'YYYY-MM-DD') + 0.99999</if>
+                        </when>
+                        <when test="productPeriodType == 'INBOUND'">
+                            AND EXISTS (SELECT 1 FROM TB_INOUTVOICE_PRODUCT ip JOIN TB_INOUTVOICE i ON ip.inoutvoice_id = i.inoutvoice_id WHERE ip.product_id = sh.product_id AND i.inoutvoice_type = '입고' AND i.created_at >= TO_DATE(#{productStartDate}, 'YYYY-MM-DD')
+                            <if test="productEndDate != null and productEndDate != ''">AND i.created_at &lt;= TO_DATE(#{productEndDate}, 'YYYY-MM-DD') + 0.99999</if>)
+                        </when>
+                    </choose>
+                </if>
+                GROUP BY TO_CHAR(sh.change_date, 'YYYY-MM-DD'), p.partner_name, sh.product_id, pd.product_name, pd.product_type, pd.category
+        <![CDATA[
+        ),
+        date_headers AS (
+            SELECT TO_CHAR(dt, 'YYYY-MM-DD') AS date_str
+            FROM (
+                SELECT 
+        ]]>
+                    <choose>
+                        <when test="startDate != null and startDate != ''">
+                            TO_DATE(#{startDate}, 'YYYY-MM-DD')
+                        </when>
+                        <otherwise>
+                            TRUNC(SYSDATE - 7)
+                        </otherwise>
+                    </choose>
+        <![CDATA[
+                    + LEVEL - 1 AS dt
+                FROM DUAL
+                CONNECT BY LEVEL <=
+        ]]>
+                    <choose>
+                        <when test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                            TO_DATE(#{endDate}, 'YYYY-MM-DD') - TO_DATE(#{startDate}, 'YYYY-MM-DD') + 1
+                        </when>
+                        <otherwise>
+                            8
+                        </otherwise>
+                    </choose>
+        <![CDATA[
+            )
+            ORDER BY dt
+        ),
+        product_list AS (
+            SELECT DISTINCT partner_name, product_id, product_name, product_type, category
+            FROM daily_data
+        ),
+        product_summary AS (
+            SELECT 
+                p.partner_name AS supplier,
+                p.product_id AS productcode,
+                p.product_name AS productname,
+                p.product_type AS producttype,
+                p.category,
+                SUM(d.inbound) AS periodinbound,
+                SUM(d.outbound) AS periodoutbound,
+                SUM(d.stock_change) AS periodstock
+            FROM product_list p
+            LEFT JOIN daily_data d ON p.partner_name = d.partner_name AND p.product_id = d.product_id
+            GROUP BY p.partner_name, p.product_id, p.product_name, p.product_type, p.category
+        ),
+        daily_matrix AS (
+            SELECT
+                p.partner_name,
+                p.product_id,
+                p.product_name,
+                p.product_type,
+                p.category,
+                dh.date_str,
+                NVL(MAX(CASE WHEN d.change_date = dh.date_str THEN d.stock_change ELSE NULL END), 0) AS daily_qty
+            FROM product_list p
+            CROSS JOIN date_headers dh
+            LEFT JOIN daily_data d ON p.partner_name = d.partner_name 
+                                  AND p.product_id = d.product_id 
+                                  AND dh.date_str = d.change_date
+            GROUP BY p.partner_name, p.product_id, p.product_name, p.product_type, p.category, dh.date_str
+            ORDER BY p.partner_name, p.product_id, dh.date_str
+        ),
+        daily_values AS (
+            SELECT
+                dm.partner_name,
+                dm.product_id,
+                dm.product_name,
+                dm.product_type,
+                dm.category,
+                LISTAGG(dm.daily_qty, ',') WITHIN GROUP (ORDER BY dm.date_str) AS daily_quantities
+            FROM daily_matrix dm
+            GROUP BY dm.partner_name, dm.product_id, dm.product_name, dm.product_type, dm.category
+        ),
+        final_data AS (
+            SELECT
+                ps.supplier,
+                ps.productcode AS productCode,
+                ps.productname AS productName,
+                ps.producttype AS productType,
+                ps.category,
+                ps.periodinbound AS periodInbound,
+                ps.periodoutbound AS periodOutbound,
+                ps.periodstock AS periodStock,
+                dv.daily_quantities AS dailyQuantities
+            FROM product_summary ps
+            JOIN daily_values dv ON ps.supplier = dv.partner_name AND ps.productcode = dv.product_id
+        )
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, 'Group' AS "date", fd.* 
+            FROM final_data fd
+            WHERE ROWNUM <= #{endRow}
+        ) WHERE rn > #{startRow}
+        ]]>
+    </select>
+    
+    <!-- 일자별 재고 개수 조회 -->
+    <select id="countDailyInventory" parameterType="org.myweb.first.inventory.model.dto.DailyInventorySearchCondition" resultType="int">
+        <![CDATA[
+        SELECT COUNT(*) FROM (
+            SELECT 
+                TO_CHAR(sh.change_date, 'YYYY-MM-DD') AS "date",
+                p.partner_name AS supplier, 
+                sh.product_id AS productCode,
+                pd.product_name AS productName,
+                pd.product_type AS productType,
+                pd.category
+            FROM TB_STOCK_HISTORY sh
+            JOIN TB_PRODUCT pd ON sh.product_id = pd.product_id
+            JOIN TB_PARTNER p ON pd.partner_id = p.partner_id
+            WHERE 1=1
+        ]]>
+            <if test="startDate != null and startDate != ''">AND sh.change_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD')</if>
+            <if test="endDate != null and endDate != ''">AND sh.change_date &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999</if>
+            <if test="inventoryType != null and inventoryType != ''">
+                <choose>
+                    <when test="inventoryType == 'NORMAL'">AND (sh.in_warehouse_id IN ('WH001', 'WH004', 'WH005', 'WH006', 'WH007') OR sh.out_warehouse_id IN ('WH001', 'WH004', 'WH005', 'WH006', 'WH007'))</when>
+                    <when test="inventoryType == 'DEFECTIVE'">AND (sh.in_warehouse_id = 'WH003' OR sh.out_warehouse_id = 'WH003')</when>
+                    <when test="inventoryType == 'TRANSIT'">AND (sh.in_warehouse_id = 'WH002' OR sh.out_warehouse_id = 'WH002')</when>
+                </choose>
+            </if>
+            <if test="vendor != null and vendor != ''">AND EXISTS (SELECT 1 FROM TB_ORDERS o JOIN TB_ORDER_ITEMS oi ON o.order_id = oi.order_id WHERE o.partner_id = #{vendor} AND oi.product_id = sh.product_id AND o.order_type = '수주')</if>
+            <if test="supplier != null and supplier != ''">AND p.partner_id = #{supplier}</if>
+            <if test="workType != null and workType != ''">
+                <choose>
+                    <when test="workType == 'INBOUND'">AND sh.change_type = '입고'</when>
+                    <when test="workType == 'OUTBOUND'">AND sh.change_type = '출고'</when>
+                </choose>
+            </if>
+            <if test="productType != null and productType != ''">AND pd.product_type = #{productType}</if>
+            <if test="category != null and category != ''">AND pd.category = #{category}</if>
+            <if test="productName != null and productName != ''">AND pd.product_name LIKE '%' || #{productName} || '%'</if>
+            <if test="productCode != null and productCode != ''">AND sh.product_id LIKE '%' || #{productCode} || '%'</if>
+            <if test="productPeriodType != null and productPeriodType != '' and productStartDate != null and productStartDate != ''">
+                <choose>
+                    <when test="productPeriodType == 'REGISTER'">
+                        AND pd.created_at >= TO_DATE(#{productStartDate}, 'YYYY-MM-DD')
+                        <if test="productEndDate != null and productEndDate != ''">AND pd.created_at &lt;= TO_DATE(#{productEndDate}, 'YYYY-MM-DD') + 0.99999</if>
+                    </when>
+                    <when test="productPeriodType == 'INBOUND'">
+                        AND EXISTS (SELECT 1 FROM TB_INOUTVOICE_PRODUCT ip JOIN TB_INOUTVOICE i ON ip.inoutvoice_id = i.inoutvoice_id WHERE ip.product_id = sh.product_id AND i.inoutvoice_type = '입고' AND i.created_at >= TO_DATE(#{productStartDate}, 'YYYY-MM-DD')
+                        <if test="productEndDate != null and productEndDate != ''">AND i.created_at &lt;= TO_DATE(#{productEndDate}, 'YYYY-MM-DD') + 0.99999</if>)
+                    </when>
+                </choose>
+            </if>
+            GROUP BY TO_CHAR(sh.change_date, 'YYYY-MM-DD'), p.partner_name, sh.product_id, pd.product_name, pd.product_type, pd.category
+        )
+    </select>
+    
+    <!-- 일자별 재고 조회 헤더 (날짜 목록) 조회 -->
+    <select id="selectDateHeaders" parameterType="org.myweb.first.inventory.model.dto.DailyInventorySearchCondition" resultType="string">
+        <![CDATA[
+        SELECT TO_CHAR(dt, 'YYYY-MM-DD') AS date_str
+        FROM (
+            SELECT 
+        ]]>
+                <choose>
+                    <when test="startDate != null and startDate != ''">
+                        TO_DATE(#{startDate}, 'YYYY-MM-DD')
+                    </when>
+                    <otherwise>
+                        TRUNC(SYSDATE - 7)
+                    </otherwise>
+                </choose>
+        <![CDATA[
+                + LEVEL - 1 AS dt
+            FROM DUAL
+            CONNECT BY LEVEL <=
+        ]]>
+                <choose>
+                    <when test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                        TO_DATE(#{endDate}, 'YYYY-MM-DD') - TO_DATE(#{startDate}, 'YYYY-MM-DD') + 1
+                    </when>
+                    <otherwise>
+                        8
+                    </otherwise>
+                </choose>
+        <![CDATA[
+        )
+        ORDER BY dt
+        ]]>
+    </select>
+
 </mapper> 

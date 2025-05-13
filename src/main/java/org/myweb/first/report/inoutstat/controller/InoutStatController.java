@@ -23,7 +23,7 @@ public class InoutStatController {
     /**
      * 입출고 통계 페이지를 표시합니다.
      */
-    @GetMapping
+    @GetMapping("/stat.do")
     public String inoutStatPage() {
         return "report/inout";
     }

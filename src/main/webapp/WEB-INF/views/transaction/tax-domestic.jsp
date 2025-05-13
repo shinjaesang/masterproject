@@ -167,7 +167,7 @@
                             <div class="invoice-header">
                                 <div class="invoice-title">세금계산서 목록</div>
                             </div>
-                            <div class="table-responsive">
+                            <!-- <div class="table-responsive">
                                 <table class="invoice-table" id="invoiceTable">
                                     <thead>
                                         <tr>
@@ -185,9 +185,33 @@
                                             <th>비고</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody id="invoiceTableBody"></tbody>
                                 </table>
-                            </div>
+                            </div> -->
+                            
+                            <div class="container table-container">
+        <h2>${pageTitle}</h2>
+        <c:if test="${not empty error}">
+            <p class="error-message">${error}</p>
+        </c:if>
+        <table class="table table-striped" id="invoiceTable">
+            <thead>
+                <tr>
+                    <th>문서 ID</th>
+                    <th>문서 번호</th>
+                    <th>문서 유형</th>
+                    <th>클라이언트 ID</th>
+                    <th>업로더</th>
+                    <th>상태</th>
+                    <th>날짜</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+                <!-- AJAX로 데이터 동적 로드 -->
+            </tbody>
+        </table>
+    </div>
+                            
                             <div id="invoiceDetails" class="details"></div>
                         </div>
                     </div>
@@ -222,87 +246,163 @@
     <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
 
     <!-- Page Specific Javascript -->
-    <script>
-        // 송장 목록 조회
-        function loadInvoices() {
-            $.ajax({
-                url: 'http://invoice-ninja-url/api/v1/invoices',
-                method: 'GET',
-                headers: {
-                    'X-API-TOKEN': 'your-api-token'
-                },
-                success: function(response) {
-                    let tbody = $('#invoiceTable tbody');
-                    tbody.empty();
-                    response.data.forEach(invoice => {
-                        const supplyAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.amount - (invoice.tax || 0));
-                        const taxAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.tax || 0);
-                        const totalAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.amount);
-                        const statusText = invoice.status === 'issued' ? '발행완료' : '미발행';
-                        
-                        // 제품 정보 처리
-                        const items = invoice.invoice_items || [];
-                        const productName = items.map(item => item.product_key).join(', ');
-                        const quantity = items.map(item => item.quantity).join(', ');
-                        const unitPrice = items.map(item => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(item.cost)).join(', ');
+		<script>
+		
+		 function loadInvoices() {
+		        $.ajax({
+		            url: 'http://invoice-ninja-url/api/v1/invoices',
+		            method: 'GET',
+		            headers: {
+		                'X-API-TOKEN': 'your-B6miqPRE13GCyMSw5UfgMOfgKKyE8glgEeIMBXgwVLPzzc9hIXy5yieoHLgS1Wig-token'
+		            },
+		            success: function(response) {
+		                let tbody = $('#invoiceTable tbody');
+		                tbody.empty();
+		                response.data.forEach(invoice => {
+		                    const supplyAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.amount - (invoice.tax || 0));
+		                    const taxAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.tax || 0);
+		                    const totalAmount = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(invoice.amount);
+		                    const statusText = invoice.status === 'issued' ? '발행완료' : '미발행';
 
-                        tbody.append(`
-                            <tr>
-                                <td>${invoice.invoice_number}</td>
-                                <td>${invoice.date}</td>
-                                <td>${invoice.client_name || invoice.client_id}</td>
-                                <td>${productName}</td>
-                                <td>${quantity}</td>
-                                <td>${unitPrice}</td>
-                                <td>${supplyAmount}</td>
-                                <td>${taxAmount}</td>
-                                <td>${totalAmount}</td>
-                                <td>${statusText}</td>
-                                <td>${invoice.user_name || '담당자'}</td>
-                                <td><a href="#" class="text-primary" onclick="viewInvoiceDetails('${invoice.id}')" style="text-decoration: none;">[상세보기]</a></td>
-                            </tr>
-                        `);
-                    });
+		                    const items = invoice.invoice_items || [];
+		                    const productName = items.map(item => item.product_key).join(', ');
+		                    const quantity = items.map(item => item.quantity).join(', ');
+		                    const unitPrice = items.map(item => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(item.cost)).join(', ');
+
+		                    tbody.append(`
+		                        <tr>
+		                            <td>${invoice.invoice_number}</td>
+		                            <td>${invoice.date}</td>
+		                            <td>${invoice.client_name || invoice.client_id}</td>
+		                            <td>${productName}</td>
+		                            <td>${quantity}</td>
+		                            <td>${unitPrice}</td>
+		                            <td>${supplyAmount}</td>
+		                            <td>${taxAmount}</td>
+		                            <td>${totalAmount}</td>
+		                            <td>${statusText}</td>
+		                            <td>${invoice.user_name || '담당자'}</td>
+		                            <td><a href="#" class="text-primary" onclick="viewInvoiceDetails('${invoice.id}')" style="text-decoration: none;">[상세보기]</a></td>
+		                        </tr>
+		                    `);
+		                });
+		            },
+		            error: function(error) {
+		                alert('송장 조회 실패: ' + error.responseText);
+		            }
+		        });
+		    }
+		
+		 
+		 
+		// 송장 세부 정보 조회
+	        function viewInvoiceDetails(invoiceId) {
+	            $.ajax({
+	                url: `http://invoice-ninja-url/api/v1/invoices/${invoiceId}`,
+	                method: 'GET',
+	                headers: {
+	                    'X-API-TOKEN': 'B6miqPRE13GCyMSw5UfgMOfgKKyE8glgEeIMBXgwVLPzzc9hIXy5yieoHLgS1Wig'
+	                },
+	                success: function(response) {
+	                	let items = response.data.invoice_items || [];
+	                	let itemNotes = items.map(function(item){return item.notes;}).join(', ');
+	                	let details = 
+	                	    <h5>송장 세부 정보</h5>
+	                	    <p><strong>송장 번호:</strong> \${response.data.invoice_number}</p>
+	                	    <p><strong>금액:</strong> \${Number(response.data.amount).toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}</p>
+	                	    <p><strong>클라이언트 ID:</strong> \${response.data.client_id}</p>
+	                	    <p><strong>발행일:</strong> \${response.data.date}</p>
+	                	    <p><strong>항목:</strong> \${itemNotes}</p>
+	                	
+	                    $('#invoiceDetails').html(details).show();
+	                },
+	                error: function(error) {
+	                    alert('세부 정보 조회 실패: ' + error.responseText);
+	                }
+	            });
+	        }
+		 
+		 
+		 
+        
+        // invoice ninja
+        $(document).ready(function() {
+            $.ajax({
+                url: '/transactions/taxdomesticapilist.do',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let tableBody = $('#invoiceTableBody');
+                    tableBody.empty();
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        $.each(data, function(index, invoice) {
+                            let row = `<tr>
+                                <td>${invoice.tdocId || '-'}</td>
+                                <td>${invoice.docName || '-'}</td>
+                                <td>${invoice.docType || '-'}</td>
+                                <td>${invoice.relatedPartyId || '-'}</td>
+                                <td>${invoice.uploaderName || '-'}</td>
+                                <td>${invoice.status || '-'}</td>
+                                <td>${invoice.uploadedAt || '-'}</td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        tableBody.html('<tr><td colspan="7">데이터가 없습니다.</td></tr>');
+                    }
                 },
-                error: function(error) {
-                    alert('송장 조회 실패: ' + error.responseText);
+                error: function(xhr, status, error) {
+                    console.error('데이터 로드 실패:', error);
+                    $('#invoiceTableBody').html('<tr><td colspan="7">데이터 로드 중 오류가 발생했습니다.</td></tr>');
                 }
             });
-        }
+        });
 
-        // 송장 세부 정보 조회
-        function viewInvoiceDetails(invoiceId) {
-            $.ajax({
-                url: `http://invoice-ninja-url/api/v1/invoices/${invoiceId}`,
-                method: 'GET',
-                headers: {
-                    'X-API-TOKEN': 'your-api-token'
-                },
-                success: function(response) {
-                	let items = response.data.invoice_items || [];
-                	let itemNotes = items.map(function(item){return item.notes;}).join(', ');
-                	let details = `
-                	    <h5>송장 세부 정보</h5>
-                	    <p><strong>송장 번호:</strong> \${response.data.invoice_number}</p>
-                	    <p><strong>금액:</strong> \${Number(response.data.amount).toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}</p>
-                	    <p><strong>클라이언트 ID:</strong> \${response.data.client_id}</p>
-                	    <p><strong>발행일:</strong> \${response.data.date}</p>
-                	    <p><strong>항목:</strong> \${itemNotes}</p>
-                	`;
-                    $('#invoiceDetails').html(details).show();
-                },
-                error: function(error) {
-                    alert('세부 정보 조회 실패: ' + error.responseText);
-                }
-            });
-        }
-
-        // 페이지 로드 시 스피너 숨기기 및 목록 조회
+        
         $(document).ready(function() {
             $('#spinner').removeClass('show');
             $('.content').addClass('show');
+
+            // 기존 송장 목록 불러오기
             loadInvoices();
+        
+        
+         // 다른 API 호출
+            $.ajax({
+                url: '/transactions/taxdomesticapilist.do',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let tableBody = $('#invoiceTableBody');
+                    tableBody.empty();
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        $.each(data, function(index, invoice) {
+                            let row = `<tr>
+                                <td>${invoice.tdocId || '-'}</td>
+                                <td>${invoice.docName || '-'}</td>
+                                <td>${invoice.docType || '-'}</td>
+                                <td>${invoice.relatedPartyId || '-'}</td>
+                                <td>${invoice.uploaderName || '-'}</td>
+                                <td>${invoice.status || '-'}</td>
+                                <td>${invoice.uploadedAt || '-'}</td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        tableBody.html('<tr><td colspan="7">데이터가 없습니다.</td></tr>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('데이터 로드 실패:', error);
+                    $('#invoiceTableBody').html('<tr><td colspan="7">데이터 로드 중 오류가 발생했습니다.</td></tr>');
+                }
+            });
         });
+        
+        
+      
+
+        
     </script>
 </body>
 </html>
