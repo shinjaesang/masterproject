@@ -69,10 +69,8 @@
 					<a href="${pageContext.request.contextPath}/statistics/top-sales.do"
 						class="dropdown-item">판매베스트</a> <a
 						href="${pageContext.request.contextPath}/statistics/product-sales.do"
-						class="dropdown-item">상품매출통계</a> <a
-						href="${pageContext.request.contextPath}/statistics/daily-chart.do"
-						class="dropdown-item">일별매출차트</a> <a
-						href="${pageContext.request.contextPath}/statistics/inout.do"
+						class="dropdown-item">상품매출매입통계</a> <a
+						href="${pageContext.request.contextPath}/report/inout/stat.do"
 						class="dropdown-item">입출고 통계</a>
 				</div>
 			</div>

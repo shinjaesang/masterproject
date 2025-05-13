@@ -34,6 +34,8 @@
 		<typeAlias type="org.myweb.first.report.inoutstat.model.dto.InoutStatSearchDTO" alias="InoutStatSearchDTO"/>
 		<typeAlias type="org.myweb.first.document.model.dto.Document" alias="Document"/>
 		<typeAlias type="org.myweb.first.order.model.dto.OrderItem" alias="OrderItem"/>
+		<typeAlias type="org.myweb.first.report.productsales.model.dto.ProductSalesDTO" alias="ProductSalesDTO"/>
+		<typeAlias type="org.myweb.first.report.productsales.model.dto.ProductSalesSummaryDTO" alias="ProductSalesSummaryDTO"/>
 
 	</typeAliases>
 	
@@ -51,5 +53,6 @@
 		<mapper resource="mappers/order-mapper.xml"/>
 		<mapper resource="mappers/inoutstat-mapper.xml"/>
 		<mapper resource="mappers/document-mapper.xml"/>
+		<mapper resource="mappers/productsales-mapper.xml"/>
 	</mappers>
 </configuration>
