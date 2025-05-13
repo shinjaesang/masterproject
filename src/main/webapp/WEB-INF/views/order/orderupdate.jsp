@@ -197,7 +197,7 @@ window.onload = function() { hideSpinner(); };
 														<td><input type="text" class="form-control product-name" value="${item.productName}" readonly></td>
 														<td><input type="text" class="form-control product-option" value="${item.optionValue}" readonly></td>
 														<td><input type="number" class="form-control product-cost" value="${item.costPrice}" readonly></td>
-														<td><input type="number" class="form-control product-price" value="${item.sellingPrice}" readonly></td>
+														<td><input type="number" class="form-control product-price" value="${item.sellingPrice}"></td>
 														<td><input type="number" class="form-control product-quantity" value="${item.quantity}" min="1" required></td>
 														<td><button type="button" class="btn btn-danger btn-sm" onclick="removeProductRow(this)"><i class="fa fa-trash"></i></button></td>
 													</tr>
@@ -290,7 +290,7 @@ window.onload = function() { hideSpinner(); };
 				<td><input type="text" class="form-control product-name" readonly></td>
 				<td><input type="text" class="form-control product-option" readonly></td>
 				<td><input type="number" class="form-control product-cost" readonly></td>
-				<td><input type="number" class="form-control product-price" readonly></td>
+				<td><input type="number" class="form-control product-price"></td>
 				<td><input type="number" class="form-control product-quantity" min="1" value="1" required></td>
 				<td><button type="button" class="btn btn-danger btn-sm" onclick="removeProductRow(this)"><i class="fa fa-trash"></i></button></td>
 			</tr>
@@ -352,7 +352,8 @@ window.onload = function() { hideSpinner(); };
 				hasItems = true;
 				formData.items.push({
 					productId: productCode,
-					quantity: parseInt(quantity)
+					quantity: parseInt(quantity),
+					sellingPrice: parseInt(row.find('.product-price').val())
 				});
 			}
 		});

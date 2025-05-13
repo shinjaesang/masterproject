@@ -51,5 +51,7 @@
 		<mapper resource="mappers/order-mapper.xml"/>
 		<mapper resource="mappers/inoutstat-mapper.xml"/>
 		<mapper resource="mappers/document-mapper.xml"/>
+		<mapper resource="mappers/ProductSalesDAO.xml"/>
+		<mapper resource="mappers/StockHistoryDAO.xml"/>
 	</mappers>
 </configuration>

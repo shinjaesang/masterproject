@@ -33,11 +33,11 @@ public class StatisticsController {
      * 상품매출통계 페이지
      * @return 상품매출통계 뷰
      */
-    @GetMapping("/product-sales.do")
-    public String productSales() {
-        // TODO: 상품 매출 통계 데이터 조회 로직
-        return "report/product-sales";
-    }
+//    @GetMapping("/product-sales.do")
+//    public String productSales() {
+//        // TODO: 상품 매출 통계 데이터 조회 로직
+//        return "report/product-sales";
+//    }
     
     @GetMapping("/daily-chart.do")
     public String dailyChart(Model model) {

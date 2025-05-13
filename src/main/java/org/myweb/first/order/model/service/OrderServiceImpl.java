@@ -52,7 +52,10 @@ public class OrderServiceImpl implements OrderService {
                     item.setProductName(product.getProductName());
                     item.setOptionValue(product.getOptionValue());
                     item.setCostPrice(product.getCostPrice() != null ? product.getCostPrice().intValue() : null);
-                    item.setSellingPrice(product.getSellingPrice() != null ? product.getSellingPrice().intValue() : null);
+                    // 판매가는 사용자가 수정한 값을 유지
+                    if (item.getSellingPrice() == null) {
+                        item.setSellingPrice(product.getSellingPrice() != null ? product.getSellingPrice().intValue() : null);
+                    }
                     
                     // 주문 항목 등록
                     result = orderDao.insertOrderItem(item);
