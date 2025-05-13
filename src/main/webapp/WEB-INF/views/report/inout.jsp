@@ -18,8 +18,25 @@
         .stat-table .in { color: #27ae60; font-weight: bold; }
         .stat-table .out, .stat-table .minus { color: #e74c3c; font-weight: bold; }
         .stat-table .plus { color: #27ae60; font-weight: bold; }
-        .chart-area { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; }
-        .chart-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .chart-area { 
+            background: #fff; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px; 
+            padding: 1.5rem;
+            height: 400px;
+            position: relative;
+        }
+        .chart-title { 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            height: calc(100% - 40px);
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -45,34 +62,19 @@
                             <div class="col-md-3">
                                 <label class="form-label">기간</label>
                                 <div class="input-group">
-                                    <input type="date" class="form-control" name="startDate">
+                                    <input type="date" class="form-control" name="startDate" required>
                                     <span class="input-group-text">~</span>
-                                    <input type="date" class="form-control" name="endDate">
+                                    <input type="date" class="form-control" name="endDate" required>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">창고</label>
-                                <select class="form-select" name="warehouse">
-                                    <option value="">전체</option>
-                                    <option>서울 창고</option>
-                                    <option>부산 창고</option>
-                                    <option>대구 창고</option>
-                                    <option>인천 창고</option>
-                                    <option>광주 창고</option>
-                                </select>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">카테고리</label>
                                 <select class="form-select" name="category">
                                     <option value="">전체</option>
+                                    <option>전자부품</option>
                                     <option>전자제품</option>
-                                    <option>생활용품</option>
-                                    <option>식품</option>
+                                    <option>가전제품</option>
                                 </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">상품명</label>
-                                <input type="text" class="form-control" name="productName" placeholder="상품명 입력">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">정렬</label>
@@ -80,11 +82,10 @@
                                     <option>날짜순</option>
                                     <option>입고량순</option>
                                     <option>출고량순</option>
-                                    <option>재고량순</option>
                                 </select>
                             </div>
                             <div class="col-md-1 text-end">
-                                <button class="btn btn-primary w-100" type="button">검색</button>
+                                <button class="btn btn-primary w-100" type="button" id="searchBtn">검색</button>
                             </div>
                         </form>
                         <!-- 표 -->
@@ -96,7 +97,7 @@
                                     <th>입고량</th>
                                     <th>출고량</th>
                                     <th>재고량</th>
-                                    <th>증감률</th>
+                                    <th>재고율</th>
                                 </tr>
                                 </thead>
                                 <tbody id="inoutTableBody">
@@ -106,18 +107,12 @@
                         </div>
                         <!-- 차트 영역 -->
                         <div class="row g-4">
-                            <div class="col-md-6">
+                            <div class="col-12">
                                 <div class="chart-area">
-                                    <div class="chart-title">상품별 입출고 현황</div>
-                                    <canvas id="productInoutChart" height="220"></canvas>
-                                    <div id="productInoutNoData" class="text-center text-muted mt-3">데이터가 없습니다</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="chart-area">
-                                    <div class="chart-title">창고별 재고 현황</div>
-                                    <canvas id="warehouseStockChart" height="220"></canvas>
-                                    <div id="warehouseStockNoData" class="text-center text-muted mt-3">데이터가 없습니다</div>
+                                    <div class="chart-title">입출고 추이</div>
+                                    <div class="chart-container">
+                                        <canvas id="inoutChart"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -131,90 +126,257 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
-<!-- 차트 샘플 스크립트 (데이터 연동 전용) -->
 <script>
-let productInoutChart = null;
-let warehouseStockChart = null;
+let inoutChart = null;
 
 function clearTableAndCharts() {
     document.getElementById('inoutTableBody').innerHTML = '<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>';
-    if (productInoutChart) { productInoutChart.destroy(); productInoutChart = null; }
-    if (warehouseStockChart) { warehouseStockChart.destroy(); warehouseStockChart = null; }
-    document.getElementById('productInoutNoData').style.display = '';
-    document.getElementById('warehouseStockNoData').style.display = '';
+    if (inoutChart) {
+        inoutChart.destroy();
+    }
+    
+    const ctx = document.getElementById('inoutChart').getContext('2d');
+    inoutChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: '입고량',
+                    data: [],
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: '출고량',
+                    data: [],
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: '재고량',
+                    data: [],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '수량'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '날짜'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateChart(chartData) {
+    const ctx = document.getElementById('inoutChart').getContext('2d');
+    
+    if (inoutChart) {
+        inoutChart.destroy();
+    }
+
+    inoutChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [
+                {
+                    label: '입고량',
+                    data: chartData.inData,
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: '출고량',
+                    data: chartData.outData,
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: '재고량',
+                    data: chartData.stockData,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '수량'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '날짜'
+                    }
+                }
+            }
+        }
+    });
 }
 
 $(function() {
     clearTableAndCharts();
-    const ctx = "${pageContext.request.contextPath}";
-    $('#searchForm button[type="button"]').on('click', function() {
-        // 1. 폼 데이터 수집
-        const params = {
-            startDate: $('input[name="startDate"]').val(),
-            endDate: $('input[name="endDate"]').val(),
-            warehouse: $('select[name="warehouse"]').val(),
-            category: $('select[name="category"]').val(),
-            productName: $('input[name="productName"]').val()
-        };
+    
+    // 현재 날짜 설정
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    // 날짜 형식 변환 함수
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    // 기본 날짜 설정
+    $('input[name="startDate"]').val(formatDate(firstDay));
+    $('input[name="endDate"]').val(formatDate(lastDay));
+    
+    // 검색 버튼 클릭 이벤트
+    $('#searchBtn').on('click', function() {
+        const startDate = $('input[name="startDate"]').val();
+        const endDate = $('input[name="endDate"]').val();
+        
+        if (!startDate || !endDate) {
+            alert('시작일과 종료일을 모두 입력해주세요.');
+            return;
+        }
 
-        // 2. 표 데이터
-        $.getJSON(ctx + '/report/inout/data', params, function(tableData) {
-            const tbody = $('#inoutTableBody').empty();
-            if (!tableData || tableData.length === 0) {
-                tbody.append('<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>');
-            } else {
-                tableData.forEach(row => {
-                    tbody.append(
-                        `<tr>
-                            <td>${'$'}{row.date}</td>
-                            <td class="in">${'$'}{row.inAmount.toLocaleString()} 개</td>
-                            <td class="out">${'$'}{row.outAmount.toLocaleString()} 개</td>
-                            <td>${'$'}{row.stockAmount.toLocaleString()} 개</td>
-                            <td class="${'$'}{parseFloat(row.rate) >= 0 ? 'plus' : 'minus'}">${'$'}{row.rate}</td>
-                        </tr>`
-                    );
+        const params = {
+            startDate: startDate,
+            endDate: endDate,
+            category: $('select[name="category"]').val(),
+            sort: $('select[name="sort"]').val()
+        };
+        
+        console.log('검색 파라미터:', params);
+
+        // 표 데이터 조회
+        $.ajax({
+            url: '${pageContext.request.contextPath}/report/inout/data',
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+            success: function(tableData) {
+                console.log('서버 응답 데이터:', tableData);
+                
+                const tbody = $('#inoutTableBody').empty();
+                
+                if (!tableData || tableData.length === 0) {
+                    tbody.append('<tr class="no-data"><td colspan="5" class="text-center text-muted">데이터가 없습니다</td></tr>');
+                    return;
+                }
+                
+                tableData.forEach(function(row, index) {
+                    console.log(`[${index}] 행 데이터:`, row);
+                    
+                    // null 체크 및 기본값 설정
+                    const statDate = row.stat_date || '';
+                    const inAmount = row.inAmount || 0;
+                    const outAmount = row.outAmount || 0;
+                    const stockAmount = row.stockAmount || 0;
+                    const rate = row.rate || 0;
+                    
+                    // HTML 생성 (변수 이스케이프)
+                    const html = 
+                        '<tr>' +
+                        '<td>' + statDate + '</td>' +
+                        '<td class="in">' + inAmount.toLocaleString() + ' 개</td>' +
+                        '<td class="out">' + outAmount.toLocaleString() + ' 개</td>' +
+                        '<td class="stock">' + stockAmount.toLocaleString() + ' 개</td>' +
+                        '<td class="rate">' + (rate ? rate.toFixed(2) + '%' : '-') + '</td>' +
+                        '</tr>';
+                    
+                    tbody.append(html);
                 });
+            },
+            error: function(xhr, status, error) {
+                console.error('데이터 조회 중 오류 발생:', status, error);
+                console.error('서버 응답:', xhr.responseText);
+                alert('데이터를 불러오는 중 오류가 발생했습니다.');
             }
         });
 
-        // 3. 상품별 차트 데이터
-        $.getJSON(ctx + '/report/inout/product-chart', params, function(productData) {
-            const labels = productData.map(d => d.productName);
-            const inData = productData.map(d => d.inAmount);
-            const outData = productData.map(d => d.outAmount);
-            if (productInoutChart) productInoutChart.destroy();
-            const ctx1 = document.getElementById('productInoutChart').getContext('2d');
-            productInoutChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: '입고', data: inData, backgroundColor: '#27ae60' },
-                        { label: '출고', data: outData, backgroundColor: '#e74c3c' }
-                    ]
-                },
-                options: { responsive: true, plugins: { legend: { position: 'top' } } }
-            });
-            $('#productInoutNoData').toggle(labels.length === 0);
-        });
-
-        // 4. 창고별 차트 데이터
-        $.getJSON(ctx + '/report/inout/warehouse-chart', { date: params.endDate }, function(warehouseData) {
-            const labels = warehouseData.map(d => d.warehouseName);
-            const stockData = warehouseData.map(d => d.stockAmount);
-            if (warehouseStockChart) warehouseStockChart.destroy();
-            const ctx2 = document.getElementById('warehouseStockChart').getContext('2d');
-            warehouseStockChart = new Chart(ctx2, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{ label: '재고', data: stockData, backgroundColor: ['#09f','#2ecc71','#f39c12','#e74c3c','#8e44ad'] }]
-                },
-                options: { responsive: true, plugins: { legend: { position: 'right' } } }
-            });
-            $('#warehouseStockNoData').toggle(labels.length === 0);
+        // 차트 데이터 조회
+        $.ajax({
+            url: '${pageContext.request.contextPath}/report/inout/chart',
+            type: 'GET',
+            data: params,
+            dataType: 'json',
+            success: function(chartData) {
+                console.log('차트 데이터:', chartData);
+                
+                if (!chartData || !chartData.labels || chartData.labels.length === 0) {
+                    console.warn('차트 데이터가 없습니다.');
+                    return;
+                }
+                
+                updateChart(chartData);
+            },
+            error: function(xhr, status, error) {
+                console.error('차트 데이터 조회 중 오류 발생:', status, error);
+                console.error('서버 응답:', xhr.responseText);
+            }
         });
     });
+    
+    // 페이지 로드 시 자동으로 검색 실행
+    $('#searchBtn').trigger('click');
 });
 </script>
 </body>

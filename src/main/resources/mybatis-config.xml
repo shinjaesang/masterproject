@@ -29,9 +29,9 @@
 		<typeAlias type="org.myweb.first.transaction.model.dto.Transaction" alias="Transaction"/>
 		<typeAlias type="org.myweb.first.inventory.model.dto.Inventory" alias="Inventory"/>
 		<typeAlias type="org.myweb.first.order.model.dto.Order" alias="Order"/>
-		<typeAlias type="org.myweb.first.report.model.dto.InOutStatDto" alias="InOutStatDto"/>
-		<typeAlias type="org.myweb.first.report.model.dto.ProductInOutChartDto" alias="ProductInOutChartDto"/>
-		<typeAlias type="org.myweb.first.report.model.dto.WarehouseStockChartDto" alias="WarehouseStockChartDto"/>
+		<typeAlias type="org.myweb.first.report.inoutstat.model.dto.InoutStatChartDTO" alias="InoutStatChartDTO"/>
+		<typeAlias type="org.myweb.first.report.inoutstat.model.dto.InoutStatDTO" alias="InoutStatDTO"/>
+		<typeAlias type="org.myweb.first.report.inoutstat.model.dto.InoutStatSearchDTO" alias="InoutStatSearchDTO"/>
 		<typeAlias type="org.myweb.first.document.model.dto.Document" alias="Document"/>
 		<typeAlias type="org.myweb.first.order.model.dto.OrderItem" alias="OrderItem"/>
 

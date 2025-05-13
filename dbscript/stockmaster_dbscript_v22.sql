@@ -356,8 +356,8 @@ CREATE TABLE TB_APPROVAL_DOCUMENTS (
 --    approver_id VARCHAR2(20) NOT NULL,
     approval_status VARCHAR2(20) DEFAULT '발송' CHECK (approval_status IN ('발송', '결재대기', '승인', '반려', '회수')),
     document_format VARCHAR2(100) NOT NULL,
-    review_date DATE DEFAULT SYSDATE,
-    approval_date DATE DEFAULT SYSDATE,
+    review_date DATE DEFAULT NULL,
+    approval_date DATE DEFAULT NULL,
     CONSTRAINT fk_emp_id FOREIGN KEY (emp_id) REFERENCES TB_USER(empid) ON DELETE CASCADE
 );
 
@@ -2622,4 +2622,5 @@ WHERE doc_name = '서버 구매 영수증';
 UPDATE TB_TRANSACTION_DOCUMENTS 
 SET uploaded_at = TO_DATE('2024-12-04', 'YYYY-MM-DD') 
 WHERE doc_name = '재고 관리 시스템 영수증';
+
 
