@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.myweb.first.inventory.model.dto.DailyInventory;
+import org.myweb.first.inventory.model.dto.DailyInventorySearchCondition;
 import org.myweb.first.inventory.model.dto.Inventory;
 import org.myweb.first.inventory.model.dto.InventorySearchCondition;
 import org.myweb.first.inventory.model.dto.WarehouseStock;
@@ -49,5 +51,20 @@ public class InventoryDao {
 
     public int insertStockHistory(Map<String, Object> params) {
         return sqlSession.insert("inventoryMapper.insertStockHistory", params);
+    }
+    
+    // 일자별 재고 조회
+    public List<DailyInventory> searchDailyInventory(DailyInventorySearchCondition cond) {
+        return sqlSession.selectList(NAMESPACE + "searchDailyInventory", cond);
+    }
+    
+    // 일자별 재고 개수 조회
+    public int countDailyInventory(DailyInventorySearchCondition cond) {
+        return sqlSession.selectOne(NAMESPACE + "countDailyInventory", cond);
+    }
+    
+    // 일자별 재고 조회 헤더 (날짜 목록) 조회
+    public List<String> selectDateHeaders(DailyInventorySearchCondition cond) {
+        return sqlSession.selectList(NAMESPACE + "selectDateHeaders", cond);
     }
 } 

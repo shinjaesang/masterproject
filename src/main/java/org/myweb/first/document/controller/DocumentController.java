@@ -342,43 +342,29 @@ public class DocumentController {
 		return response;
 	}
 
-	@GetMapping("/download/{fileId}")
-	public void downloadFile(@PathVariable String fileId, HttpServletResponse response) {
-		try {
-			// 파일 정보 조회
-			Map<String, String> fileInfo = documentService.selectFileInfo(fileId);
-			if (fileInfo == null) {
-				throw new RuntimeException("파일을 찾을 수 없습니다.");
-			}
-			
-			String filePath = fileInfo.get("filePath");
-			String savedFileName = fileInfo.get("savedFileName");
-			String originalFileName = fileInfo.get("originalFileName");
-			
-			// 파일 객체 생성
-			File file = new File(filePath + savedFileName);
-			if (!file.exists()) {
-				throw new RuntimeException("파일이 존재하지 않습니다.");
-			}
-			
-			// 응답 헤더 설정
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + 
-				new String(originalFileName.getBytes("UTF-8"), "ISO-8859-1") + "\"");
-			response.setContentLength((int) file.length());
-			
-			// 파일 스트림으로 전송
-			try (FileInputStream fis = new FileInputStream(file);
-				 OutputStream out = response.getOutputStream()) {
-				byte[] buffer = new byte[1024];
-				int count;
-				while ((count = fis.read(buffer)) != -1) {
-					out.write(buffer, 0, count);
-				}
-			}
-		} catch (Exception e) {
-			logger.error("파일 다운로드 중 오류 발생", e);
-			throw new RuntimeException("파일 다운로드 중 오류가 발생했습니다: " + e.getMessage());
-		}
-	}
+	/*
+	 * @GetMapping("/download/{fileId}") public void downloadFile(@PathVariable
+	 * String fileId, HttpServletResponse response) { try { // 파일 정보 조회 Map<String,
+	 * String> fileInfo = documentService.selectFileInfo(fileId); if (fileInfo ==
+	 * null) { throw new RuntimeException("파일을 찾을 수 없습니다."); }
+	 * 
+	 * String filePath = fileInfo.get("filePath"); String savedFileName =
+	 * fileInfo.get("savedFileName"); String originalFileName =
+	 * fileInfo.get("originalFileName");
+	 * 
+	 * // 파일 객체 생성 File file = new File(filePath + savedFileName); if
+	 * (!file.exists()) { throw new RuntimeException("파일이 존재하지 않습니다."); }
+	 * 
+	 * // 응답 헤더 설정 response.setContentType("application/octet-stream");
+	 * response.setHeader("Content-Disposition", "attachment; filename=\"" + new
+	 * String(originalFileName.getBytes("UTF-8"), "ISO-8859-1") + "\"");
+	 * response.setContentLength((int) file.length());
+	 * 
+	 * // 파일 스트림으로 전송 try (FileInputStream fis = new FileInputStream(file);
+	 * OutputStream out = response.getOutputStream()) { byte[] buffer = new
+	 * byte[1024]; int count; while ((count = fis.read(buffer)) != -1) {
+	 * out.write(buffer, 0, count); } } } catch (Exception e) {
+	 * logger.error("파일 다운로드 중 오류 발생", e); throw new
+	 * RuntimeException("파일 다운로드 중 오류가 발생했습니다: " + e.getMessage()); } }
+	 */
 }
