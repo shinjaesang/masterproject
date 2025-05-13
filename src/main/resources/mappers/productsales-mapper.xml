@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.myweb.first.report.productsales.model.dao.ProductSalesDAO">
+    <select id="selectProductSalesList" parameterType="map" resultType="org.myweb.first.report.productsales.model.dto.ProductSalesDTO">
+        SELECT
+            o.order_type AS orderType,
+            p.product_id AS productCode,
+            p.product_name AS productName,
+            p.option_value AS optionName,
+            p.category AS categoryName,
+            CASE WHEN o.order_type = '발주' THEN cu.partner_name ELSE s.partner_name END AS supplierName,
+            NVL(SUM(oi.quantity),0) AS orderCount,
+            NVL(SUM(oi.quantity * p.selling_price),0) AS salesAmount,
+            NVL(SUM(oi.quantity * p.cost_price),0) AS productCost,
+            NVL(SUM((oi.quantity * p.selling_price) - (oi.quantity * p.cost_price)),0) AS marginAmount,
+            CASE WHEN SUM(oi.quantity * p.selling_price) > 0
+                 THEN ROUND(SUM((oi.quantity * p.selling_price) - (oi.quantity * p.cost_price)) / SUM(oi.quantity * p.selling_price) * 100, 2)
+                 ELSE 0 END AS marginRate,
+            CASE WHEN SUM(oi.quantity * p.selling_price) > 0
+                 THEN ROUND(SUM(oi.quantity * p.cost_price) / SUM(oi.quantity * p.selling_price) * 100, 2)
+                 ELSE 0 END AS purchaseRate,
+            CASE WHEN o.order_type = '수주' THEN cu.partner_name ELSE NULL END AS customerName,
+            (
+              SELECT NVL(SUM(ws.stock), 0)
+              FROM TB_WAREHOUSE_STOCK ws
+              JOIN TB_WAREHOUSE w ON ws.warehouse_id = w.warehouse_id
+              WHERE ws.product_id = p.product_id
+                AND w.warehouse_type NOT IN ('경유', '불량')
+            ) AS availableStock,
+            o.created_at AS orderDate
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_ORDER_ITEMS oi ON oi.product_id = p.product_id
+        LEFT JOIN TB_ORDERS o ON o.order_id = oi.order_id
+        LEFT JOIN TB_PARTNER cu ON o.partner_id = cu.partner_id
+        LEFT JOIN TB_PARTNER s ON p.partner_id = s.partner_id
+        WHERE 1=1
+        <if test="orderType != null and orderType != ''">
+          AND o.order_type = #{orderType}
+        </if>
+        <if test="startDate != null and startDate != ''">
+          AND o.created_at &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate != null and endDate != ''">
+          AND o.created_at &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="productCode != null and productCode != ''">
+          AND p.product_id LIKE '%' || #{productCode} || '%'
+        </if>
+        <if test="productName != null and productName != ''">
+          AND p.product_name LIKE '%' || #{productName} || '%'
+        </if>
+        <if test="optionName != null and optionName != ''">
+          AND p.option_value LIKE '%' || #{optionName} || '%'
+        </if>
+        <if test="productCategory != null and productCategory != ''">
+          AND p.category = #{productCategory}
+        </if>
+        <if test="partnerType != null and partnerType != '' and partnerName != null and partnerName != ''">
+          <choose>
+            <when test="partnerType == 'SUPPLIER'">
+              AND (
+                (o.order_type = '발주' AND cu.partner_name LIKE '%' || #{partnerName} || '%')
+                OR
+                (o.order_type = '수주' AND s.partner_name LIKE '%' || #{partnerName} || '%')
+              )
+            </when>
+            <when test="partnerType == 'CUSTOMER'">
+              AND cu.partner_name LIKE '%' || #{partnerName} || '%'
+            </when>
+          </choose>
+        </if>
+        AND o.order_status = '완료'
+        GROUP BY o.order_type, p.product_id, p.product_name, p.option_value, p.category, s.partner_name, cu.partner_name, o.created_at
+        <if test="sort != null and sort != ''">
+          ORDER BY
+            <choose>
+              <when test="sort == 'salesAmount_desc'">salesAmount DESC</when>
+              <when test="sort == 'salesAmount_asc'">salesAmount ASC</when>
+              <when test="sort == 'orderCount_desc'">orderCount DESC</when>
+              <when test="sort == 'orderCount_asc'">orderCount ASC</when>
+              <when test="sort == 'marginRate_desc'">marginRate DESC</when>
+              <when test="sort == 'marginRate_asc'">marginRate ASC</when>
+              <when test="sort == 'productName_asc'">p.product_name ASC</when>
+              <when test="sort == 'productName_desc'">p.product_name DESC</when>
+            </choose>
+        </if>
+    </select>
+    <select id="selectProductSalesSummary" parameterType="map" resultType="org.myweb.first.report.productsales.model.dto.ProductSalesSummaryDTO">
+        SELECT
+            NVL(SUM(CASE WHEN o.order_type = '수주' THEN oi.quantity ELSE 0 END),0) AS totalSalesCount,
+            NVL(SUM(CASE WHEN o.order_type = '발주' THEN oi.quantity ELSE 0 END),0) AS totalPurchaseCount,
+            NVL(SUM(CASE WHEN o.order_type = '수주' THEN oi.quantity * p.selling_price ELSE 0 END),0) AS totalSalesAmount,
+            NVL(SUM(CASE WHEN o.order_type = '발주' THEN oi.quantity * p.cost_price ELSE 0 END),0) AS totalPurchaseAmount,
+            CASE WHEN SUM(CASE WHEN o.order_type = '수주' THEN oi.quantity * p.selling_price ELSE 0 END) > 0
+                 THEN ROUND(SUM(CASE WHEN o.order_type = '수주' THEN (oi.quantity * p.selling_price) - (oi.quantity * p.cost_price) ELSE 0 END) /
+                            SUM(CASE WHEN o.order_type = '수주' THEN oi.quantity * p.selling_price ELSE 0 END) * 100, 2)
+                 ELSE 0 END AS averageMarginRate,
+            CASE WHEN SUM(CASE WHEN o.order_type = '발주' THEN oi.quantity * p.cost_price ELSE 0 END) > 0
+                 THEN ROUND(SUM(CASE WHEN o.order_type = '발주' THEN oi.quantity * p.cost_price ELSE 0 END) /
+                            SUM(CASE WHEN o.order_type = '발주' THEN oi.quantity * p.selling_price ELSE 0 END) * 100, 2)
+                 ELSE 0 END AS averagePurchaseRate
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_ORDER_ITEMS oi ON oi.product_id = p.product_id
+        LEFT JOIN TB_ORDERS o ON o.order_id = oi.order_id
+        LEFT JOIN TB_PARTNER cu ON o.partner_id = cu.partner_id
+        LEFT JOIN TB_PARTNER s ON p.partner_id = s.partner_id
+        WHERE o.order_status = '완료'
+        <if test="orderType != null and orderType != ''">
+          AND o.order_type = #{orderType}
+        </if>
+        <if test="startDate != null and startDate != ''">
+          AND o.created_at &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate != null and endDate != ''">
+          AND o.created_at &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="productCode != null and productCode != ''">
+          AND p.product_id LIKE '%' || #{productCode} || '%'
+        </if>
+        <if test="productName != null and productName != ''">
+          AND p.product_name LIKE '%' || #{productName} || '%'
+        </if>
+        <if test="optionName != null and optionName != ''">
+          AND p.option_value LIKE '%' || #{optionName} || '%'
+        </if>
+        <if test="productCategory != null and productCategory != ''">
+          AND p.category = #{productCategory}
+        </if>
+        <if test="partnerType != null and partnerType != '' and partnerName != null and partnerName != ''">
+          <choose>
+            <when test="partnerType == 'SUPPLIER'">
+              AND (
+                (o.order_type = '발주' AND cu.partner_name LIKE '%' || #{partnerName} || '%')
+                OR
+                (o.order_type = '수주' AND s.partner_name LIKE '%' || #{partnerName} || '%')
+              )
+            </when>
+            <when test="partnerType == 'CUSTOMER'">
+              AND cu.partner_name LIKE '%' || #{partnerName} || '%'
+            </when>
+          </choose>
+        </if>
+    </select>
+</mapper> 
